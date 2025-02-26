@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "7kdGSIbUyp04vwJNfwJg6vZrDZmuVM+O1JNbdmPcyEY=",
+  "Source": "QuizMate.Api",
+  "BasePath": "_content/QuizMate.Api",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
