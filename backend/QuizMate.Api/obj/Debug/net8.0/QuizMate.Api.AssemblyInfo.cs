@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("QuizMate.Api")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+907527f34ee3d82d4644e5316a36d707788889be")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e83d317c8a19b49d258ce58a6c265ed232d332d9")]
 [assembly: System.Reflection.AssemblyProductAttribute("QuizMate.Api")]
 [assembly: System.Reflection.AssemblyTitleAttribute("QuizMate.Api")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
