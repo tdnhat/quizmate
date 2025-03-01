@@ -76,12 +76,10 @@ namespace QuizMate.Api.Mappers
                 Description = updateQuizRequestDto.Description,
                 Questions = updateQuizRequestDto.Questions?.Select(q => new Question
                 {
-                    Id = q.Id,
                     Text = q.Text,
                     Type = q.Type,
                     Answers = q.Answers?.Select(a => new Answer
                     {
-                        Id = a.Id,
                         Text = a.Text,
                         IsCorrect = a.IsCorrect,
                     }).ToList() ?? new List<Answer>()

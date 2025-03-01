@@ -73,11 +73,11 @@ namespace QuizMate.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var quiz = await _quizRepo.UpdateQuizAsync(id, updateQuizRequestDto.ToQuizFromUpdateDto());
+            var updatedQuiz = await _quizRepo.UpdateQuizAsync(id, updateQuizRequestDto.ToQuizFromUpdateDto());
 
-            if (quiz == null) return NotFound();
+            if (updatedQuiz == null) return NotFound();
 
-            return Ok(quiz.ToQuizDetailsDto());
+            return Ok(updatedQuiz.ToQuizDetailsDto());
         }
 
         [HttpDelete("{id:int}")]
@@ -86,9 +86,9 @@ namespace QuizMate.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
-            var quizModel = await _quizRepo.DeleteQuizAsync(id);
+            var deletedQuiz = await _quizRepo.DeleteQuizAsync(id);
 
-            if (quizModel == null) return NotFound();
+            if (deletedQuiz == null) return NotFound("Quiz not found");
 
             return NoContent();
         }

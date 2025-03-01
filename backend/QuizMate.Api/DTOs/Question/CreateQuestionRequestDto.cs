@@ -9,9 +9,9 @@ namespace QuizMate.Api.DTOs.Question
 {
     public class CreateQuestionRequestDto
     {
-        [Required]
+        [Required(ErrorMessage = "Text field is required")]
         public string Text { get; set; }
-        [Required]
+        [Required(ErrorMessage = "Type field is required")]
         public string Type { get; set; } = "Multiple Choice";
         public List<CreateAnswerRequestDto> Answers { get; set; } = new List<CreateAnswerRequestDto>();
     }
