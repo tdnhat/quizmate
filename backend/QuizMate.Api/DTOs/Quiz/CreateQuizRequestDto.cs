@@ -10,7 +10,7 @@ namespace QuizMate.Api.DTOs.Quiz
 {
     public class CreateQuizRequestDto
     {
-        [Required]
+        [Required(ErrorMessage = "Title field is required")]
         public string Title { get; set; }
         public string Description { get; set; }
         public List<CreateQuestionRequestDto> Questions { get; set; } = new List<CreateQuestionRequestDto>();

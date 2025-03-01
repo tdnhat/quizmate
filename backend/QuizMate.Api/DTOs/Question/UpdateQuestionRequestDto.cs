@@ -9,7 +9,6 @@ namespace QuizMate.Api.DTOs.Question
 {
     public class UpdateQuestionRequestDto
     {
-        public int Id { get; set; }
         [Required(ErrorMessage = "Text field is required")]
         public string Text { get; set; }
         [Required(ErrorMessage = "Type field is required")]

@@ -63,8 +63,12 @@ namespace QuizMate.Api.Repositories
 
             existingQuiz.Title = quizModel.Title;
             existingQuiz.Description = quizModel.Description;
-            _context.Questions.RemoveRange(existingQuiz.Questions);
-            existingQuiz.Questions = quizModel.Questions;
+
+            if (existingQuiz.Questions != null)
+            {
+                _context.Questions.RemoveRange(existingQuiz.Questions);
+                existingQuiz.Questions = quizModel.Questions;
+            }
 
             await _context.SaveChangesAsync();
 
