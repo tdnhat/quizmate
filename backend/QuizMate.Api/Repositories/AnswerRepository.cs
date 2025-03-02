@@ -29,6 +29,15 @@ namespace QuizMate.Api.Repositories
 
             if (existingAnswer == null) return null;
 
+            var resultAnswers = await _context.ResultAnswers
+                .Where(a => a.AnswerId == id)
+                .ToListAsync();
+
+            if (resultAnswers.Any())
+            {
+                _context.ResultAnswers.RemoveRange(resultAnswers);
+            }
+
             _context.Remove(existingAnswer);
             await _context.SaveChangesAsync();
 

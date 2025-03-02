@@ -8,9 +8,11 @@ namespace QuizMate.Api.DTOs.Answer
 {
     public class CreateAnswerRequestDto
     {
-        [Required]
+        [Required(ErrorMessage = "Text field is required")]
+
         public string Text { get; set; }
-        [Required]
+        [Required(ErrorMessage = "IsCorrect field is required")]
+
         public bool IsCorrect { get; set; }
     }
 }

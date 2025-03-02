@@ -86,9 +86,22 @@ namespace QuizMate.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            if (appUser == null) return Unauthorized();
+
+            var quizToDelete = await _quizRepo.GetQuizByIdAsync(id);
+            if (quizToDelete == null) return NotFound("Quiz not found");
+
+            if (quizToDelete.AppUserId != appUser.Id && !User.IsInRole("Admin"))
+            {
+                return Forbid("You don't have permission to delete this quiz");
+            }
+
             var deletedQuiz = await _quizRepo.DeleteQuizAsync(id);
 
-            if (deletedQuiz == null) return NotFound("Quiz not found");
+            if (deletedQuiz == null) return StatusCode(500, "Quiz could not be deleted");
 
             return NoContent();
         }
