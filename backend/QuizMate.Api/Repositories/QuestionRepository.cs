@@ -25,9 +25,21 @@ namespace QuizMate.Api.Repositories
 
         public async Task<Question?> DeleteQuestionAsync(int id)
         {
-            var existingQuestion = await _context.Questions.FirstOrDefaultAsync(q => q.Id == id);
+            var existingQuestion = await _context.Questions
+                .Include(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (existingQuestion == null) return null;
+
+            // Check for ResultAnswers that reference this question
+            var resultAnswers = await _context.ResultAnswers
+                .Where(r => r.QuestionId == id)
+                .ToListAsync();
+
+            if (resultAnswers.Any())
+            {
+                _context.ResultAnswers.RemoveRange(resultAnswers);
+            }
 
             _context.Remove(existingQuestion);
             await _context.SaveChangesAsync();

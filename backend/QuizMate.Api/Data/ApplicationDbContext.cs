@@ -17,6 +17,7 @@ namespace QuizMate.Api.Data
         public DbSet<Question> Questions { get; set; }
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Result> Results { get; set; }
+        public DbSet<ResultAnswer> ResultAnswers { get; set; }
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -26,6 +27,11 @@ namespace QuizMate.Api.Data
                 .WithOne(q => q.AppUser)
                 .HasForeignKey(q => q.AppUserId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Quiz>()
+                .HasMany(u => u.Results)
+                .WithOne(q => q.Quiz)
+                .HasForeignKey(q => q.QuizId);
 
             builder.Entity<Quiz>()
                 .HasMany(u => u.Questions)
@@ -44,7 +50,25 @@ namespace QuizMate.Api.Data
                 .WithOne(q => q.AppUser)
                 .HasForeignKey(q => q.AppUserId)
                 .OnDelete(DeleteBehavior.NoAction);
-            
+
+            builder.Entity<ResultAnswer>()
+                .HasOne(r => r.Result)
+                .WithMany(r => r.ResultAnswers)
+                .HasForeignKey(r => r.ResultId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ResultAnswer>()
+                .HasOne(r => r.Question)
+                .WithMany()
+                .HasForeignKey(r => r.QuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<ResultAnswer>()
+                .HasOne(r => r.Answer)
+                .WithMany()
+                .HasForeignKey(r => r.AnswerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
             List<IdentityRole> roles = new List<IdentityRole>
             {
                 new IdentityRole

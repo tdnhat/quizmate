@@ -15,5 +15,6 @@ namespace QuizMate.Api.Models
 
         public AppUser AppUser { get; set; }
         public Quiz Quiz { get; set; }
+        public List<ResultAnswer> ResultAnswers { get; set; } = new List<ResultAnswer>();
     }
 }

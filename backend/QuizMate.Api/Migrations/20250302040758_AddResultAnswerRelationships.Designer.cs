@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250302040758_AddResultAnswerRelationships")]
+    partial class AddResultAnswerRelationships
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "7ab0d7ca-5f9e-45c9-91a9-ebaee418304e",
+                            Id = "fe2c71a2-8ee5-412f-a1d8-e222a50b4518",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f0c9be38-150a-4f12-b1ec-3da1b0978d3d",
+                            Id = "4aa468b8-2cbe-466e-8ce7-4f07afc1d951",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -354,9 +357,6 @@ namespace QuizMate.Api.Migrations
 
                     b.Property<int>("AnswerId")
                         .HasColumnType("int");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
 
                     b.Property<int>("QuestionId")
                         .HasColumnType("int");

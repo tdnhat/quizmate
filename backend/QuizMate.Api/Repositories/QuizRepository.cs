@@ -28,9 +28,21 @@ namespace QuizMate.Api.Repositories
 
         public async Task<Quiz?> DeleteQuizAsync(int id)
         {
-            var quizModel = await _context.Quizzes.FirstOrDefaultAsync(q => q.Id == id);
+            var quizModel = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .Include(q => q.Results)
+                    .ThenInclude(q => q.ResultAnswers)
+                .FirstOrDefaultAsync(q => q.Id == id);
 
             if (quizModel == null) return null;
+
+            // Manually handle delete Result & ResultAnswer tables
+            foreach (var result in quizModel.Results)
+            {
+                _context.ResultAnswers.RemoveRange(result.ResultAnswers);
+            }
+            _context.Results.RemoveRange(quizModel.Results);
 
             _context.Remove(quizModel);
             await _context.SaveChangesAsync();

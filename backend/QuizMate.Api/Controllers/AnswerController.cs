@@ -97,6 +97,11 @@ namespace QuizMate.Api.Controllers
         {
             if (!ModelState.IsValid) return BadRequest(ModelState);
 
+            var username = User.GetUsername();
+            var appUser = await _userManager.FindByNameAsync(username);
+
+            if (appUser == null) return Unauthorized();
+
             var deletedAnswer = await _answerRepo.DeleteAnswerAsync(id);
 
             if (deletedAnswer == null) return NotFound("Answer not found");
