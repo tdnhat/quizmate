@@ -190,7 +190,7 @@ const RegisterForm = () => {
                                     <FormControl>
                                         <input
                                             type="checkbox"
-                                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mt-1"
+                                            className="h-5 w-5 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 mt-1"
                                             checked={field.value}
                                             onChange={field.onChange}
                                             disabled={isLoading}
