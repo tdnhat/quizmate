@@ -5,7 +5,7 @@ import HeroSection from "@/components/landing/HeroSection";
 import PricingSection from "@/components/landing/PricingSection";
 import TestimonialsSection from "@/components/landing/TestimonialsSection";
 
-const Home = () => {
+const LandingPage = () => {
     return (
         <div className="landing-page">
             <HeroSection />
@@ -18,4 +18,4 @@ const Home = () => {
     );
 };
 
-export default Home;
+export default LandingPage;
