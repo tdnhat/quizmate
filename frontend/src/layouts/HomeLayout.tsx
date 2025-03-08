@@ -1,6 +1,6 @@
 // src/layouts/HomeLayout.tsx
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
-import { useAuth } from "@/hooks/useAuth";
+import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
     Home,
     BarChart2,

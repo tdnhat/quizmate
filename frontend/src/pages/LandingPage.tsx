@@ -1,9 +1,9 @@
-import Footer from "@/components/landing/Footer";
-import CTASection from "@/components/landing/CTASection";
-import FeaturesSection from "@/components/landing/FeaturesSection";
-import HeroSection from "@/components/landing/HeroSection";
-import PricingSection from "@/components/landing/PricingSection";
-import TestimonialsSection from "@/components/landing/TestimonialsSection";
+import Footer from "@/features/landing/components/FooterSection";
+import CTASection from "@/features/landing/components/CTASection";
+import FeaturesSection from "@/features/landing/components/FeaturesSection";
+import HeroSection from "@/features/landing/components/HeroSection";
+import PricingSection from "@/features/landing/components/PricingSection";
+import TestimonialsSection from "@/features/landing/components/TestimonialsSection";
 
 const LandingPage = () => {
     return (

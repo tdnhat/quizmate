@@ -1,5 +1,5 @@
-import CategoriesSection from "@/components/discover/categories/CategoriesSection"
-import RecommendedSection from "@/components/discover/recommended/RecommendedSection"
+import CategoriesSection from "@/features/discover/components/CategoriesSection"
+import RecommendedSection from "@/features/discover/components/RecommendedSection"
 
 const DiscoverPage = () => {
   return (
