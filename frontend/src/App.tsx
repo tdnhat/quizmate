@@ -6,12 +6,12 @@ import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import NotFound from "./pages/NotFound";
 import { ProtectedRoute } from "./components/ProtectedRoute";
-import HomePage from "./pages/HomePage";
+import HomePage from "./pages/home/HomePage";
 import HomeLayout from "./layouts/HomeLayout";
-import DiscoverPage from "./pages/DiscoverPage";
-import LibraryPage from "./pages/LibraryPage";
-import ReportsPage from "./pages/ReportsPage";
-import TeamsPage from "./pages/TeamsPage";
+import DiscoverPage from "./pages/home/DiscoverPage";
+import LibraryPage from "./pages/home/LibraryPage";
+import ReportsPage from "./pages/home/ReportsPage";
+import TeamsPage from "./pages/home/TeamsPage";
 
 function App() {
     return (

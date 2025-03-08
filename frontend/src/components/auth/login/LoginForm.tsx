@@ -16,7 +16,7 @@ import { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { LoadingButton } from "@/components/common/LoadingButton";
-import { FormFooter } from "@/components/common/FormFooter";
+import { FormFooter } from "@/components/layout/FormFooter";
 
 const LoginFormSchema = z.object({
     username: z.string().min(3, "Username must be at least 3 characters"),

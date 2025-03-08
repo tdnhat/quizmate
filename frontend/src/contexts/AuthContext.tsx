@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         const checkAuthStatus = async () => {
             console.log("🔍 Checking authentication status...");
             try {
-                const token = localStorage.getItem("token");
+                const token = getLocalStorageItem("token");
                 console.log("Token exists:", !!token);
 
                 if (!token) {

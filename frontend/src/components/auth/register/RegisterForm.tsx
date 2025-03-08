@@ -16,7 +16,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import { PasswordInput } from "@/components/common/PasswordInput";
 import { FormError } from "@/components/common/FormError";
-import { FormFooter } from "@/components/common/FormFooter";
+import { FormFooter } from "@/components/layout/FormFooter";
 import { LoadingButton } from "@/components/common/LoadingButton";
 
 const RegisterFormSchema = z
