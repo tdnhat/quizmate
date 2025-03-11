@@ -1,9 +1,9 @@
 import NavbarProfile from "./NavbarProfile";
 import { BellIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import NavbarCreate from "./NavbarCreate";
 import NavbarSearch from "./NavbarSearch";
 import NavbarLogo from "./NavbarLogo";
+import { NavbarCreate } from "./NavbarCreate";
 
 const Navbar = () => {
     return (

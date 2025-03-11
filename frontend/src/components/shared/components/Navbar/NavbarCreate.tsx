@@ -11,10 +11,10 @@ import {
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { CreateQuizForm } from "./CreateQuizForm";
 import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
+import { QuizBasicForm } from "@/features/quizzes/components/quiz-form/QuizBasicForm";
 
-const NavbarCreate = () => {
+export const NavbarCreate = () => {
     const { categories } = useCategories();
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
@@ -29,7 +29,9 @@ const NavbarCreate = () => {
             setOpen(false);
 
             // Redirect to the full quiz creation page with pre-filled values
-            navigate("/quizzes/create", { state: { initialValues: values } });
+            navigate("/quizzes/create", {
+                state: { initialValues: values, isFromModal: true },
+            });
         } catch (error) {
             console.error("Login failed:", error);
         } finally {
@@ -55,14 +57,13 @@ const NavbarCreate = () => {
                     </DialogDescription>
                 </DialogHeader>
 
-                <CreateQuizForm
+                <QuizBasicForm
                     categories={categories}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
+                    submitLabel="Create Quiz"
                 />
             </DialogContent>
         </Dialog>
     );
 };
-
-export default NavbarCreate;

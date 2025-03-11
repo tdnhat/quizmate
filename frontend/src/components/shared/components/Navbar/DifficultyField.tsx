@@ -1,7 +1,7 @@
 import { Control } from "react-hook-form";
-import { CreateQuizFormValues } from "./NavbarCreate";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
 
 interface DifficultyFieldProps {
     control: Control<CreateQuizFormValues>;

@@ -5,7 +5,7 @@ import { TitleField } from "./TitleField";
 import { DescriptionField } from "./DescriptionField";
 import CategoryField from "./CategoryField";
 import ThumbnailField from "./ThumbnailField";
-import TimeField from "../TimeField";
+import TimeField from "./TimeField";
 import DifficultyField from "./DifficultyField";
 import { TagsField } from "./TagsField";
 import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
