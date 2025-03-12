@@ -1,8 +1,12 @@
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import {
+    QuestionFormValues,
+    QuizFormValues,
+} from "@/features/quizzes/schemas/quizFormSchema";
 import { MultiStepQuizForm } from "@/features/quizzes/components/quiz-form/MultiStepQuizForm";
+import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
 
 const CreateQuizPage = () => {
     const { categories } = useCategories();
@@ -10,16 +14,11 @@ const CreateQuizPage = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
-    // Get state from navigation
-    const stateFromModal = location.state?.isFromModal
-        ? {
-              initialValues: location.state?.initialValues,
-              isFromModal: true,
-          }
-        : null;
-
-    // Use state with local state to keep it and clear it when needed
-    const [formState, setFormState] = useState(stateFromModal);
+    // Get state from navigation and store it
+    const initialState = {
+        initialValues: location.state?.initialValues,
+        isFromModal: !!location.state?.isFromModal,
+    };
 
     // Effect to clear navigation state after reading it
     useEffect(() => {
@@ -30,10 +29,19 @@ const CreateQuizPage = () => {
         }
     }, [location, navigate]);
 
-    const handleSubmit = async (values: QuizFormValues) => {
+    const handleSubmit = async (
+        values: QuizFormValues,
+        questions: QuestionFormValues[]
+    ) => {
         try {
             setIsLoading(true);
-            console.log("Creating quiz with:", values);
+
+            const formValues = {
+                ...values,
+                questions: questions,
+            };
+
+            console.log("Form values:", formValues);
 
             // API call would go here
             await new Promise((resolve) => setTimeout(resolve, 1000));
@@ -51,11 +59,13 @@ const CreateQuizPage = () => {
         <div className="container max-w-3xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
-                <MultiStepQuizForm
-                    categories={categories}
-                    onSubmit={handleSubmit}
-                    isLoading={isLoading}
-                />
+                <QuizFormProvider initialValues={initialState.initialValues}>
+                    <MultiStepQuizForm
+                        categories={categories}
+                        onSubmit={handleSubmit}
+                        isLoading={isLoading}
+                    />
+                </QuizFormProvider>
             </div>
         </div>
     );
