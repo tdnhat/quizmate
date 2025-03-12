@@ -4,16 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-    CreateQuizFormSchema,
-    CreateQuizFormValues,
-} from "../../schemas/CreateQuizFormSchema";
 import LoadingIndicator from "../LoadingIndicator";
 import { QuizBasicDetails } from "@/features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
+import { quizFormSchema, QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 
 interface CreateQuizFormProps {
     categories: Category[];
-    onSubmit: (values: CreateQuizFormValues) => Promise<void>;
+    onSubmit: (values: QuizFormValues) => Promise<void>;
     isLoading: boolean;
 }
 
@@ -22,8 +19,8 @@ export const CreateQuizForm = ({
     onSubmit,
     isLoading,
 }: CreateQuizFormProps) => {
-    const form = useForm<CreateQuizFormValues>({
-        resolver: zodResolver(CreateQuizFormSchema),
+    const form = useForm<QuizFormValues>({
+        resolver: zodResolver(quizFormSchema),
         defaultValues: {
             title: "",
             description: "",
@@ -35,7 +32,7 @@ export const CreateQuizForm = ({
         },
     });
 
-    const handleFormSubmit = async (values: CreateQuizFormValues) => {
+    const handleFormSubmit = async (values: QuizFormValues) => {
         await onSubmit(values);
         form.reset();
     };

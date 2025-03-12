@@ -1,6 +1,6 @@
 import { Quiz } from "@/types/quiz";
-import QuizCard from "../../quizzes/components/QuizCard";
-import QuizSkeleton from "../../quizzes/components/QuizSkeleton";
+import QuizCard from "../../quizzes/components/quiz-card/QuizCard";
+import QuizSkeleton from "../../quizzes/components/quiz-card/QuizSkeleton";
 
 interface QuizGridProps {
     quizzes: Quiz[];

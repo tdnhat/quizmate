@@ -6,11 +6,11 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { Control } from "react-hook-form";
-import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface DescriptionFieldProps {
-    control: Control<CreateQuizFormValues>;
+    control: Control<QuizFormValues>;
 }
 
 export const DescriptionField = ({ control }: DescriptionFieldProps) => {
@@ -20,10 +20,13 @@ export const DescriptionField = ({ control }: DescriptionFieldProps) => {
             name="description"
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Description</FormLabel>
+                    <FormLabel>
+                        Description{" "}
+                        <span className="text-gray-500">(Optional)</span>
+                    </FormLabel>
                     <FormControl>
                         <Textarea
-                            placeholder="Give a short description of your quiz (optional)..."
+                            placeholder="Give a short description of your quiz..."
                             className="resize-none"
                             {...field}
                         />

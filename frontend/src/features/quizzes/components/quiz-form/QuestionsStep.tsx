@@ -117,7 +117,7 @@ export const QuestionsStep = () => {
                             variant="outline"
                             className="flex items-center"
                         >
-                            <ChevronLeftIcon className="mr-2 h-4 w-4" />
+                            <ChevronLeftIcon className="h-4 w-4" />
                             Back to Details
                         </Button>
 
@@ -128,7 +128,7 @@ export const QuestionsStep = () => {
                             disabled={questions.length === 0}
                         >
                             Review
-                            <ChevronRightIcon className="ml-2 h-4 w-4" />
+                            <ChevronRightIcon className="h-4 w-4" />
                         </Button>
                     </div>
                 </>

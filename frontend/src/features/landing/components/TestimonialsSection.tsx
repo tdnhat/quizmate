@@ -1,5 +1,5 @@
 import { testimonials } from "@/types/testimonials";
-import EmblaCarousel from "../../../components/shared/components/EmblaCarousel";
+import EmblaCarousel from "../../../components/shared/components/EmblaCarousel/EmblaCarousel";
 import { EmblaOptionsType } from "embla-carousel";
 
 const OPTIONS: EmblaOptionsType = {

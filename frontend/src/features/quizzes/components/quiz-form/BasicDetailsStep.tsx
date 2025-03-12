@@ -6,14 +6,14 @@ import { Button } from "@/components/ui/button";
 import { useQuizForm } from "../../hooks/useQuizForm";
 import { quizFormSchema, QuizFormValues } from "../../schemas/quizFormSchema";
 import { QuizBasicDetails } from "./basic-details/QuizBasicDetails";
-
+import { ChevronRightIcon } from "lucide-react";
 interface BasicDetailsStepProps {
     categories: Category[];
 }
 
 export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
     const { formValues, setFormValues, goToNextStep } = useQuizForm();
-    
+
     const form = useForm<QuizFormValues>({
         resolver: zodResolver(quizFormSchema),
         defaultValues: {
@@ -24,7 +24,7 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
             timeMinutes: formValues.timeMinutes || 5,
             difficulty: formValues.difficulty || "Beginner",
             tags: formValues.tags || [],
-        }
+        },
     });
 
     const handleNextStep = (values: QuizFormValues) => {
@@ -34,7 +34,10 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
 
     return (
         <Form {...form}>
-            <form onSubmit={form.handleSubmit(handleNextStep)} className="space-y-6">
+            <form
+                onSubmit={form.handleSubmit(handleNextStep)}
+                className="space-y-6"
+            >
                 {form.formState.errors.root && (
                     <div className="bg-red-50 text-red-500 px-3 py-2 rounded-md text-sm">
                         {form.formState.errors.root.message}
@@ -46,13 +49,14 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
                     categories={categories}
                     isLoading={false}
                 />
-                
+
                 <div className="flex justify-end">
-                    <Button 
+                    <Button
                         type="submit"
                         className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors"
                     >
                         Next
+                        <ChevronRightIcon className="h-4 w-4" />
                     </Button>
                 </div>
             </form>

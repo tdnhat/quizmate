@@ -6,11 +6,11 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { Control } from "react-hook-form";
-import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface TitleFieldProps {
-    control: Control<CreateQuizFormValues>;
+    control: Control<QuizFormValues>;
     isLoading: boolean;
 }
 
@@ -24,7 +24,7 @@ export const TitleField = ({ control, isLoading }: TitleFieldProps) => {
                     <FormLabel>Title</FormLabel>
                     <FormControl>
                         <Input
-                            placeholder="Enter a catchy quiz title... (e.g., JavaScript Basics)"
+                            placeholder="Enter quiz title..."
                             type="text"
                             disabled={isLoading}
                             autoComplete="title"

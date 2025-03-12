@@ -22,57 +22,124 @@ export const FormStepIndicator = () => {
         const currentIndex = steps.findIndex((step) => step.id === currentStep);
         return (
             stepId === currentStep || // Allow navigating to the current step
-            steps[index - 1]?.isCompleted || // Allow navigating to the previous step if it's completed
-            index <= currentIndex // Allow navigating to the next step
+            steps[index - 1]?.isCompleted || // Allow navigating to the next step if previous is completed
+            index <= currentIndex // Allow navigating to previous steps
         );
     };
 
-    return (
-        <nav aria-label="Progress">
-            <ol className="flex items-center justify-between w-full">
-                {steps.map((step, index) => (
-                    <li key={step.id} className="relative flex items-center">
-                        <div
-                            className={`flex h-8 w-8 items-center justify-center rounded-full border-2 
-                                ${
-                                    currentStep === step.id
-                                        ? "border-cyan-600 bg-cyan-50"
-                                        : step.isCompleted
-                                            ? "border-cyan-600 bg-cyan-600"
-                                            : "border-gray-300"
-                                }
-                                ${canNavigateToStep(step.id, index) ? "cursor-pointer hover:bg-gray-50" : "cursor-not-allowed"}`}
-                            onClick={() =>
-                                canNavigateToStep(step.id, index) &&
-                                goToStep(step.id as any)
-                            }
-                        >
-                            {step.isCompleted ? (
-                                <CheckIcon className="h-4 w-4 text-white" />
-                            ) : (
-                                <span
-                                    className={`text-sm font-medium ${currentStep === step.id ? "text-cyan-600" : "text-gray-500"}`}
-                                >
-                                    {index + 1}
-                                </span>
-                            )}
-                        </div>
-                        <span className="ml-2 text-sm font-medium text-gray-900">
-                            {step.label}
-                        </span>
+    // Get progress status for the connecting line between steps
+    const getLineStatus = (index: number) => {
+        if (index >= steps.length - 1) return ""; // No line after last step
 
-                        {index < steps.length - 1 && (
-                            <div
-                                className="absolute top-4 right-0 hidden h-px w-full md:block bg-gray-200"
-                                style={{
-                                    left: "calc(50% + 1rem)",
-                                    right: "calc(-50% + 1rem)",
-                                }}
-                            />
-                        )}
-                    </li>
-                ))}
-            </ol>
+        const currentIndex = steps.findIndex((step) => step.id === currentStep);
+
+        if (index < currentIndex - 1) return "completed"; // Steps before current - 1
+        if (index === currentIndex - 1) return "current"; // Step right before current
+        return "upcoming"; // Steps after current
+    };
+
+    return (
+        <nav aria-label="Progress" className="px-2">
+            {/* Use a container div to set the overall layout */}
+            <div className="relative w-full">
+                {/* The actual steps list with proper spacing */}
+                <ol className="flex items-center w-full">
+                    {steps.map((step, index) => (
+                        <li
+                            key={step.id}
+                            className={`
+                                flex items-center mr-4
+                                ${index === 0 ? "" : "flex-1"}
+                            `}
+                        >
+                            {/* Connecting Line (before each step except the first) */}
+                            {index > 0 && (
+                                <div className="flex-grow mr-4">
+                                    <div className="h-0.5 w-full relative">
+                                        {/* Background line (gray) */}
+                                        <div className="absolute inset-0 bg-gray-200 rounded-full"></div>
+
+                                        {/* Progress line (colored) */}
+                                        <div
+                                            className={`
+                                                absolute inset-0 rounded-full transition-all duration-500
+                                                ${
+                                                    getLineStatus(index - 1) === "completed"
+                                                        ? "bg-cyan-600 w-full"
+                                                        : getLineStatus(index - 1) === "current"
+                                                            ? "bg-cyan-500 w-full"
+                                                            : "bg-transparent w-0"
+                                                }
+                                            `}
+                                        ></div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Step Circle and Label */}
+                            <div className="flex items-center">
+                                {/* Step Circle */}
+                                <div
+                                    className={`
+                                        flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-full 
+                                        border-2 transition-all duration-200 z-10
+                                        ${
+                                            currentStep === step.id
+                                                ? "border-cyan-600 bg-cyan-50 shadow-md shadow-cyan-100"
+                                                : step.isCompleted
+                                                    ? "border-cyan-600 bg-cyan-600"
+                                                    : "border-gray-300 bg-white"
+                                        }
+                                        ${
+                                            canNavigateToStep(step.id, index)
+                                                ? "cursor-pointer hover:shadow-md"
+                                                : "cursor-not-allowed opacity-60"
+                                        }
+                                    `}
+                                    onClick={() =>
+                                        canNavigateToStep(step.id, index) &&
+                                        goToStep(step.id as any)
+                                    }
+                                >
+                                    {step.isCompleted ? (
+                                        <CheckIcon
+                                            className={`h-5 w-5 ${currentStep === step.id ? "text-cyan-600" : "text-white"}`}
+                                        />
+                                    ) : (
+                                        <span
+                                            className={`text-sm font-medium 
+                                                ${
+                                                    currentStep === step.id
+                                                        ? "text-cyan-600"
+                                                        : "text-gray-500"
+                                                }
+                                            `}
+                                        >
+                                            {index + 1}
+                                        </span>
+                                    )}
+                                </div>
+
+                                {/* Step Label */}
+                                <span
+                                    className={`
+                                    ml-3 text-sm font-medium transition-colors
+                                    ${
+                                        currentStep === step.id
+                                            ? "text-cyan-600 font-semibold"
+                                            : step.isCompleted
+                                                ? "text-gray-900"
+                                                : "text-gray-500"
+                                    }
+                                `}
+                                >
+                                    {step.label}
+                                </span>
+                            </div>
+                        </li>
+                    ))}
+                </ol>
+            </div>
         </nav>
     );
 };

@@ -10,9 +10,9 @@ import {
 
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
+import { useLocation, useNavigate } from "react-router-dom";
 import { CreateQuizForm } from "./CreateQuizForm";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 
 export const NavbarCreate = () => {
     const { categories } = useCategories();
@@ -20,7 +20,12 @@ export const NavbarCreate = () => {
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
 
-    const handleSubmit = async (values: CreateQuizFormValues) => {
+    const location = useLocation();
+
+    const isCreatingQuiz = location.pathname.includes("/quizzes/create");
+
+
+    const handleSubmit = async (values: QuizFormValues) => {
         try {
             setIsLoading(true);
             console.log(values);
@@ -44,6 +49,7 @@ export const NavbarCreate = () => {
             <DialogTrigger asChild>
                 <Button
                     size="sm"
+                    disabled={isLoading || isCreatingQuiz}
                     className="bg-cyan-500 hover:cursor-pointer hover:bg-cyan-600 transition-colors text-white"
                 >
                     Create

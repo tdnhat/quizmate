@@ -7,17 +7,20 @@ import ThumbnailField from "./ThumbnailField";
 import TimeField from "./TimeField";
 import DifficultyField from "./DifficultyField";
 import { TagsField } from "./TagsField";
-import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 import { TitleField } from "./TitleField";
-
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 
 interface QuizBasicDetailsProps {
-    form: UseFormReturn<CreateQuizFormValues>;
+    form: UseFormReturn<QuizFormValues>;
     categories: Category[];
     isLoading: boolean;
 }
 
-export const QuizBasicDetails = ({ form, categories, isLoading }: QuizBasicDetailsProps) => {
+export const QuizBasicDetails = ({
+    form,
+    categories,
+    isLoading,
+}: QuizBasicDetailsProps) => {
     const [currentTag, setCurrentTag] = useState("");
 
     const handleAddTag = (tag: string) => {
@@ -44,13 +47,19 @@ export const QuizBasicDetails = ({ form, categories, isLoading }: QuizBasicDetai
         <>
             <TitleField control={form.control} isLoading={isLoading} />
             <DescriptionField control={form.control} />
-            <CategoryField control={form.control} categories={categories} isLoading={isLoading} />
+            <div className="flex items-center gap-4 justify-start">
+                <CategoryField
+                    control={form.control}
+                    categories={categories}
+                    isLoading={isLoading}
+                />
+                <TimeField control={form.control} isLoading={isLoading} />
+            </div>
             <ThumbnailField control={form.control} isLoading={isLoading} />
-            <TimeField control={form.control} isLoading={isLoading} />
             <DifficultyField control={form.control} isLoading={isLoading} />
-            <TagsField 
-                control={form.control} 
-                isLoading={isLoading} 
+            <TagsField
+                control={form.control}
+                isLoading={isLoading}
                 currentTag={currentTag}
                 setCurrentTag={setCurrentTag}
                 handleAddTag={handleAddTag}
