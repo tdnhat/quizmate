@@ -8,10 +8,8 @@ import {
     CreateQuizFormSchema,
     CreateQuizFormValues,
 } from "../../schemas/CreateQuizFormSchema";
-import {
-    QuizBasicDetails,
-} from "../../../../features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
 import LoadingIndicator from "../LoadingIndicator";
+import { QuizBasicDetails } from "@/features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
 
 interface CreateQuizFormProps {
     categories: Category[];

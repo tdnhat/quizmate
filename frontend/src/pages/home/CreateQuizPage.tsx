@@ -2,7 +2,7 @@ import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
-import { QuizForm } from "@/features/quizzes/components/quiz-form/QuizForm";
+import { MultiStepQuizForm } from "@/features/quizzes/components/quiz-form/MultiStepQuizForm";
 
 const CreateQuizPage = () => {
     const { categories } = useCategories();
@@ -51,12 +51,10 @@ const CreateQuizPage = () => {
         <div className="container max-w-3xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
-                <QuizForm
+                <MultiStepQuizForm
                     categories={categories}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    initialValues={formState?.initialValues}
-                    submitLabel="Next"
                 />
             </div>
         </div>
