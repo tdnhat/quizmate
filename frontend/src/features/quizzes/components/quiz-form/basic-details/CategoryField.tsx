@@ -1,4 +1,3 @@
-import { CreateQuizFormValues } from "./NavbarCreate";
 import { Control } from "react-hook-form";
 import { Category } from "@/types/category";
 import {
@@ -9,6 +8,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
+import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface CategoryField {
     control: Control<CreateQuizFormValues>;

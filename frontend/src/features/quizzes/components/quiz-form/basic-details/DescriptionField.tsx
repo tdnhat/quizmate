@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { Control } from "react-hook-form";
-import { CreateQuizFormValues } from "./NavbarCreate";
+import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface DescriptionFieldProps {
     control: Control<CreateQuizFormValues>;

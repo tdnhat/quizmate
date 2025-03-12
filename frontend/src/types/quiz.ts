@@ -1,16 +1,40 @@
+export type DifficultyLevel = "Beginner" | "Intermediate" | "Advanced";
+
+export interface QuizAuthor {
+    id: string;
+    name: string;
+    avatar: string;
+}
+
+export interface Answer {
+    id: string;
+    text: string;
+    isCorrect: boolean;
+    explanation?: string;
+}
+
+export interface Question {
+    id: string;
+    quizId: string;
+    text: string;
+    type: string;
+    points: number;
+    answers: Answer[];
+    explanation?: string;
+    image?: string; // Optional image URL for the question
+}
+
 export interface Quiz {
     id: string;
     title: string;
     description: string;
-    author: {
-        name: string;
-        avatar: string;
-    };
+    author: QuizAuthor;
     thumbnail: string;
     timeMinutes: number;
     questionCount: number;
-    difficulty: "Beginner" | "Intermediate" | "Advanced";
+    difficulty: DifficultyLevel;
     rating: number;
     tags: string[];
     completions: number;
+    questions?: Question[];
 }

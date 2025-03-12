@@ -10,7 +10,7 @@ import { Control } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
 import { Plus, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
+import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface TagsFieldProps {
     control: Control<CreateQuizFormValues>;

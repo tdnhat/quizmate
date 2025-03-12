@@ -8,8 +8,8 @@ import {
     CreateQuizFormSchema,
     CreateQuizFormValues,
 } from "../../schemas/CreateQuizFormSchema";
-import { FormFields } from "./FormFields";
 import LoadingIndicator from "../LoadingIndicator";
+import { QuizBasicDetails } from "@/features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
 
 interface CreateQuizFormProps {
     categories: Category[];
@@ -53,7 +53,7 @@ export const CreateQuizForm = ({
                         </div>
                     )}
 
-                    <FormFields
+                    <QuizBasicDetails
                         form={form}
                         categories={categories}
                         isLoading={isLoading}

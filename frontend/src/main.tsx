@@ -10,7 +10,7 @@ createRoot(document.getElementById("root")!).render(
         <AuthProvider>
             <CategoryProvider>
                 <QuizProvider>
-                    <App />
+                        <App />
                 </QuizProvider>
             </CategoryProvider>
         </AuthProvider>
