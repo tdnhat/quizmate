@@ -7,44 +7,65 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
-import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 
-interface CategoryField {
-    control: Control<CreateQuizFormValues>;
+interface CategoryFieldProps {
+    control: Control<QuizFormValues>;
     categories: Category[];
     isLoading: boolean;
 }
 
-const CategoryField = ({ control, categories, isLoading }: CategoryField) => {
+const CategoryField = ({
+    control,
+    categories,
+    isLoading,
+}: CategoryFieldProps) => {
     return (
         <FormField
             control={control}
             name="category"
             render={({ field }) => (
                 <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <FormControl>
-                        <select
-                            className={cn(
-                                "flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
-                            )}
-                            disabled={isLoading}
-                            value={field.value}
-                            onChange={(e) => field.onChange(e.target.value)}
-                        >
-                            <option value="">Select category</option>
-                            {Array.isArray(categories) &&
+                    <FormLabel className="mb-2">Category</FormLabel>
+                    <Select
+                        disabled={isLoading}
+                        onValueChange={field.onChange}
+                        value={field.value}
+                        defaultValue={field.value}
+                    >
+                        <FormControl>
+                            <SelectTrigger
+                                className="w-48"
+                            >
+                                <SelectValue placeholder="Select a category" />
+                            </SelectTrigger>
+                        </FormControl>{" "}
+                        <SelectContent>
+                            {!Array.isArray(categories) ||
+                            categories.length === 0 ? (
+                                <SelectItem value="loading" disabled>
+                                    No categories available
+                                </SelectItem>
+                            ) : (
                                 categories.map((category) => (
-                                    <option
+                                    <SelectItem
                                         key={category.id}
                                         value={category.id}
+                                        className="flex items-center justify-between"
                                     >
-                                        {category.name}
-                                    </option>
-                                ))}
-                        </select>
-                    </FormControl>
+                                        <span>{category.name}</span>
+                                    </SelectItem>
+                                ))
+                            )}
+                        </SelectContent>
+                    </Select>
                     <FormMessage />
                 </FormItem>
             )}

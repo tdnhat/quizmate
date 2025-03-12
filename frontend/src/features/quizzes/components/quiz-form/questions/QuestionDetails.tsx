@@ -1,9 +1,9 @@
-import { 
-    FormControl, 
-    FormField, 
-    FormItem, 
-    FormLabel, 
-    FormMessage 
+import {
+    FormControl,
+    FormField,
+    FormItem,
+    FormLabel,
+    FormMessage,
 } from "@/components/ui/form";
 import {
     Select,
@@ -25,7 +25,7 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
     return (
         <div className="space-y-4 border rounded-md p-4 bg-gray-50">
             <h3 className="font-medium">Question Details</h3>
-            
+
             <FormField
                 control={form.control}
                 name="text"
@@ -33,17 +33,17 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                     <FormItem>
                         <FormLabel>Question Text</FormLabel>
                         <FormControl>
-                            <Textarea 
-                                placeholder="Enter your question here..." 
-                                className="min-h-[100px]"
-                                {...field} 
+                            <Textarea
+                                placeholder="Enter your question here..."
+                                className="min-h-[100px] bg-white"
+                                {...field}
                             />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )}
             />
-            
+
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
@@ -51,25 +51,29 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Question Type</FormLabel>
-                            <Select 
-                                onValueChange={field.onChange} 
+                            <Select
+                                onValueChange={field.onChange}
                                 defaultValue={field.value}
                             >
                                 <FormControl>
-                                    <SelectTrigger>
+                                    <SelectTrigger className="bg-white w-48">
                                         <SelectValue placeholder="Select question type" />
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="multiple-choice">Multiple Choice</SelectItem>
-                                    <SelectItem value="true-false">True/False</SelectItem>
+                                    <SelectItem value="multiple-choice">
+                                        Multiple Choice
+                                    </SelectItem>
+                                    <SelectItem value="true-false">
+                                        True/False
+                                    </SelectItem>
                                 </SelectContent>
                             </Select>
                             <FormMessage />
                         </FormItem>
                     )}
                 />
-                
+
                 <FormField
                     control={form.control}
                     name="points"
@@ -79,9 +83,14 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                             <FormControl>
                                 <Input
                                     type="number"
+                                    className="w-24 bg-white"
                                     min={1}
                                     {...field}
-                                    onChange={(e) => field.onChange(parseInt(e.target.value) || 1)}
+                                    onChange={(e) =>
+                                        field.onChange(
+                                            parseInt(e.target.value) || 1
+                                        )
+                                    }
                                 />
                             </FormControl>
                             <FormMessage />
@@ -89,7 +98,7 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                     )}
                 />
             </div>
-            
+
             <FormField
                 control={form.control}
                 name="image"
@@ -97,13 +106,17 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                     <FormItem>
                         <FormLabel>Image URL (Optional)</FormLabel>
                         <FormControl>
-                            <Input placeholder="https://example.com/image.jpg" {...field} />
+                            <Input
+                                className="bg-white"
+                                placeholder="https://example.com/image.jpg"
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>
                 )}
             />
-            
+
             <FormField
                 control={form.control}
                 name="explanation"
@@ -111,7 +124,11 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                     <FormItem>
                         <FormLabel>Explanation (Optional)</FormLabel>
                         <FormControl>
-                            <Textarea placeholder="Explain the correct answer..." {...field} />
+                            <Textarea
+                                className="bg-white"
+                                placeholder="Explain the correct answer..."
+                                {...field}
+                            />
                         </FormControl>
                         <FormMessage />
                     </FormItem>

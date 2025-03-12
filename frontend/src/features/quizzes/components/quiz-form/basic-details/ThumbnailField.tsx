@@ -1,10 +1,10 @@
 import { Control } from "react-hook-form";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 
 interface ThumbnailFieldProps {
-    control: Control<CreateQuizFormValues>;
+    control: Control<QuizFormValues>;
     isLoading: boolean;
 }
 const ThumbnailField = ({ control, isLoading }: ThumbnailFieldProps) => {

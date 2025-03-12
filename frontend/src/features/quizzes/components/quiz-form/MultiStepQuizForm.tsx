@@ -25,12 +25,11 @@ export const MultiStepQuizForm = ({
     onSubmit,
     isLoading,
 }: MultiStepQuizFormProps) => {
-    const { currentStep, formValues, questions, goToStep } =
-        useQuizForm();
+    const { currentStep, formValues, questions, goToStep } = useQuizForm();
 
-        const location = useLocation();
+    const location = useLocation();
 
-        const isFromModal = !!location.state?.isFromModal;
+    const isFromModal = !!location.state?.isFromModal;
 
     useEffect(() => {
         if (isFromModal) {

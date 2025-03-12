@@ -4,11 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Button } from "@/components/ui/button";
 import { Trash2 } from "lucide-react";
-import {
-    FormControl,
-    FormField,
-    FormItem,
-} from "@/components/ui/form";
+import { FormControl, FormField, FormItem } from "@/components/ui/form";
 
 interface AnswerItemProps {
     form: UseFormReturn<QuestionFormValues>;
@@ -18,9 +14,15 @@ interface AnswerItemProps {
     onDelete: () => void;
 }
 
-export const AnswerItem = ({ form, index, disabled = false, canDelete = true, onDelete }: AnswerItemProps) => {
+export const AnswerItem = ({
+    form,
+    index,
+    disabled = false,
+    canDelete = true,
+    onDelete,
+}: AnswerItemProps) => {
     return (
-        <div className="flex items-start gap-3 bg-white p-3 rounded-md border">
+        <div className="flex items-start gap-3 p-3">
             <FormField
                 control={form.control}
                 name={`answers.${index}.isCorrect`}
@@ -28,6 +30,7 @@ export const AnswerItem = ({ form, index, disabled = false, canDelete = true, on
                     <FormItem className="flex items-center space-x-0 space-y-0 mt-2">
                         <FormControl>
                             <Checkbox
+                                className="bg-white"
                                 checked={field.value}
                                 onCheckedChange={field.onChange}
                             />
@@ -35,7 +38,7 @@ export const AnswerItem = ({ form, index, disabled = false, canDelete = true, on
                     </FormItem>
                 )}
             />
-            
+
             <div className="flex-1">
                 <FormField
                     control={form.control}
@@ -43,32 +46,34 @@ export const AnswerItem = ({ form, index, disabled = false, canDelete = true, on
                     render={({ field }) => (
                         <FormItem>
                             <FormControl>
-                                <Input 
-                                    placeholder="Enter answer text" 
-                                    {...field} 
+                                <Input
+                                    className="bg-white"
+                                    placeholder="Enter answer text"
+                                    {...field}
                                     disabled={disabled}
                                 />
                             </FormControl>
                         </FormItem>
                     )}
                 />
-                
+
                 <FormField
                     control={form.control}
                     name={`answers.${index}.explanation`}
                     render={({ field }) => (
                         <FormItem className="mt-2">
                             <FormControl>
-                                <Input 
-                                    placeholder="Explanation (optional)" 
-                                    {...field} 
+                                <Input
+                                    className="bg-white"
+                                    placeholder="Explanation (optional)"
+                                    {...field}
                                 />
                             </FormControl>
                         </FormItem>
                     )}
                 />
             </div>
-            
+
             {canDelete && (
                 <Button
                     type="button"
