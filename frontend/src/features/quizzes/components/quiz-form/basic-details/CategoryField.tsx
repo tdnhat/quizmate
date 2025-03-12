@@ -8,7 +8,7 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { cn } from "@/lib/utils";
-import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
+import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
 
 interface CategoryField {
     control: Control<CreateQuizFormValues>;

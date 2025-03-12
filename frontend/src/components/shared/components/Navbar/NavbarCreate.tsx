@@ -12,7 +12,7 @@ import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
-import { QuizBasicForm } from "@/features/quizzes/components/quiz-form/QuizBasicForm";
+import { CreateQuizForm } from "./CreateQuizForm";
 
 export const NavbarCreate = () => {
     const { categories } = useCategories();
@@ -57,11 +57,10 @@ export const NavbarCreate = () => {
                     </DialogDescription>
                 </DialogHeader>
 
-                <QuizBasicForm
+                <CreateQuizForm
                     categories={categories}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    submitLabel="Create Quiz"
                 />
             </DialogContent>
         </Dialog>

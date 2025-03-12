@@ -8,7 +8,9 @@ import {
     CreateQuizFormSchema,
     CreateQuizFormValues,
 } from "../../schemas/CreateQuizFormSchema";
-import { FormFields } from "./FormFields";
+import {
+    QuizBasicDetails,
+} from "../../../../features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
 import LoadingIndicator from "../LoadingIndicator";
 
 interface CreateQuizFormProps {
@@ -53,7 +55,7 @@ export const CreateQuizForm = ({
                         </div>
                     )}
 
-                    <FormFields
+                    <QuizBasicDetails
                         form={form}
                         categories={categories}
                         isLoading={isLoading}

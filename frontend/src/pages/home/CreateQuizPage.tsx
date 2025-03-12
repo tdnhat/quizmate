@@ -1,17 +1,36 @@
 import { useCategories } from "@/features/categories/hooks/useCategories";
-import { CreateQuizFormValues } from "@/components/shared/schemas/CreateQuizFormSchema";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { QuizBasicForm } from "@/features/quizzes/components/quiz-form/QuizBasicForm";
+import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import { QuizForm } from "@/features/quizzes/components/quiz-form/QuizForm";
 
 const CreateQuizPage = () => {
     const { categories } = useCategories();
     const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
-    const initialValues = location.state?.initialValues;
 
-    const handleSubmit = async (values: CreateQuizFormValues) => {
+    // Get state from navigation
+    const stateFromModal = location.state?.isFromModal
+        ? {
+              initialValues: location.state?.initialValues,
+              isFromModal: true,
+          }
+        : null;
+
+    // Use state with local state to keep it and clear it when needed
+    const [formState, setFormState] = useState(stateFromModal);
+
+    // Effect to clear navigation state after reading it
+    useEffect(() => {
+        // This prevents the state persisting in the browser history
+        if (location.state?.isFromModal) {
+            // Replace current history entry to remove state
+            navigate(location.pathname, { replace: true });
+        }
+    }, [location, navigate]);
+
+    const handleSubmit = async (values: QuizFormValues) => {
         try {
             setIsLoading(true);
             console.log("Creating quiz with:", values);
@@ -32,12 +51,12 @@ const CreateQuizPage = () => {
         <div className="container max-w-3xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
-                <QuizBasicForm
+                <QuizForm
                     categories={categories}
                     onSubmit={handleSubmit}
                     isLoading={isLoading}
-                    initialValues={initialValues}
-                    submitLabel="Create Quiz"
+                    initialValues={formState?.initialValues}
+                    submitLabel="Next"
                 />
             </div>
         </div>

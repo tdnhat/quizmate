@@ -3,11 +3,11 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { FormFields } from "@/components/shared/components/Navbar/FormFields";
 import LoadingIndicator from "@/components/shared/components/LoadingIndicator";
 import { quizFormSchema, QuizFormValues } from "../../schemas/quizFormSchema";
+import { QuizBasicDetails } from "./basic-details/QuizBasicDetails";
 
-interface QuizBasicFormProps {
+interface QuizFormProps {
     categories: Category[];
     onSubmit: (values: QuizFormValues) => Promise<void>;
     isLoading: boolean;
@@ -16,13 +16,13 @@ interface QuizBasicFormProps {
     buttonClassName?: string;
 }
 
-export const QuizBasicForm = ({
+export const QuizForm = ({
     categories,
     onSubmit,
     isLoading,
     initialValues,
     submitLabel = "Next",
-}: QuizBasicFormProps) => {
+}: QuizFormProps) => {
     const form = useForm<QuizFormValues>({
         resolver: zodResolver(quizFormSchema),
         defaultValues: {
@@ -53,7 +53,7 @@ export const QuizBasicForm = ({
                     </div>
                 )}
 
-                <FormFields
+                <QuizBasicDetails
                     form={form}
                     categories={categories}
                     isLoading={isLoading}
@@ -68,7 +68,7 @@ export const QuizBasicForm = ({
                         {isLoading ? (
                             <>
                                 <LoadingIndicator />
-                                <span>Submitting...</span>
+                                <span>Creating...</span>
                             </>
                         ) : (
                             submitLabel

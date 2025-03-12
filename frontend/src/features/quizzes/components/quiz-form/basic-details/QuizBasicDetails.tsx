@@ -1,23 +1,23 @@
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
 import { Category } from "@/types/category";
-import { TitleField } from "./TitleField";
 import { DescriptionField } from "./DescriptionField";
 import CategoryField from "./CategoryField";
 import ThumbnailField from "./ThumbnailField";
 import TimeField from "./TimeField";
 import DifficultyField from "./DifficultyField";
 import { TagsField } from "./TagsField";
-import { CreateQuizFormValues } from "../../schemas/CreateQuizFormSchema";
+import { CreateQuizFormValues } from "../../../../../components/shared/schemas/CreateQuizFormSchema";
+import { TitleField } from "./TitleField";
 
 
-interface FormFieldsProps {
+interface QuizBasicDetailsProps {
     form: UseFormReturn<CreateQuizFormValues>;
     categories: Category[];
     isLoading: boolean;
 }
 
-export const FormFields = ({ form, categories, isLoading }: FormFieldsProps) => {
+export const QuizBasicDetails = ({ form, categories, isLoading }: QuizBasicDetailsProps) => {
     const [currentTag, setCurrentTag] = useState("");
 
     const handleAddTag = (tag: string) => {
