@@ -56,7 +56,7 @@ const CreateQuizPage = () => {
     };
 
     return (
-        <div className="container mx-auto max-w-4xl py-8">
+        <div className="container mx-auto max-w-6xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
                 <QuizFormProvider initialValues={initialState.initialValues}>

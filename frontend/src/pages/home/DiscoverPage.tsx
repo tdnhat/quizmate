@@ -2,12 +2,12 @@ import CategoriesSection from "@/features/discover/components/CategoriesSection"
 import RecommendedSection from "@/features/discover/components/RecommendedSection"
 
 const DiscoverPage = () => {
-  return (
-    <div className="flex flex-col p-4 space-y-4">
-      <CategoriesSection />
-      <RecommendedSection />
-    </div>
-  )
+    return (
+        <div className="flex flex-col max-w-6xl mx-auto gap-4 p-4">
+            <CategoriesSection />
+            <RecommendedSection />
+        </div>
+    );
 }
 
 export default DiscoverPage
