@@ -44,7 +44,7 @@ const DEFAULT_CATEGORIES: Category[] = [
     },
 ];
 
-interface CategoryContextType {
+interface CategoriesContextType {
     categories: Category[];
     featuredCategories: Category[];
     isLoading: boolean;
@@ -53,7 +53,7 @@ interface CategoryContextType {
     getCategoryById: (id: string) => Category | undefined;
 }
 
-export const CategoryContext = createContext<CategoryContextType>({
+export const CategoriesContext = createContext<CategoriesContextType>({
     categories: [],
     featuredCategories: [],
     isLoading: false,
@@ -62,11 +62,11 @@ export const CategoryContext = createContext<CategoryContextType>({
     getCategoryById: () => undefined,
 });
 
-interface CategoryProviderProps {
+interface CategoriesProviderProps {
     children: ReactNode;
 }
 
-export const CategoryProvider = ({ children }: CategoryProviderProps) => {
+export const CategoriesProvider = ({ children }: CategoriesProviderProps) => {
     const [categories, setCategories] =
         useState<Category[]>(DEFAULT_CATEGORIES);
     const [featuredCategories, setFeaturedCategories] =
@@ -104,7 +104,7 @@ export const CategoryProvider = ({ children }: CategoryProviderProps) => {
     }, []);
 
     return (
-        <CategoryContext.Provider
+        <CategoriesContext.Provider
             value={{
                 categories,
                 featuredCategories,
@@ -115,6 +115,6 @@ export const CategoryProvider = ({ children }: CategoryProviderProps) => {
             }}
         >
             {children}
-        </CategoryContext.Provider>
+        </CategoriesContext.Provider>
     );
 };

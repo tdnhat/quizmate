@@ -13,6 +13,8 @@ import ReportsPage from "./pages/home/ReportsPage";
 import TeamsPage from "./pages/home/TeamsPage";
 import NotFoundPage from "./pages/NotFoundPage";
 import CreateQuizPage from "./pages/home/CreateQuizPage";
+import QuizDetailPage from "./pages/home/QuizDetailPage";
+import TakeQuizPage from "./pages/home/TakeQuizPage";
 
 function App() {
     return (
@@ -36,6 +38,12 @@ function App() {
                         path="/quizzes/create"
                         element={<CreateQuizPage />}
                     />
+                    <Route
+                        path="quizzes/:quizId"
+                        element={<QuizDetailPage />}
+                    />
+
+                    <Route path="quizzes/:quizId/take" element={<TakeQuizPage />} />
                 </Route>
                 {/* </Route> */}
 
