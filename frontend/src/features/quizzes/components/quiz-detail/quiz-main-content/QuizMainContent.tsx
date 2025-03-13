@@ -5,6 +5,7 @@ import QuizRating from "./QuizRating";
 import QuizDescription from "./QuizDescription";
 import QuizPreviewQuestions from "./QuizPreviewQuestions";
 import { Separator } from "@/components/ui/separator";
+
 interface QuizMainContentProps {
     quiz: Quiz;
 }
