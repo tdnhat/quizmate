@@ -1,6 +1,6 @@
 import { Quiz } from "@/types/quiz";
 import QuizMainContent from "./quiz-main-content/QuizMainContent";
-import QuizSidebar from "./QuizSidebar";
+import QuizSidebar from "./quiz-sidebar/QuizSidebar";
 import { ChevronLeft } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";

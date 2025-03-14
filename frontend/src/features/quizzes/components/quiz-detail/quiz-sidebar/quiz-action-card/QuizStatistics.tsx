@@ -1,29 +1,39 @@
 import QuizDuration from "./QuizDuration";
-import { Quiz } from "@/types/quiz";
 import QuizQuestionCount from "./QuizQuestionCount";
 import QuizDifficultyBadge from "./QuizDifficultyBadge";
 import QuizTagsList from "./QuizTagsList";
 import { Separator } from "@/components/ui/separator";
 import QuizAuthorInfo from "./QuizAuthorInfo";
+import { DifficultyLevel, QuizAuthor } from "@/types/quiz";
 interface Props {
-    quiz: Quiz;
+    timeMinutes: number;
+    questionCount: number;
+    difficulty: DifficultyLevel;
+    tags: string[];
+    author: QuizAuthor;
 }
 
-const QuizStatistics = ({ quiz }: Props) => {
+const QuizStatistics = ({
+    timeMinutes,
+    questionCount,
+    difficulty,
+    tags,
+    author,
+}: Props) => {
     return (
         <div className="flex flex-col gap-4">
             <div className="flex justify-between w-full gap-4">
-                <QuizDuration timeMinutes={quiz.timeMinutes} />
-                <QuizQuestionCount quiz={quiz} />
+                <QuizDuration timeMinutes={timeMinutes} />
+                <QuizQuestionCount count={questionCount} />
             </div>
 
-            <QuizDifficultyBadge difficulty={quiz.difficulty} />
+            <QuizDifficultyBadge difficulty={difficulty} />
 
-            <QuizTagsList tags={quiz.tags} />
+            <QuizTagsList tags={tags} />
 
             <Separator />
 
-            <QuizAuthorInfo author={quiz.author} />
+            <QuizAuthorInfo author={author} />
         </div>
     );
 };

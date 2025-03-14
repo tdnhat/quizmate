@@ -15,6 +15,7 @@ import NotFoundPage from "./pages/NotFoundPage";
 import CreateQuizPage from "./pages/home/CreateQuizPage";
 import QuizDetailPage from "./pages/home/QuizDetailPage";
 import TakeQuizPage from "./pages/home/TakeQuizPage";
+import QuizResultsPage from "./pages/home/QuizResultsPage";
 
 function App() {
     return (
@@ -43,11 +44,18 @@ function App() {
                         element={<QuizDetailPage />}
                     />
 
-                    <Route path="quizzes/:quizId/take" element={<TakeQuizPage />} />
+                    <Route
+                        path="quizzes/:quizId/take"
+                        element={<TakeQuizPage />}
+                    />
+                    <Route
+                        path="quizzes/:quizId/results"
+                        element={<QuizResultsPage />}
+                    />
                 </Route>
                 {/* </Route> */}
 
-                <Route path="*" element={<NotFoundPage />} />
+                <Route path="404" element={<NotFoundPage />} />
             </Route>
         </Routes>
     );

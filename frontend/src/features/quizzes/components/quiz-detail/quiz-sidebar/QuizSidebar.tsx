@@ -1,6 +1,6 @@
 import { Quiz } from "@/types/quiz";
-import QuizActionCard from "./quiz-sidebar/quiz-action-card/QuizActionCard";
-import QuizShareCard from "./quiz-sidebar/quiz-share-card/QuizShareCard";
+import QuizActionCard from "./quiz-action-card/QuizActionCard";
+import QuizShareCard from "./quiz-share-card/QuizShareCard";
 interface QuizSidebarProps {
     quiz: Quiz;
 }

@@ -10,8 +10,14 @@ const QuizActionCard = ({ quiz }: QuizActionCardProps) => {
     return (
         <Card>
             <CardContent className="space-y-4">
-                <QuizCTAButton />
-                <QuizStatistics quiz={quiz} />
+                <QuizCTAButton quizId={quiz.id} />
+                <QuizStatistics
+                    timeMinutes={quiz.timeMinutes}
+                    questionCount={quiz.questions?.length || 0}
+                    difficulty={quiz.difficulty}
+                    tags={quiz.tags}
+                    author={quiz.author}
+                />
             </CardContent>
         </Card>
     );
