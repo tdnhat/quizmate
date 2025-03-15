@@ -16,9 +16,9 @@ const QuestionDisplay = () => {
     }
 
     return (
-        <Card className="mb-6">
-            <CardContent className="pt-6">
-                <div className="space-y-4">
+        <Card className="flex-1 flex flex-col w-full">
+            <CardContent className="flex-1 flex flex-col">
+                <div className="space-y-4 flex-1 flex flex-col">
                     <div className="flex items-center gap-3">
                         <QuestionNumber />
                         <div className="flex items-center justify-between w-full gap-2">
@@ -30,7 +30,11 @@ const QuestionDisplay = () => {
                     {currentQuestion.image && <QuestionImage />}
 
                     <AnswersList />
-                    <NavigationButtons />
+
+                    {/* Push navigation buttons to bottom */}
+                    <div className="mt-auto pt-4">
+                        <NavigationButtons />
+                    </div>
                 </div>
             </CardContent>
         </Card>

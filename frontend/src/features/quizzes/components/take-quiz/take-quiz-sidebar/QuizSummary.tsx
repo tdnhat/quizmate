@@ -3,7 +3,7 @@ import { useTakeQuiz } from "@/features/quizzes/hooks/useTakeQuiz";
 const QuizSummary = () => {
     const { quiz, getAnsweredQuestionsCount, flaggedQuestions } = useTakeQuiz();
     return (
-        <div className="text-sm space-y-2">
+        <div className="text-xs space-y-2">
             <div className="flex justify-between">
                 <span>Total Questions:</span>
                 <span className="font-medium">{quiz.questions?.length}</span>

@@ -8,7 +8,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Control } from "react-hook-form";
 import { Badge } from "@/components/ui/badge";
-import { Plus, X } from "lucide-react";
+import { Plus, Tag, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 
@@ -45,9 +45,10 @@ export const TagsField = ({
                         {field.value.map((tag) => (
                             <Badge
                                 key={tag}
-                                variant="secondary"
-                                className="px-2 py-1 text-xs text-blue-500"
+                                variant="outline"
+                                className="px-2 py-1 text-xs text-gray-500"
                             >
+                                <Tag className="h-3 w-3 mr-1" />
                                 {tag}
                                 <button
                                     type="button"
@@ -57,6 +58,7 @@ export const TagsField = ({
                                     <X size={12} />
                                 </button>
                             </Badge>
+                            
                         ))}
                     </div>
                     <div className="flex gap-2">
