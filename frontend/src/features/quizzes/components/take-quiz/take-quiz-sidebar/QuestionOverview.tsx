@@ -29,11 +29,11 @@ const QuestionOverview = () => {
     };
 
     return (
-        <Card>
+        <Card className="flex flex-col">
             <CardHeader>
                 <CardTitle>Question Overview</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
+            <CardContent className="flex flex-col justify-between space-y-3 flex-1">
                 <QuestionGrid />
 
                 <Separator />
@@ -45,8 +45,6 @@ const QuestionOverview = () => {
 
                 {/* Quiz Summary */}
                 <QuizSummary />
-
-                <Separator />
 
                 <Button
                     onClick={handleSubmitQuiz}

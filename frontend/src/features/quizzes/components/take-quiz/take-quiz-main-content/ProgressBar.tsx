@@ -8,7 +8,7 @@ const ProgressBar = () => {
         (answeredQuestionsCount / (quiz.questions?.length || 0)) * 100;
 
     return (
-        <div className="mb-6">
+        <div>
             <Progress value={progress} className="h-2" />
             <div className="mt-2 flex justify-between text-xs">
                 <span>Progress: {Math.round(progress)}%</span>

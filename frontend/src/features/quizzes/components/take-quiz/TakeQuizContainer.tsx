@@ -10,18 +10,18 @@ const TakeQuizContainer = () => {
 
     if (!currentQuestion) return null;
     return (
-        <div className="space-y-4 max-w-6xl mx-auto">
-            <div>
-                <QuizHeader title={quiz.title} />
-            </div>
+        <div className="max-w-6xl mx-auto">
+            <QuizHeader title={quiz.title} />
 
-            <div className="flex flex-col md:flex-row gap-8">
-                <div className="flex-1">
+            <div className="flex flex-col md:flex-row gap-8 min-h-[calc(100vh-350px)]">
+                <div className="flex-1 flex">
                     <QuestionDisplay />
                 </div>
 
                 <aside className="w-full md:w-[300px] flex-shrink-0">
-                    <QuestionOverview />
+                    <div className="w-full h-full">
+                        <QuestionOverview />
+                    </div>
                 </aside>
             </div>
         </div>
