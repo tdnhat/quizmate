@@ -1,32 +1,19 @@
 import { Control } from "react-hook-form";
-import { FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import ImageUploadField from "@/components/shared/components/ImageUploadField";
 
 interface ThumbnailFieldProps {
     control: Control<QuizFormValues>;
     isLoading: boolean;
 }
+
 const ThumbnailField = ({ control, isLoading }: ThumbnailFieldProps) => {
     return (
-        <FormField
+        <ImageUploadField 
             control={control}
             name="thumbnail"
-            render={({ field }) => (
-                <FormItem>
-                    <FormLabel>Thumbnail</FormLabel>
-                    <FormControl>
-                        <Input
-                            placeholder="Enter a thumbnail URL... (optional)"
-                            type="text"
-                            disabled={isLoading}
-                            autoComplete="thumbnail"
-                            {...field}
-                        />
-                    </FormControl>
-                    <FormMessage />
-                </FormItem>
-            )}
+            label="Thumbnail"
+            isLoading={isLoading}
         />
     );
 };

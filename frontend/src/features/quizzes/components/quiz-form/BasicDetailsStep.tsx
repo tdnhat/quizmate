@@ -20,7 +20,7 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
             title: formValues.title || "",
             description: formValues.description || "",
             category: formValues.category || "",
-            thumbnail: formValues.thumbnail || "",
+            thumbnail: formValues.thumbnail || undefined,
             timeMinutes: formValues.timeMinutes || 5,
             difficulty: formValues.difficulty || "Beginner",
             tags: formValues.tags || [],

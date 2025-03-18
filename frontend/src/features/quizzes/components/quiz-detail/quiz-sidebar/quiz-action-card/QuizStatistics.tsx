@@ -4,13 +4,14 @@ import QuizDifficultyBadge from "./QuizDifficultyBadge";
 import QuizTagsList from "./QuizTagsList";
 import { Separator } from "@/components/ui/separator";
 import QuizAuthorInfo from "./QuizAuthorInfo";
-import { DifficultyLevel, QuizAuthor } from "@/types/quiz";
+import { DifficultyLevel } from "@/types/quiz";
+import { User } from "@/types/user";
 interface Props {
     timeMinutes: number;
     questionCount: number;
     difficulty: DifficultyLevel;
     tags: string[];
-    author: QuizAuthor;
+    author: User;
 }
 
 const QuizStatistics = ({

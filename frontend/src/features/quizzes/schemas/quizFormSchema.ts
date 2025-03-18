@@ -15,7 +15,7 @@ export const questionFormSchema = z.object({
         .array(answerFormSchema)
         .min(2, "At least two answers are required")
         .max(6, "A maximum of 6 answers is allowed"),
-    image: z.string().optional(),
+    // image: z.instanceof(File).optional(),
     explanation: z.string().optional(),
 });
 
@@ -23,7 +23,7 @@ export const quizFormSchema = z.object({
     title: z.string().min(3, "Title must be at least 3 characters"),
     description: z.string().optional(),
     category: z.string().min(1, "Category is required"),
-    thumbnail: z.string().optional(),
+    thumbnail: z.instanceof(File).optional(),
     timeMinutes: z.number().int().min(1, "Time must be at least 1 minute"),
     difficulty: z.enum(["Beginner", "Intermediate", "Advanced"]),
     tags: z.array(z.string()).max(5, "You can only add up to 5 tags"),
