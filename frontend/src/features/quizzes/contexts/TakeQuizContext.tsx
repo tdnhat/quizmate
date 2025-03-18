@@ -84,6 +84,9 @@ export const TakeQuizProvider = ({ children, quiz }: TakeQuizProviderProps) => {
 
     const submitQuiz = () => {
         setQuizCompleted(true);
+        console.log("Quiz submitted");
+        console.log(answers);
+        console.log("Time taken:", quiz.timeMinutes * 60 - timeRemaining);
     };
 
     const isQuestionAnswered = (questionId: string) => {

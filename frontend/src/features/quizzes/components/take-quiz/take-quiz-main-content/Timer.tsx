@@ -2,17 +2,11 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { useTakeQuiz } from "../../../hooks/useTakeQuiz";
 import { Clock } from "lucide-react";
+import { formatTime } from "@/lib/utils";
 
 const Timer = () => {
     const { timeRemaining, updateTimeRemaining, submitQuiz } = useTakeQuiz();
     const [isWarning, setIsWarning] = useState(false);
-
-    // Format time as MM:SS
-    const formatTime = (seconds: number) => {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
-    };
 
     // Update timer every second
     useEffect(() => {
