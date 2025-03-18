@@ -17,7 +17,7 @@ const QuestionOverview = () => {
     const handleSubmitQuiz = async () => {
         try {
             setIsLoading(true);
-            // await submitQuiz();
+            await submitQuiz();
             await new Promise((resolve) => setTimeout(resolve, 2000));
             console.log("Quiz submitted successfully");
             navigate(`/quizzes/${quiz.id}/results`);
