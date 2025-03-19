@@ -24,6 +24,7 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
             timeMinutes: formValues.timeMinutes || 5,
             difficulty: formValues.difficulty || "Beginner",
             tags: formValues.tags || [],
+            questions: formValues.questions || [],
         },
     });
 

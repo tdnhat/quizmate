@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { QuestionFormValues, QuizFormValues } from "../schemas/quizFormSchema";
 
 type QuizFormStep = "basic-details" | "questions" | "review";
@@ -33,7 +33,26 @@ export const QuizFormProvider = ({
     const [formValues, setFormValues] = useState<Partial<QuizFormValues>>(
         initialValues || {}
     );
-    const [questions, setQuestions] = useState<QuestionFormValues[]>([]);
+    const [questions, setQuestions] = useState<QuestionFormValues[]>(
+        initialValues?.questions || []
+    );
+
+    // Sync questions with formValues whenever either changes
+    useEffect(() => {
+        // Update formValues when questions change
+        setFormValues((prev) => ({
+            ...prev,
+            questions: questions,
+        }));
+    }, [questions]);
+
+    // Update questions array when formValues.questions changes from outside
+    useEffect(() => {
+        if (formValues.questions) {
+            setQuestions(formValues.questions);
+        }
+    }, [formValues.questions]);
+
     const [currentStep, setCurrentStep] =
         useState<QuizFormStep>("basic-details");
 
@@ -79,13 +98,30 @@ export const QuizFormProvider = ({
         setCurrentStep("basic-details");
     };
 
+    // Custom setFormValues that preserves questions state
+    const handleSetFormValues = (values: Partial<QuizFormValues>) => {
+        setFormValues((prev) => {
+            const newValues = {
+                ...prev,
+                ...values,
+            };
+            
+            // If new values include questions, update the questions state
+            if (values.questions) {
+                setQuestions(values.questions);
+            }
+            
+            return newValues;
+        });
+    };
+
     return (
         <QuizFormContext.Provider
             value={{
                 formValues,
                 questions,
                 currentStep,
-                setFormValues,
+                setFormValues: handleSetFormValues,
                 addQuestion,
                 updateQuestion,
                 removeQuestion,

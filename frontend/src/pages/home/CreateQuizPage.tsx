@@ -1,16 +1,11 @@
 import { useCategories } from "@/features/categories/hooks/useCategories";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import {
-    QuestionFormValues,
-    QuizFormValues,
-} from "@/features/quizzes/schemas/quizFormSchema";
+
 import { MultiStepQuizForm } from "@/features/quizzes/components/quiz-form/MultiStepQuizForm";
 import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
-
 const CreateQuizPage = () => {
     const { categories } = useCategories();
-    const [isLoading, setIsLoading] = useState(false);
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -29,32 +24,7 @@ const CreateQuizPage = () => {
         }
     }, [location, navigate]);
 
-    const handleSubmit = async (
-        values: QuizFormValues,
-        questions: QuestionFormValues[]
-    ) => {
-        try {
-            setIsLoading(true);
-
-            const formValues = {
-                ...values,
-                questions: questions,
-            };
-
-            console.log("Form values:", formValues);
-
-            // API call would go here
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-
-            // Navigate to questions editor or quiz detail page
-            // navigate(`/quizzes/${newQuizId}/edit`);
-        } catch (error) {
-            console.error("Failed to create quiz:", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
+    
     return (
         <div className="container mx-auto max-w-6xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
@@ -62,8 +32,6 @@ const CreateQuizPage = () => {
                 <QuizFormProvider initialValues={initialState.initialValues}>
                     <MultiStepQuizForm
                         categories={categories}
-                        onSubmit={handleSubmit}
-                        isLoading={isLoading}
                     />
                 </QuizFormProvider>
             </div>

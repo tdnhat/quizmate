@@ -1,31 +1,19 @@
 import { Category } from "@/types/category";
-import {
-    QuestionFormValues,
-    QuizFormValues,
-} from "../../schemas/quizFormSchema";
 import { FormStepIndicator } from "./FormStepIndicator";
 import { useQuizForm } from "../../hooks/useQuizForm";
 import { BasicDetailsStep } from "./BasicDetailsStep";
 import { QuestionsStep } from "./QuestionsStep";
 import { ReviewStep } from "./ReviewStep";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 
 interface MultiStepQuizFormProps {
     categories: Category[];
-    onSubmit: (
-        values: QuizFormValues,
-        questions: QuestionFormValues[]
-    ) => Promise<void>;
-    isLoading: boolean;
 }
 
-export const MultiStepQuizForm = ({
-    categories,
-    onSubmit,
-    isLoading,
-}: MultiStepQuizFormProps) => {
-    const { currentStep, formValues, questions, goToStep } = useQuizForm();
+export const MultiStepQuizForm = ({ categories }: MultiStepQuizFormProps) => {
+    const { currentStep, formValues, goToStep } = useQuizForm();
+    const [isLoading, setIsLoading] = useState(false);
 
     const location = useLocation();
 
@@ -38,8 +26,14 @@ export const MultiStepQuizForm = ({
     }, [isFromModal, goToStep]);
 
     const handleSubmit = async () => {
-        if (formValues.title) {
-            return await onSubmit(formValues as QuizFormValues, questions);
+        try {
+            setIsLoading(true);
+            console.log("Form values:", formValues);
+            await new Promise((resolve) => setTimeout(resolve, 1000));
+        } catch (error) {
+            console.error("Failed to create quiz:", error);
+        } finally {
+            setIsLoading(false);
         }
     };
 
