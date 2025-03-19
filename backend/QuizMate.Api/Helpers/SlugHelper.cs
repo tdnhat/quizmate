@@ -15,5 +15,17 @@ namespace QuizMate.Api.Helpers
 
             return $"{slug}-{id}";
         }
+
+        public static string GenerateSlug(string title)
+        {
+            string slug = title.ToLower().Trim().Replace(" ", "-");
+
+            slug = Regex.Replace(slug, @"[^a-z0-9\s-]", string.Empty); // Remove special characters
+
+            slug = slug.Substring(0, slug.Length <= 100 ? slug.Length : 100)
+                .Trim(); // Limit length
+
+            return slug;
+        }
     }
 }
