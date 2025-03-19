@@ -9,9 +9,11 @@ namespace QuizMate.Api.Models
     {
         public int Id { get; set; }
         public string Text { get; set; } = string.Empty;
-        public string Type { get; set; } = "Multiple Choice"; // Multiple Choice, True/False, Short Answer
-        public int QuizId { get; set; }
-        
+        public string QuestionType { get; set; } = "multiple-choice"; // multiple-choice, true-false
+        public int Points { get; set; } = 1;
+        public string? ImageUrl { get; set; }
+        public string? Explanation { get; set; }
+        public string QuizId { get; set; }
         public Quiz Quiz { get; set; }
         public List<Answer> Answers { get; set; } = new List<Answer>();
     }

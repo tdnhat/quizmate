@@ -8,7 +8,11 @@ namespace QuizMate.Api.Models
 {
     public class AppUser : IdentityUser
     {
-        public List<Result> Results { get; set; } = new List<Result>(); // One user can have many results
-        public List<Quiz> Quizzes { get; set; } = new List<Quiz>(); // One user can create many quizzes
+        public string AvatarUrl { get; set; } // Profile picture
+        // Relationships
+        public List<Quiz> CreatedQuizzes { get; set; } = new(); // Quizzes created by user
+        public List<Result> QuizResults { get; set; } = new(); // Quizzes user has completed
+        public List<SavedQuiz> SavedQuizzes { get; set; } = new(); // Quizzes saved for later
+        // public List<Team> Teams { get; set; } = new();
     }
 }

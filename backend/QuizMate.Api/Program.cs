@@ -7,7 +7,6 @@ using QuizMate.Api.Data;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
 using QuizMate.Api.Repositories;
-using QuizMate.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,11 +84,7 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
-builder.Services.AddScoped<ITokenService, TokenService>();
-builder.Services.AddScoped<IQuizRepository, QuizRepository>();
-builder.Services.AddScoped<IQuestionRepository, QuestionRepository>();
-builder.Services.AddScoped<IAnswerRepository, AnswerRepository>();
-builder.Services.AddScoped<IResultRepository, ResultRepository>();
+builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 
 var app = builder.Build();
 

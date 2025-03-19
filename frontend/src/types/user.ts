@@ -7,5 +7,5 @@ export interface User {
     savedQuizzes: string[];
     completedQuizzes: string[];
     createdQuizzes: string[];
-    teams: string[];
+    // teams: string[];
 }
