@@ -33,7 +33,7 @@ export const QuestionsForm = ({ initialValues, editIndex, onComplete }: Question
                 { id: uuidv4(), text: "", isCorrect: false, explanation: "" },
                 { id: uuidv4(), text: "", isCorrect: false, explanation: "" }
             ],
-            image: "",
+            image: undefined,
             explanation: ""
         },
     });

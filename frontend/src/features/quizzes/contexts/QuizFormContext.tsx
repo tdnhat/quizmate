@@ -1,4 +1,4 @@
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useEffect, useState } from "react";
 import { QuestionFormValues, QuizFormValues } from "../schemas/quizFormSchema";
 
 type QuizFormStep = "basic-details" | "questions" | "review";
@@ -7,6 +7,7 @@ interface QuizFormContextType {
     formValues: Partial<QuizFormValues>;
     questions: QuestionFormValues[];
     currentStep: QuizFormStep;
+    isLoading: boolean;
     setFormValues: (values: Partial<QuizFormValues>) => void;
     addQuestion: (question: QuestionFormValues) => void;
     updateQuestion: (index: number, question: QuestionFormValues) => void;
@@ -33,7 +34,27 @@ export const QuizFormProvider = ({
     const [formValues, setFormValues] = useState<Partial<QuizFormValues>>(
         initialValues || {}
     );
-    const [questions, setQuestions] = useState<QuestionFormValues[]>([]);
+    const [questions, setQuestions] = useState<QuestionFormValues[]>(
+        initialValues?.questions || []
+    );
+    const [isLoading, setIsLoading] = useState(false);
+
+    // Sync questions with formValues whenever either changes
+    useEffect(() => {
+        // Update formValues when questions change
+        setFormValues((prev) => ({
+            ...prev,
+            questions: questions,
+        }));
+    }, [questions]);
+
+    // Update questions array when formValues.questions changes from outside
+    useEffect(() => {
+        if (formValues.questions) {
+            setQuestions(formValues.questions);
+        }
+    }, [formValues.questions]);
+
     const [currentStep, setCurrentStep] =
         useState<QuizFormStep>("basic-details");
 
@@ -79,13 +100,35 @@ export const QuizFormProvider = ({
         setCurrentStep("basic-details");
     };
 
+    // Custom setFormValues that preserves questions state
+    const handleSetFormValues = (values: Partial<QuizFormValues>) => {
+        setIsLoading(true);
+        setFormValues((prev) => {
+            const newValues = {
+                ...prev,
+                ...values,
+            };
+            
+            // If new values include questions, update the questions state
+            if (values.questions) {
+                setQuestions(values.questions);
+            }
+            
+            return newValues;
+        });
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+    };
+
     return (
         <QuizFormContext.Provider
             value={{
                 formValues,
                 questions,
                 currentStep,
-                setFormValues,
+                isLoading,
+                setFormValues: handleSetFormValues,
                 addQuestion,
                 updateQuestion,
                 removeQuestion,

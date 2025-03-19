@@ -16,12 +16,14 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { UseFormReturn } from "react-hook-form";
 import { QuestionFormValues } from "../../../schemas/quizFormSchema";
-
+import ImageUploadField from "@/components/shared/components/ImageUploadField";
+import { useQuizForm } from "../../../hooks/useQuizForm";
 interface QuestionDetailsProps {
     form: UseFormReturn<QuestionFormValues>;
 }
 
 export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
+    const { isLoading } = useQuizForm();
     return (
         <div className="space-y-4 border rounded-md p-4 bg-gray-50">
             <h3 className="font-medium">Question Details</h3>
@@ -99,22 +101,11 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                 />
             </div>
 
-            <FormField
+            <ImageUploadField
                 control={form.control}
                 name="image"
-                render={({ field }) => (
-                    <FormItem>
-                        <FormLabel>Image URL (Optional)</FormLabel>
-                        <FormControl>
-                            <Input
-                                className="bg-white"
-                                placeholder="https://example.com/image.jpg"
-                                {...field}
-                            />
-                        </FormControl>
-                        <FormMessage />
-                    </FormItem>
-                )}
+                label="Question Image (Optional)"
+                isLoading={isLoading}
             />
 
             <FormField

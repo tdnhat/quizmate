@@ -1,3 +1,5 @@
+import { User } from "./user";
+
 export type DifficultyLevel = "Beginner" | "Intermediate" | "Advanced";
 
 export interface QuizAuthor {
@@ -21,15 +23,15 @@ export interface Question {
     points: number;
     answers: Answer[];
     explanation?: string;
-    image?: string; // Optional image URL for the question
+    image?: string;
 }
 
 export interface Quiz {
     id: string;
     title: string;
     description: string;
-    author: QuizAuthor;
-    thumbnail: string;
+    author: User;
+    thumbnail?: string;
     timeMinutes: number;
     questionCount: number;
     difficulty: DifficultyLevel;

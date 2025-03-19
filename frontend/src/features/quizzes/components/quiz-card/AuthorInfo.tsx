@@ -1,18 +1,15 @@
-interface AuthorProps {
-    name: string;
-    avatar: string;
-}
+import { User } from "@/types/user";
 
 interface AuthorInfoProps {
-    author: AuthorProps;
+    author: User;
 }
 
 const AuthorInfo = ({ author }: AuthorInfoProps) => {
     return (
         <div className="flex items-center space-x-2">
             <img
-                src={author.avatar}
-                alt={author.name}
+                src={author.avatarUrl}
+                alt={author.username}
                 className="w-6 h-6 rounded-full"
                 onError={(e) => {
                     const target = e.target as HTMLImageElement;
@@ -22,10 +19,7 @@ const AuthorInfo = ({ author }: AuthorInfoProps) => {
                     parent.removeChild(target);
 
                     // Create initials div
-                    const initials = author.name
-                        .split(" ")
-                        .map((n) => n[0])
-                        .join("");
+                    const initials = author.username.split("-")[0].charAt(0).toUpperCase();
                     const div = document.createElement("div");
                     div.className =
                         "w-6 h-6 rounded-full bg-indigo-100 text-indigo-600 flex items-center justify-center text-xs font-semibold";
@@ -36,7 +30,7 @@ const AuthorInfo = ({ author }: AuthorInfoProps) => {
                 }}
             />
             <span className="text-xs text-gray-600 truncate max-w-[100px]">
-                {author.name}
+                {author.username}
             </span>
         </div>
     );

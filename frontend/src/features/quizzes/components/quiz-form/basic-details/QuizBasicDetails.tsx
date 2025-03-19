@@ -9,19 +9,22 @@ import DifficultyField from "./DifficultyField";
 import { TagsField } from "./TagsField";
 import { TitleField } from "./TitleField";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
-
+import { useQuizForm } from "../../../hooks/useQuizForm";
 interface QuizBasicDetailsProps {
     form: UseFormReturn<QuizFormValues>;
     categories: Category[];
-    isLoading: boolean;
+    isLoading?: boolean;
 }
 
 export const QuizBasicDetails = ({
     form,
     categories,
-    isLoading,
+    isLoading: propIsLoading = false,
 }: QuizBasicDetailsProps) => {
     const [currentTag, setCurrentTag] = useState("");
+    const { isLoading: contextIsLoading } = useQuizForm();
+    const isLoading = propIsLoading || contextIsLoading;
+
 
     const handleAddTag = (tag: string) => {
         const currentTags = form.getValues("tags");
