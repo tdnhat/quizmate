@@ -18,12 +18,20 @@ namespace QuizMate.Api.Data
         public DbSet<Answer> Answers { get; set; }
         public DbSet<Result> Results { get; set; }
         public DbSet<ResultAnswer> ResultAnswers { get; set; }
+        public DbSet<Category> Categories { get; set; }
+        public DbSet<SavedQuiz> SavedQuizzes { get; set; }
+
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
 
+            builder.Entity<Category>()
+                .HasMany(c => c.Quizzes)
+                .WithOne(q => q.Category)
+                .HasForeignKey(q => q.CategoryId);
+
             builder.Entity<AppUser>()
-                .HasMany(u => u.Quizzes)
+                .HasMany(u => u.CreatedQuizzes)
                 .WithOne(q => q.AppUser)
                 .HasForeignKey(q => q.AppUserId)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -46,7 +54,7 @@ namespace QuizMate.Api.Data
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<AppUser>()
-                .HasMany(u => u.Results)
+                .HasMany(u => u.QuizResults)
                 .WithOne(q => q.AppUser)
                 .HasForeignKey(q => q.AppUserId)
                 .OnDelete(DeleteBehavior.NoAction);
@@ -68,6 +76,24 @@ namespace QuizMate.Api.Data
                 .WithMany()
                 .HasForeignKey(r => r.AnswerId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<SavedQuiz>()
+                .HasOne(sq => sq.AppUser)
+                .WithMany(u => u.SavedQuizzes)
+                .HasForeignKey(sq => sq.AppUserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<SavedQuiz>()
+                .HasOne(sq => sq.Quiz)
+                .WithMany()
+                .HasForeignKey(sq => sq.QuizId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<Quiz>()
+                .Property(q => q.Tags)
+                .HasConversion(
+                    v => string.Join(',', v),
+                    v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
 
             List<IdentityRole> roles = new List<IdentityRole>
             {
