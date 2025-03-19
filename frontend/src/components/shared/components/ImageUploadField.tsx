@@ -114,76 +114,96 @@ const ImageUploadField = <
         <FormField
             control={control}
             name={name}
-            render={({ field: { value, onChange, ...restField } }) => (
-                <FormItem className="space-y-4">
-                    <FormLabel>{label}</FormLabel>
-                    <div className="space-y-4">
-                        {previewUrl ? (
-                            <div className="relative w-full border rounded-lg overflow-hidden bg-muted/20">
-                                <div className="aspect-video w-full max-w-md mx-auto overflow-hidden flex items-center justify-center">
-                                    <img
-                                        src={previewUrl}
-                                        alt="Image preview"
-                                        className="object-contain max-h-full max-w-full"
-                                    />
+            render={({ field: { value, onChange, ...restField } }) => {
+                // Update local image state when form value changes
+                useEffect(() => {
+                    if (
+                        value instanceof File &&
+                        (!image || image.name !== value.name)
+                    ) {
+                        setImage(value);
+                    }
+                }, [value]);
+
+                return (
+                    <FormItem className="space-y-4">
+                        <FormLabel>{label}</FormLabel>
+                        <div className="space-y-4">
+                            {isLoading ? (
+                                <div className="flex items-center justify-center w-full h-64 border-2 border-dashed rounded-lg">
+                                    <div className="animate-pulse flex items-center justify-center">
+                                        <div className="h-16 w-16 bg-muted rounded-full"></div>
+                                    </div>
                                 </div>
-                                <Button
-                                    type="button"
-                                    variant="outline"
-                                    size="icon"
-                                    className="absolute top-2 right-2 h-8 w-8 rounded-full shadow-md cursor-pointer"
-                                    onClick={() => handleRemoveImage(onChange)}
-                                    disabled={isLoading}
-                                >
-                                    <X className="h-4 w-4" />
-                                </Button>
-                            </div>
-                        ) : (
-                            <label
-                                ref={dropzoneRef}
-                                htmlFor={inputId}
-                                className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer
+                            ) : previewUrl ? (
+                                <div className="relative w-full border rounded-lg overflow-hidden bg-muted/20">
+                                    <div className="aspect-video w-full max-w-md mx-auto overflow-hidden flex items-center justify-center">
+                                        <img
+                                            src={previewUrl}
+                                            alt="Image preview"
+                                            className="object-contain max-h-full max-w-full"
+                                        />
+                                    </div>
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        size="icon"
+                                        className="absolute top-2 right-2 h-8 w-8 rounded-full shadow-md cursor-pointer"
+                                        onClick={() =>
+                                            handleRemoveImage(onChange)
+                                        }
+                                        disabled={isLoading}
+                                    >
+                                        <X className="h-4 w-4" />
+                                    </Button>
+                                </div>
+                            ) : (
+                                <label
+                                    ref={dropzoneRef}
+                                    htmlFor={inputId}
+                                    className={`flex flex-col items-center justify-center w-full h-64 border-2 border-dashed rounded-lg cursor-pointer
                                     ${
                                         isDragging
                                             ? "border-primary bg-primary/5"
                                             : "border-muted-foreground/30 hover:bg-muted/10 hover:border-muted-foreground/50"
                                     } transition-all duration-200`}
-                                onDragEnter={handleDragEnter}
-                                onDragLeave={handleDragLeave}
-                                onDragOver={handleDragOver}
-                                onDrop={(e) => handleDrop(e, onChange)}
-                            >
-                                <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                    <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
-                                    <p className="mb-2 text-sm font-semibold">
-                                        <span className="font-semibold">
-                                            Click to upload
-                                        </span>{" "}
-                                        or drag and drop
-                                    </p>
-                                    <p className="text-xs text-muted-foreground">
-                                        PNG, JPG or GIF (Optional)
-                                    </p>
-                                </div>
-                            </label>
-                        )}
-                        <FormControl>
-                            <Input
-                                id={inputId}
-                                type="file"
-                                ref={fileInputRef}
-                                disabled={isLoading}
-                                accept="image/png,image/jpeg,image/gif"
-                                className="hidden"
-                                value=""
-                                onChange={(e) => handleImageChange(e, onChange)}
-                                {...restField}
-                            />
-                        </FormControl>
-                    </div>
-                    <FormMessage />
-                </FormItem>
-            )}
+                                    onDragEnter={handleDragEnter}
+                                    onDragLeave={handleDragLeave}
+                                    onDragOver={handleDragOver}
+                                    onDrop={(e) => handleDrop(e, onChange)}
+                                >
+                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                        <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
+                                        <p className="mb-2 text-sm font-semibold">
+                                            <span className="font-semibold">
+                                                Click to upload
+                                            </span>{" "}
+                                            or drag and drop
+                                        </p>
+                                        <p className="text-xs text-muted-foreground">
+                                            PNG, JPG or GIF (Optional)
+                                        </p>
+                                    </div>
+                                </label>
+                            )}
+                            <FormControl>
+                                <Input
+                                    id={inputId}
+                                    type="file"
+                                    ref={fileInputRef}
+                                    disabled={isLoading}
+                                    accept="image/png,image/jpeg,image/gif"
+                                    className="hidden"
+                                    value=""
+                                    onChange={(e) => handleImageChange(e, onChange)}
+                                    {...restField}
+                                />
+                            </FormControl>
+                        </div>
+                        <FormMessage />
+                    </FormItem>
+                );
+            }}
         />
     );
 };

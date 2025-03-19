@@ -7,6 +7,7 @@ interface QuizFormContextType {
     formValues: Partial<QuizFormValues>;
     questions: QuestionFormValues[];
     currentStep: QuizFormStep;
+    isLoading: boolean;
     setFormValues: (values: Partial<QuizFormValues>) => void;
     addQuestion: (question: QuestionFormValues) => void;
     updateQuestion: (index: number, question: QuestionFormValues) => void;
@@ -36,6 +37,7 @@ export const QuizFormProvider = ({
     const [questions, setQuestions] = useState<QuestionFormValues[]>(
         initialValues?.questions || []
     );
+    const [isLoading, setIsLoading] = useState(false);
 
     // Sync questions with formValues whenever either changes
     useEffect(() => {
@@ -100,6 +102,7 @@ export const QuizFormProvider = ({
 
     // Custom setFormValues that preserves questions state
     const handleSetFormValues = (values: Partial<QuizFormValues>) => {
+        setIsLoading(true);
         setFormValues((prev) => {
             const newValues = {
                 ...prev,
@@ -113,6 +116,9 @@ export const QuizFormProvider = ({
             
             return newValues;
         });
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
     };
 
     return (
@@ -121,6 +127,7 @@ export const QuizFormProvider = ({
                 formValues,
                 questions,
                 currentStep,
+                isLoading,
                 setFormValues: handleSetFormValues,
                 addQuestion,
                 updateQuestion,
