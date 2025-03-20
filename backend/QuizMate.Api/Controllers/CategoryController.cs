@@ -10,24 +10,24 @@ namespace QuizMate.Api.Controllers
     [ApiController]
     public class CategoryController : ControllerBase
     {
-        private readonly ICategoryRepository _categoryRepository;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CategoryController(ICategoryRepository categoryRepository)
+        public CategoryController(IUnitOfWork unitOfWork)
         {
-            _categoryRepository = categoryRepository;
+            _unitOfWork = unitOfWork;
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAllCategories()
         {
-            var categories = await _categoryRepository.GetAllCategoriesAsync();
+            var categories = await _unitOfWork.CategoryRepository.GetAllCategoriesAsync();
             return Ok(categories.ToDtoList());
         }
 
         [HttpGet("id/{id}")]
-        public async Task<IActionResult> GetCategoryById([FromRoute] int id)
+        public async Task<IActionResult> GetCategoryById([FromRoute] string id)
         {
-            var category = await _categoryRepository.GetCategoryByIdAsync(id);
+            var category = await _unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
             if (category == null)
             {
                 return NotFound();
@@ -38,7 +38,7 @@ namespace QuizMate.Api.Controllers
         [HttpGet("slug/{slug}")]
         public async Task<IActionResult> GetCategoryBySlug([FromRoute] string slug)
         {
-            var category = await _categoryRepository.GetCategoryBySlugAsync(slug);
+            var category = await _unitOfWork.CategoryRepository.GetCategoryBySlugAsync(slug);
             if (category == null)
             {
                 return NotFound();
@@ -49,7 +49,7 @@ namespace QuizMate.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto createCategoryRequestDto)
         {
-            var createdCategory = await _categoryRepository.CreateCategoryAsync(createCategoryRequestDto.FromCreateDto());
+            var createdCategory = await _unitOfWork.CategoryRepository.CreateCategoryAsync(createCategoryRequestDto.FromCreateDto());
             if (createdCategory == null)
             {
                 return BadRequest();
@@ -58,9 +58,9 @@ namespace QuizMate.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateCategory([FromRoute] int id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
+        public async Task<IActionResult> UpdateCategory([FromRoute] string id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
         {
-            var updatedCategory = await _categoryRepository.UpdateCategoryAsync(id, updateCategoryRequestDto.FromUpdateDto(id));
+            var updatedCategory = await _unitOfWork.CategoryRepository.UpdateCategoryAsync(id, updateCategoryRequestDto.FromUpdateDto(id));
             if (updatedCategory == null)
             {
                 return NotFound();
@@ -69,9 +69,9 @@ namespace QuizMate.Api.Controllers
         }
 
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteCategory([FromRoute] int id)
+        public async Task<IActionResult> DeleteCategory([FromRoute] string id)
         {
-            var deletedCategory = await _categoryRepository.DeleteCategoryAsync(id);
+            var deletedCategory = await _unitOfWork.CategoryRepository.DeleteCategoryAsync(id);
             if (!deletedCategory)
             {
                 return NotFound();

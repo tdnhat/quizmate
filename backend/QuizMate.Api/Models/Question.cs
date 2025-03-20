@@ -7,7 +7,7 @@ namespace QuizMate.Api.Models
 {
     public class Question
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Text { get; set; } = string.Empty;
         public string QuestionType { get; set; } = "multiple-choice"; // multiple-choice, true-false
         public int Points { get; set; } = 1;

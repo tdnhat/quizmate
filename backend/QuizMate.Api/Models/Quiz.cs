@@ -15,7 +15,7 @@ namespace QuizMate.Api.Models
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string AppUserId { get; set; } // Owner of the quiz
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public string Slug { get; set; }
         public string? Thumbnail { get; set; }
         public int? TimeMinutes { get; set; }

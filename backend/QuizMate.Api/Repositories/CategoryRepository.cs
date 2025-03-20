@@ -22,7 +22,7 @@ namespace QuizMate.Api.Repositories
             return category;
         }
 
-        public async Task<bool> DeleteCategoryAsync(int id)
+        public async Task<bool> DeleteCategoryAsync(string id)
         {
             var category = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (category == null)
@@ -39,7 +39,7 @@ namespace QuizMate.Api.Repositories
             return await _context.Categories.ToListAsync();
         }
 
-        public async Task<Category?> GetCategoryByIdAsync(int id)
+        public async Task<Category?> GetCategoryByIdAsync(string id)
         {
             return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
         }
@@ -50,7 +50,7 @@ namespace QuizMate.Api.Repositories
         }
 
 
-        public async Task<Category?> UpdateCategoryAsync(int id, Category category)
+        public async Task<Category?> UpdateCategoryAsync(string id, Category category)
         {
             var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
             if (existingCategory == null)
