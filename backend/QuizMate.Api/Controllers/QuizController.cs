@@ -25,9 +25,9 @@ namespace QuizMate.Api.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllQuizzes()
+        public async Task<IActionResult> GetAllQuizzes([FromQuery] QuizQueryObject queryObject)
         {
-            var quizzes = await _unitOfWork.QuizRepository.GetAllQuizzesAsync();
+            var quizzes = await _unitOfWork.QuizRepository.GetAllQuizzesAsync(queryObject);
             if (quizzes == null)
             {
                 return NotFound();

@@ -1,14 +1,11 @@
+using QuizMate.Api.DTOs.Quiz;
 using QuizMate.Api.Models;
 
 namespace QuizMate.Api.Interfaces
 {
     public interface IQuizRepository
     {
-        Task<IEnumerable<Quiz>> GetAllQuizzesAsync();
-        Task<IEnumerable<Quiz>> GetQuizBySlugAsync(string slug);
-        Task<IEnumerable<Quiz>> GetQuizzesByCategorySlugAsync(string categorySlug);
-        Task<IEnumerable<Quiz>> GetQuizzesByCategoryIdAsync(string categoryId);
-        Task<IEnumerable<Quiz>> GetQuizzesByUserIdAsync(string userId);
+        Task<IEnumerable<Quiz>> GetAllQuizzesAsync(QuizQueryObject queryObject);
         Task<Quiz?> GetQuizByIdAsync(string id);
         Task<string> GenerateUniqueSlugAsync(string title);
         Task<Quiz?> CreateQuizAsync(Quiz quiz);

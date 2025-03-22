@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using QuizMate.Api.Data;
+using QuizMate.Api.DTOs.Quiz;
 using QuizMate.Api.Helpers;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
@@ -46,13 +47,82 @@ namespace QuizMate.Api.Repositories
         }
 
 
-        public async Task<IEnumerable<Quiz>> GetAllQuizzesAsync()
+        public async Task<IEnumerable<Quiz>> GetAllQuizzesAsync(QuizQueryObject queryObject)
         {
-            return await _context.Quizzes
+            var query = _context.Quizzes
                 .Include(q => q.Category)
                 .Include(q => q.AppUser)
                 .Include(q => q.Questions)
-                .ToListAsync();
+                    .ThenInclude(q => q.Answers)
+                .AsQueryable();
+
+            // Filter by search
+            if (!string.IsNullOrEmpty(queryObject.Search))
+            {
+                query = query.Where(q => q.Title.Contains(queryObject.Search) || q.Description.Contains(queryObject.Search));
+            }
+
+            // Filter by category
+            if (!string.IsNullOrEmpty(queryObject.CategoryId))
+            {
+                query = query.Where(q => q.CategoryId == queryObject.CategoryId);
+            }
+
+            // Filter by difficulty
+            if (!string.IsNullOrEmpty(queryObject.Difficulty))
+            {
+                query = query.Where(q => q.Difficulty == queryObject.Difficulty);
+            }
+
+            // Filter by public/private
+            if (queryObject.IsPublic != null)
+            {
+                query = query.Where(q => q.IsPublic == queryObject.IsPublic);
+            }
+
+            // Sorting
+            switch (queryObject.SortBy?.ToLower())
+            {
+                case "title":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Title)
+                        : query.OrderBy(q => q.Title);
+                    break;
+                case "createdAt":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.CreatedAt)
+                        : query.OrderBy(q => q.CreatedAt);
+                    break;
+                case "rating":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Rating)
+                        : query.OrderBy(q => q.Rating);
+                    break;
+                case "completions":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Completions)
+                        : query.OrderBy(q => q.Completions);
+                    break;
+                case "questionCount":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.QuestionCount)
+                        : query.OrderBy(q => q.QuestionCount);
+                    break;
+                case "difficulty":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Difficulty)
+                        : query.OrderBy(q => q.Difficulty);
+                    break;
+                default:
+                    // Default ordering
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.CreatedAt)
+                        : query.OrderBy(q => q.CreatedAt);
+                    break;
+            }
+
+            // Pagination   
+            return await query.Skip((queryObject.Page - 1) * queryObject.PageSize).Take(queryObject.PageSize).ToListAsync();
         }
 
         public async Task<Quiz?> GetQuizByIdAsync(string id)
@@ -62,45 +132,6 @@ namespace QuizMate.Api.Repositories
             .Include(q => q.AppUser)
             .Include(q => q.Questions)
             .FirstOrDefaultAsync(q => q.Id == id);
-        }
-
-        public async Task<IEnumerable<Quiz>> GetQuizBySlugAsync(string slug)
-        {
-            return await _context.Quizzes
-                .Include(q => q.Category)
-                .Include(q => q.AppUser)
-                .Include(q => q.Questions)
-                .Where(q => q.Slug == slug).ToListAsync();
-        }
-
-        public async Task<IEnumerable<Quiz>> GetQuizzesByCategoryIdAsync(string categoryId)
-        {
-            return await _context.Quizzes
-                .Include(q => q.Category)
-                .Include(q => q.AppUser)
-                .Include(q => q.Questions)
-                .Where(q => q.CategoryId == categoryId)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Quiz>> GetQuizzesByCategorySlugAsync(string categorySlug)
-        {
-            return await _context.Quizzes
-                .Include(q => q.Category)
-                .Include(q => q.AppUser)
-                .Include(q => q.Questions)
-                .Where(q => q.Category.Slug == categorySlug)
-                .ToListAsync();
-        }
-
-        public async Task<IEnumerable<Quiz>> GetQuizzesByUserIdAsync(string userId)
-        {
-            return await _context.Quizzes
-                .Include(q => q.Category)
-                .Include(q => q.AppUser)
-                .Include(q => q.Questions)
-                .Where(q => q.AppUserId == userId)
-                .ToListAsync();
         }
 
         public async Task<Quiz?> UpdateQuizAsync(string id, Quiz quiz)
