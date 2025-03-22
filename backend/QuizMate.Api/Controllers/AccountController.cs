@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMate.Api.DTOs.Account;
 using QuizMate.Api.DTOs.Account.Register;
+using QuizMate.Api.Extensions;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
 
@@ -21,6 +22,34 @@ namespace QuizMate.Api.Controllers
             _tokenService = tokenService;
             _signInManger = signInManager;
         }
+
+        [HttpGet("me")]
+        public async Task<IActionResult> GetMe()
+        {
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "User";
+
+            return Ok(new UserDto
+            {
+                Id = user.Id,
+                Email = user.Email,
+                UserName = user.UserName,
+                DisplayName = user.DisplayName,
+                AvatarUrl = user.AvatarUrl,
+                Role = userRole,
+                CreatedAt = user.CreatedAt,
+                Token = _tokenService.CreateToken(user)
+            });
+        }
+
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] RegisterDto registerDto)
         {
@@ -32,7 +61,10 @@ namespace QuizMate.Api.Controllers
             var appUser = new AppUser
             {
                 Email = registerDto.Email,
-                UserName = registerDto.Email.Split('@')[0]
+                UserName = registerDto.Email.Split('@')[0],
+                DisplayName = registerDto.Email.Split('@')[0],
+                AvatarUrl = "https://ui-avatars.com/api/?name=" + registerDto.Email.Split('@')[0],
+                CreatedAt = DateTime.UtcNow
             };
 
             var createdUser = await _userManager.CreateAsync(appUser, registerDto.Password);
@@ -41,7 +73,10 @@ namespace QuizMate.Api.Controllers
             {
                 if (createdUser.Succeeded)
                 {
-                    var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
+                    // Define the role name in a constant or configuration to ensure consistency
+                    const string defaultRole = "User";
+
+                    var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
                     if (roleResult.Succeeded)
                     {
                         return Ok(new NewUserDto
@@ -87,10 +122,19 @@ namespace QuizMate.Api.Controllers
                 return Unauthorized("Invalid credentials");
             }
 
-            return Ok(new NewUserDto
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "User";
+
+            return Ok(new UserDto
             {
-                Username = user.UserName,
+                Id = user.Id,
                 Email = user.Email,
+                UserName = user.UserName,
+                DisplayName = user.DisplayName,
+                AvatarUrl = user.AvatarUrl,
+                Role = userRole,
+                CreatedAt = user.CreatedAt,
                 Token = _tokenService.CreateToken(user)
             });
         }
