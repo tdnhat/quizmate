@@ -7,6 +7,7 @@ using QuizMate.Api.Data;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
 using QuizMate.Api.Repositories;
+using QuizMate.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -85,6 +86,7 @@ builder.Services.AddAuthentication(options =>
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 

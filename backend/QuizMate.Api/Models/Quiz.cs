@@ -22,8 +22,8 @@ namespace QuizMate.Api.Models
         public int QuestionCount { get; set; }
         public double Rating { get; set; } = 0;
         public int Completions { get; set; } = 0;
-        public string Difficulty { get; set; } = "Beginner"; // Added Difficulty property
-        public int PassingScore { get; set; } = 0; // Added PassingScore
+        public string Difficulty { get; set; } = "Beginner";
+        public int PassingScore { get; set; } = 0;
         public bool IsPublic { get; set; } = true;
         public AppUser AppUser { get; set; }
         public Category Category { get; set; }

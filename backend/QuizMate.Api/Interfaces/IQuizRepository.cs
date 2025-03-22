@@ -10,6 +10,7 @@ namespace QuizMate.Api.Interfaces
         Task<IEnumerable<Quiz>> GetQuizzesByCategoryIdAsync(string categoryId);
         Task<IEnumerable<Quiz>> GetQuizzesByUserIdAsync(string userId);
         Task<Quiz?> GetQuizByIdAsync(string id);
+        Task<string> GenerateUniqueSlugAsync(string title);
         Task<Quiz?> CreateQuizAsync(Quiz quiz);
         Task<Quiz?> UpdateQuizAsync(string id, Quiz quiz);
         Task<bool> DeleteQuizAsync(string id);

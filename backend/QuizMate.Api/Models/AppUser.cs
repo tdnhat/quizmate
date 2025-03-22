@@ -8,7 +8,8 @@ namespace QuizMate.Api.Models
 {
     public class AppUser : IdentityUser
     {
-        public string AvatarUrl { get; set; } // Profile picture
+        public string AvatarUrl { get; set; } = string.Empty; // Profile picture
+        public string DisplayName { get; set; } = string.Empty; // Display name
         // Relationships
         public List<Quiz> CreatedQuizzes { get; set; } = new(); // Quizzes created by user
         public List<Result> QuizResults { get; set; } = new(); // Quizzes user has completed

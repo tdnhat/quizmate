@@ -27,6 +27,10 @@ namespace QuizMate.Api.Controllers
         [HttpGet("id/{id}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] string id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var category = await _unitOfWork.CategoryRepository.GetCategoryByIdAsync(id);
             if (category == null)
             {
@@ -38,6 +42,10 @@ namespace QuizMate.Api.Controllers
         [HttpGet("slug/{slug}")]
         public async Task<IActionResult> GetCategoryBySlug([FromRoute] string slug)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var category = await _unitOfWork.CategoryRepository.GetCategoryBySlugAsync(slug);
             if (category == null)
             {
@@ -49,6 +57,10 @@ namespace QuizMate.Api.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequestDto createCategoryRequestDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var createdCategory = await _unitOfWork.CategoryRepository.CreateCategoryAsync(createCategoryRequestDto.FromCreateDto());
             if (createdCategory == null)
             {
@@ -60,6 +72,10 @@ namespace QuizMate.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateCategory([FromRoute] string id, [FromBody] UpdateCategoryRequestDto updateCategoryRequestDto)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var updatedCategory = await _unitOfWork.CategoryRepository.UpdateCategoryAsync(id, updateCategoryRequestDto.FromUpdateDto(id));
             if (updatedCategory == null)
             {
@@ -71,6 +87,10 @@ namespace QuizMate.Api.Controllers
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteCategory([FromRoute] string id)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             var deletedCategory = await _unitOfWork.CategoryRepository.DeleteCategoryAsync(id);
             if (!deletedCategory)
             {
