@@ -73,7 +73,6 @@ namespace QuizMate.Api.Controllers
             {
                 if (createdUser.Succeeded)
                 {
-                    // Define the role name in a constant or configuration to ensure consistency
                     const string defaultRole = "User";
 
                     var roleResult = await _userManager.AddToRoleAsync(appUser, defaultRole);
