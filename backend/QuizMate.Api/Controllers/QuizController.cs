@@ -4,11 +4,9 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMate.Api.DTOs.Quiz;
 using QuizMate.Api.Extensions;
-using QuizMate.Api.Helpers;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Mappers;
 using QuizMate.Api.Models;
-using QuizMate.Api.Repositories;
 
 namespace QuizMate.Api.Controllers
 {
