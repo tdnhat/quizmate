@@ -57,8 +57,7 @@ namespace QuizMate.Api.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -185,7 +184,7 @@ namespace QuizMate.Api.Migrations
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Slug = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Thumbnail = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     TimeMinutes = table.Column<int>(type: "int", nullable: true),
@@ -217,8 +216,7 @@ namespace QuizMate.Api.Migrations
                 name: "Questions",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     QuestionType = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Points = table.Column<int>(type: "int", nullable: false),
@@ -241,8 +239,7 @@ namespace QuizMate.Api.Migrations
                 name: "Results",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     QuizId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Score = table.Column<int>(type: "int", nullable: false),
@@ -275,8 +272,7 @@ namespace QuizMate.Api.Migrations
                 name: "SavedQuizzes",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     AppUserId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     QuizId = table.Column<string>(type: "nvarchar(450)", nullable: false)
                 },
@@ -299,9 +295,8 @@ namespace QuizMate.Api.Migrations
                 name: "Answers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     Text = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsCorrect = table.Column<bool>(type: "bit", nullable: false),
                     Explanation = table.Column<string>(type: "nvarchar(max)", nullable: true)
@@ -321,11 +316,10 @@ namespace QuizMate.Api.Migrations
                 name: "ResultAnswers",
                 columns: table => new
                 {
-                    Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    ResultId = table.Column<int>(type: "int", nullable: false),
-                    QuestionId = table.Column<int>(type: "int", nullable: false),
-                    AnswerId = table.Column<int>(type: "int", nullable: false),
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ResultId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    QuestionId = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    AnswerId = table.Column<string>(type: "nvarchar(450)", nullable: false),
                     IsCorrect = table.Column<bool>(type: "bit", nullable: false),
                     EarnedPoints = table.Column<int>(type: "int", nullable: false)
                 },
@@ -354,8 +348,8 @@ namespace QuizMate.Api.Migrations
                 columns: new[] { "Id", "ConcurrencyStamp", "Name", "NormalizedName" },
                 values: new object[,]
                 {
-                    { "08c0d6d9-bf5a-47eb-b7ce-ce3404afc337", null, "Admin", "ADMIN" },
-                    { "c93d5838-01fa-42ea-a1aa-39b5f8960f99", null, "User", "USER" }
+                    { "360f7ebc-1792-4f89-bedb-d030c6e79a7b", null, "User", "USER" },
+                    { "5f480222-cad4-4b94-85ce-76a9011bfdcf", null, "Admin", "ADMIN" }
                 });
 
             migrationBuilder.CreateIndex(

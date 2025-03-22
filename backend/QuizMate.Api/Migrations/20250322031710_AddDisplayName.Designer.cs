@@ -12,8 +12,8 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250319155633_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20250322031710_AddDisplayName")]
+    partial class AddDisplayName
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "08c0d6d9-bf5a-47eb-b7ce-ce3404afc337",
+                            Id = "42517fbf-a068-4de3-be46-1bf0ff3eefea",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "c93d5838-01fa-42ea-a1aa-39b5f8960f99",
+                            Id = "4e2ad4ee-c905-41ba-945b-6b7a021cdc96",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -174,11 +174,8 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.Answer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
@@ -186,8 +183,9 @@ namespace QuizMate.Api.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuestionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Text")
                         .IsRequired()
@@ -214,6 +212,10 @@ namespace QuizMate.Api.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DisplayName")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")
@@ -271,11 +273,8 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.Category", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Color")
                         .IsRequired()
@@ -302,11 +301,8 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.Question", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Explanation")
                         .HasColumnType("nvarchar(max)");
@@ -345,8 +341,9 @@ namespace QuizMate.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
+                    b.Property<string>("CategoryId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("Completions")
                         .HasColumnType("int");
@@ -402,11 +399,8 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.Result", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppUserId")
                         .IsRequired()
@@ -454,14 +448,12 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.ResultAnswer", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("AnswerId")
-                        .HasColumnType("int");
+                    b.Property<string>("AnswerId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("EarnedPoints")
                         .HasColumnType("int");
@@ -469,11 +461,13 @@ namespace QuizMate.Api.Migrations
                     b.Property<bool>("IsCorrect")
                         .HasColumnType("bit");
 
-                    b.Property<int>("QuestionId")
-                        .HasColumnType("int");
+                    b.Property<string>("QuestionId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
-                    b.Property<int>("ResultId")
-                        .HasColumnType("int");
+                    b.Property<string>("ResultId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
 
@@ -488,11 +482,8 @@ namespace QuizMate.Api.Migrations
 
             modelBuilder.Entity("QuizMate.Api.Models.SavedQuiz", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    b.Property<string>("Id")
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("AppUserId")
                         .IsRequired()

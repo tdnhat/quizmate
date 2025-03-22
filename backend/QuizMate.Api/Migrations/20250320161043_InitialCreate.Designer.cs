@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250320161043_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "42517fbf-a068-4de3-be46-1bf0ff3eefea",
+                            Id = "5f480222-cad4-4b94-85ce-76a9011bfdcf",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "4e2ad4ee-c905-41ba-945b-6b7a021cdc96",
+                            Id = "360f7ebc-1792-4f89-bedb-d030c6e79a7b",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -209,10 +212,6 @@ namespace QuizMate.Api.Migrations
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("DisplayName")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Email")

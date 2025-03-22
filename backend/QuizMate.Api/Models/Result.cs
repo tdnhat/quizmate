@@ -7,7 +7,7 @@ namespace QuizMate.Api.Models
 {
     public class Result
     {
-        public int Id { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
         public string AppUserId { get; set; } // User who took the quiz
         public string QuizId { get; set; } // Quiz that was taken
         public int Score { get; set; }

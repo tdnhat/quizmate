@@ -15,15 +15,15 @@ namespace QuizMate.Api.Models
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.Now;
         public string AppUserId { get; set; } // Owner of the quiz
-        public int CategoryId { get; set; }
+        public string CategoryId { get; set; }
         public string Slug { get; set; }
         public string? Thumbnail { get; set; }
         public int? TimeMinutes { get; set; }
         public int QuestionCount { get; set; }
         public double Rating { get; set; } = 0;
         public int Completions { get; set; } = 0;
-        public string Difficulty { get; set; } = "Beginner"; // Added Difficulty property
-        public int PassingScore { get; set; } = 0; // Added PassingScore
+        public string Difficulty { get; set; } = "Beginner";
+        public int PassingScore { get; set; } = 0;
         public bool IsPublic { get; set; } = true;
         public AppUser AppUser { get; set; }
         public Category Category { get; set; }

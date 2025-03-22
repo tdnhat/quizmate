@@ -1,0 +1,133 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
+using QuizMate.Api.DTOs.Quiz;
+using QuizMate.Api.Extensions;
+using QuizMate.Api.Helpers;
+using QuizMate.Api.Interfaces;
+using QuizMate.Api.Mappers;
+using QuizMate.Api.Models;
+using QuizMate.Api.Repositories;
+
+namespace QuizMate.Api.Controllers
+{
+    [Route("api/quizzes")]
+    [ApiController]
+    public class QuizController : ControllerBase
+    {
+        private readonly IUnitOfWork _unitOfWork;
+        private readonly UserManager<AppUser> _userManager;
+        public QuizController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+        {
+            _unitOfWork = unitOfWork;
+            _userManager = userManager;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAllQuizzes([FromQuery] QuizQueryObject queryObject)
+        {
+            var quizzes = await _unitOfWork.QuizRepository.GetAllQuizzesAsync(queryObject);
+            if (quizzes == null)
+            {
+                return NotFound();
+            }
+            return Ok(quizzes.Select(quiz => quiz.ToSummaryDto()));
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetQuizById([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+            return Ok(quiz.ToDto());
+        }
+
+        [HttpPost]
+        [Authorize]
+        public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequestDto createQuizRequestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var quizModel = createQuizRequestDto.ToModelFromCreateDto(user.Id);
+            var createdQuiz = await _unitOfWork.QuizRepository.CreateQuizAsync(quizModel);
+            await _unitOfWork.SaveAsync();
+
+            if (createdQuiz == null)
+            {
+                return BadRequest("Failed to create quiz");
+            }
+
+            return CreatedAtAction(nameof(GetQuizById), new { id = createdQuiz.Id }, createdQuiz.ToDto());
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateQuiz([FromRoute] string id, [FromBody] UpdateQuizRequestDto updateQuizRequestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+
+            }
+            var updatedQuiz = updateQuizRequestDto.ToModelFromUpdateDto(user.Id, quiz.Id);
+            await _unitOfWork.QuizRepository.UpdateQuizAsync(quiz.Id, updatedQuiz);
+            await _unitOfWork.SaveAsync();
+
+            return Ok(updatedQuiz.ToDto());
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteQuiz([FromRoute] string id)
+        {
+            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            await _unitOfWork.QuizRepository.DeleteQuizAsync(id);
+            await _unitOfWork.SaveAsync();
+
+            return NoContent();
+        }
+    }
+}

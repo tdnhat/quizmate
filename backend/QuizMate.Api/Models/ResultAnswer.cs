@@ -7,10 +7,10 @@ namespace QuizMate.Api.Models
 {
     public class ResultAnswer
     {
-        public int Id { get; set; }
-        public int ResultId { get; set; }
-        public int QuestionId { get; set; }
-        public int AnswerId { get; set; }
+        public string Id { get; set; } = Guid.NewGuid().ToString();
+        public string ResultId { get; set; }
+        public string QuestionId { get; set; }
+        public string AnswerId { get; set; }
         public bool IsCorrect { get; set; }
         public int EarnedPoints { get; set; } = 0;
         public Result Result { get; set; }

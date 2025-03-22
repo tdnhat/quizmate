@@ -53,7 +53,7 @@ namespace QuizMate.Api.Mappers
             };
         }
 
-        public static Category FromUpdateDto(this UpdateCategoryRequestDto updateCategoryRequestDto, int id)
+        public static Category FromUpdateDto(this UpdateCategoryRequestDto updateCategoryRequestDto, string id)
         {
             return new Category
             {
