@@ -75,5 +75,34 @@ namespace QuizMate.Api.Mappers
                 Questions = createQuizRequestDto.Questions.Select(q => q.ToModelFromCreateDto(Guid.NewGuid().ToString())).ToList()
             };
         }
+
+        public static Quiz ToModelFromUpdateDto(this UpdateQuizRequestDto updateQuizRequestDto, string userId, string quizId)
+        {
+            return new Quiz
+            {
+                Id = quizId,
+                Title = updateQuizRequestDto.Title,
+                Description = updateQuizRequestDto.Description,
+                CategoryId = updateQuizRequestDto.CategoryId,
+                Thumbnail = updateQuizRequestDto.Thumbnail,
+                TimeMinutes = updateQuizRequestDto.TimeMinutes,
+                Difficulty = updateQuizRequestDto.Difficulty,
+                PassingScore = updateQuizRequestDto.PassingScore,
+                IsPublic = updateQuizRequestDto.IsPublic,
+                AppUserId = userId,
+                Tags = updateQuizRequestDto.Tags,
+                Questions = updateQuizRequestDto.Questions.Select(q =>
+                {
+                    if (string.IsNullOrEmpty(q.Id))
+                    {
+                        return q.ToModelWithNewId(quizId);
+                    }
+                    else
+                    {
+                        return q.ToModelFromUpdateDto(quizId);
+                    }
+                }).ToList()
+            };
+        }
     }
 }

@@ -1,6 +1,8 @@
 using QuizMate.Api.Data;
 using QuizMate.Api.Interfaces;
-
+using QuizMate.Api.Services;
+using Microsoft.AspNetCore.Identity;
+using QuizMate.Api.Models;
 namespace QuizMate.Api.Repositories
 {
     public class UnitOfWork : IUnitOfWork

@@ -48,5 +48,56 @@ namespace QuizMate.Api.Mappers
                 Answers = createQuestionDto.Answers.Select(a => a.ToModelFromCreateDto(Guid.NewGuid().ToString())).ToList()
             };
         }
+
+        // Create a new question with a new ID when updating a quiz
+        public static Question ToModelWithNewId(this UpdateQuestionRequestDto updateQuestionDto, string quizId)
+        {
+            return new Question
+            {
+                Id = Guid.NewGuid().ToString(),
+                QuizId = quizId,
+                Text = updateQuestionDto.Text,
+                QuestionType = updateQuestionDto.QuestionType,
+                Points = updateQuestionDto.Points,
+                ImageUrl = updateQuestionDto.ImageUrl,
+                Explanation = updateQuestionDto.Explanation,
+                Answers = updateQuestionDto.Answers.Select(a =>
+                {
+                    return new Answer
+                    {
+                        Id = Guid.NewGuid().ToString(),
+                        QuestionId = quizId,
+                        Text = a.Text,
+                        IsCorrect = a.IsCorrect,
+                        Explanation = a.Explanation
+                    };
+                }).ToList()
+            };
+        }
+
+        public static Question ToModelFromUpdateDto(this UpdateQuestionRequestDto updateQuestionDto, string quizId)
+        {
+            return new Question
+            {
+                Id = updateQuestionDto.Id,
+                QuizId = quizId,
+                Text = updateQuestionDto.Text,
+                QuestionType = updateQuestionDto.QuestionType,
+                Points = updateQuestionDto.Points,
+                ImageUrl = updateQuestionDto.ImageUrl,
+                Explanation = updateQuestionDto.Explanation,
+                Answers = updateQuestionDto.Answers.Select(a =>
+                {
+                    if (string.IsNullOrEmpty(a.Id))
+                    {
+                        return a.ToModelWithNewId(updateQuestionDto.Id);
+                    }
+                    else
+                    {
+                        return a.ToModelFromUpdateDto(updateQuestionDto.Id);
+                    }
+                }).ToList()
+            };
+        }
     }
 }

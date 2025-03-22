@@ -105,9 +105,90 @@ namespace QuizMate.Api.Repositories
 
         public async Task<Quiz?> UpdateQuizAsync(string id, Quiz quiz)
         {
-            _context.Quizzes.Update(quiz);
+            var existingQuiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
+            if (existingQuiz == null)
+            {
+                return null;
+            }
+
+            existingQuiz.Title = quiz.Title;
+            existingQuiz.Description = quiz.Description;
+            existingQuiz.CategoryId = quiz.CategoryId;
+            existingQuiz.Thumbnail = quiz.Thumbnail;
+            existingQuiz.TimeMinutes = quiz.TimeMinutes;
+            existingQuiz.PassingScore = quiz.PassingScore;
+            existingQuiz.IsPublic = quiz.IsPublic;
+            existingQuiz.Difficulty = quiz.Difficulty;
+            existingQuiz.QuestionCount = quiz.Questions.Count;
+            existingQuiz.Tags = quiz.Tags;
+            existingQuiz.Slug = await GenerateUniqueSlugAsync(quiz.Title);
+
+            var questionIdsToKeep = quiz.Questions.Select(q => q.Id).ToList();
+            var questionsToRemove = existingQuiz.Questions
+                .Where(q => !questionIdsToKeep.Contains(q.Id))
+                .ToList();
+
+            foreach (var questionToRemove in questionsToRemove)
+            {
+                existingQuiz.Questions.Remove(questionToRemove);
+                _context.Questions.Remove(questionToRemove);
+            }
+
+            foreach (var updatedQuestion in quiz.Questions)
+            {
+                var existingQuestion = existingQuiz.Questions
+                    .FirstOrDefault(q => q.Id == updatedQuestion.Id);
+
+                if (existingQuestion == null)
+                {
+                    updatedQuestion.QuizId = existingQuiz.Id;
+                    existingQuiz.Questions.Add(updatedQuestion);
+                }
+                else
+                {
+                    existingQuestion.Text = updatedQuestion.Text;
+                    existingQuestion.QuestionType = updatedQuestion.QuestionType;
+                    existingQuestion.Points = updatedQuestion.Points;
+                    existingQuestion.ImageUrl = updatedQuestion.ImageUrl;
+                    existingQuestion.Explanation = updatedQuestion.Explanation;
+
+                    var answerIdsToKeep = updatedQuestion.Answers.Select(a => a.Id).ToList();
+                    var answersToRemove = existingQuestion.Answers
+                        .Where(a => !answerIdsToKeep.Contains(a.Id))
+                        .ToList();
+
+                    foreach (var answerToRemove in answersToRemove)
+                    {
+                        existingQuestion.Answers.Remove(answerToRemove);
+                        _context.Answers.Remove(answerToRemove);
+                    }
+
+                    foreach (var updatedAnswer in updatedQuestion.Answers)
+                    {
+                        var existingAnswer = existingQuestion.Answers
+                            .FirstOrDefault(a => a.Id == updatedAnswer.Id);
+
+                        if (existingAnswer == null)
+                        {
+                            updatedAnswer.QuestionId = existingQuestion.Id;
+                            existingQuestion.Answers.Add(updatedAnswer);
+                        }
+                        else
+                        {
+                            existingAnswer.Text = updatedAnswer.Text;
+                            existingAnswer.IsCorrect = updatedAnswer.IsCorrect;
+                            existingAnswer.Explanation = updatedAnswer.Explanation;
+                        }
+                    }
+                }
+            }
+
             await _context.SaveChangesAsync();
-            return quiz;
+            return existingQuiz;
         }
     }
 }

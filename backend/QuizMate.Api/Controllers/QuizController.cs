@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMate.Api.DTOs.Quiz;
+using QuizMate.Api.Extensions;
+using QuizMate.Api.Helpers;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Mappers;
 using QuizMate.Api.Models;
@@ -57,37 +59,14 @@ namespace QuizMate.Api.Controllers
                 return BadRequest(ModelState);
             }
 
-            // Get the user ID directly from the claims rather than looking up by email
-            var userId = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userId))
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
             {
-                // Log the issue - this helps with debugging
-                Console.WriteLine("User ID claim not found in token");
-
-                // Fallback to email lookup if needed
-                var userEmail = User.FindFirst(ClaimTypes.Email)?.Value;
-                if (string.IsNullOrEmpty(userEmail))
-                {
-                    // Debug: Print available claims to console
-                    Console.WriteLine("Available claims:");
-                    foreach (var claim in User.Claims)
-                    {
-                        Console.WriteLine($"{claim.Type}: {claim.Value}");
-                    }
-
-                    return Unauthorized("User identity could not be determined");
-                }
-
-                var appUser = await _userManager.FindByEmailAsync(userEmail);
-                if (appUser == null)
-                {
-                    return Unauthorized("User not found");
-                }
-
-                userId = appUser.Id;
+                return BadRequest("User not found");
             }
 
-            var quizModel = createQuizRequestDto.ToModelFromCreateDto(userId);
+            var quizModel = createQuizRequestDto.ToModelFromCreateDto(user.Id);
             var createdQuiz = await _unitOfWork.QuizRepository.CreateQuizAsync(quizModel);
             await _unitOfWork.SaveAsync();
 
@@ -97,6 +76,58 @@ namespace QuizMate.Api.Controllers
             }
 
             return CreatedAtAction(nameof(GetQuizById), new { id = createdQuiz.Id }, createdQuiz.ToDto());
+        }
+
+        [HttpPut("{id}")]
+        [Authorize]
+        public async Task<IActionResult> UpdateQuiz([FromRoute] string id, [FromBody] UpdateQuizRequestDto updateQuizRequestDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+
+            }
+            var updatedQuiz = updateQuizRequestDto.ToModelFromUpdateDto(user.Id, quiz.Id);
+            await _unitOfWork.QuizRepository.UpdateQuizAsync(quiz.Id, updatedQuiz);
+            await _unitOfWork.SaveAsync();
+
+            return Ok(updatedQuiz.ToDto());
+        }
+
+        [HttpDelete("{id}")]
+        [Authorize]
+        public async Task<IActionResult> DeleteQuiz([FromRoute] string id)
+        {
+            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+            if (quiz == null)
+            {
+                return NotFound();
+            }
+
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            await _unitOfWork.QuizRepository.DeleteQuizAsync(id);
+            await _unitOfWork.SaveAsync();
+
+            return NoContent();
         }
     }
 }

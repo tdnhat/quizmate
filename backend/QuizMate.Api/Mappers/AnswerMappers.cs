@@ -31,11 +31,36 @@ namespace QuizMate.Api.Mappers
         {
             return new Answer
             {
-                Id = Guid.NewGuid().ToString(), // Generate a new ID for the answer
+                Id = Guid.NewGuid().ToString(),
                 QuestionId = questionId,
                 Text = createAnswerDto.Text,
                 IsCorrect = createAnswerDto.IsCorrect,
                 Explanation = createAnswerDto.Explanation
+            };
+        }
+
+        // Create a new answer with a new ID when updating a question
+        public static Answer ToModelWithNewId(this UpdateAnswerRequestDto updateAnswerDto, string questionId)
+        {
+            return new Answer
+            {
+                Id = Guid.NewGuid().ToString(),
+                QuestionId = questionId,
+                Text = updateAnswerDto.Text,
+                IsCorrect = updateAnswerDto.IsCorrect,
+                Explanation = updateAnswerDto.Explanation
+            };
+        }
+
+        public static Answer ToModelFromUpdateDto(this UpdateAnswerRequestDto updateAnswerDto, string questionId)
+        {
+            return new Answer
+            {
+                Id = updateAnswerDto.Id,
+                QuestionId = questionId,
+                Text = updateAnswerDto.Text,
+                IsCorrect = updateAnswerDto.IsCorrect,
+                Explanation = updateAnswerDto.Explanation
             };
         }
     }
