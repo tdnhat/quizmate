@@ -1,7 +1,7 @@
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 import { useQuizzes } from "@/features/quizzes/hooks/useQuizzes";
-import QuizGrid from "./QuizGrid";
+import QuizGrid from "../../quizzes/components/quiz-card/QuizGrid";
 import ErrorMessage from "@/components/shared/components/ErrorMessage";
 
 const RECOMMENDED_QUIZ_COUNT = 16;
@@ -9,7 +9,6 @@ const RECOMMENDED_QUIZ_COUNT = 16;
 const RecommendedSection = () => {
     // Mock data for recommended quizzes
     const { quizzes, isLoading, error } = useQuizzes();
-    const recommendedQuizzes = quizzes.slice(0, RECOMMENDED_QUIZ_COUNT);
 
     if (error) {
         return (
@@ -35,7 +34,7 @@ const RecommendedSection = () => {
             />
 
             <QuizGrid
-                quizzes={recommendedQuizzes}
+                quizzes={quizzes}
                 isLoading={isLoading}
                 count={RECOMMENDED_QUIZ_COUNT}
             />

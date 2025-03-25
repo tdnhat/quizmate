@@ -16,6 +16,11 @@ import CreateQuizPage from "./pages/home/CreateQuizPage";
 import QuizDetailPage from "./pages/home/QuizDetailPage";
 import TakeQuizPage from "./pages/home/TakeQuizPage";
 import QuizResultsPage from "./pages/home/QuizResultsPage";
+import CategoryPage from "./pages/home/categories/CategoryPage";
+import FeaturedCategoriesPage from "./pages/home/categories/FeaturedCategoriesPage";
+import PopularCategoriesPage from "./pages/home/categories/PopularCategoriesPage";
+import RecentCategoriesPage from "./pages/home/categories/RecentCategoriesPage";
+import CategoryDetailPage from "./pages/home/categories/CategoryDetailPage";
 
 function App() {
     return (
@@ -27,33 +32,52 @@ function App() {
                     <Route path="/register" element={<Register />} />
                 </Route>
 
-                {/* <Route element={<ProtectedRoute />}> */}
-                <Route element={<HomeLayout />}>
-                    <Route path="/home" element={<HomePage />} />
-                    <Route path="/discover" element={<DiscoverPage />} />
-                    <Route path="/library" element={<LibraryPage />} />
-                    <Route path="/reports" element={<ReportsPage />} />
-                    <Route path="teams" element={<TeamsPage />} />
+                <Route element={<ProtectedRoute />}>
+                    <Route element={<HomeLayout />}>
+                        <Route path="/home" element={<HomePage />} />
+                        <Route path="/discover" element={<DiscoverPage />} />
+                        <Route path="/library" element={<LibraryPage />} />
+                        <Route path="/reports" element={<ReportsPage />} />
+                        <Route path="teams" element={<TeamsPage />} />
 
-                    <Route
-                        path="/quizzes/create"
-                        element={<CreateQuizPage />}
-                    />
-                    <Route
-                        path="quizzes/:quizId"
-                        element={<QuizDetailPage />}
-                    />
+                        <Route
+                            path="/quizzes/create"
+                            element={<CreateQuizPage />}
+                        />
 
-                    <Route
-                        path="quizzes/:quizId/take"
-                        element={<TakeQuizPage />}
-                    />
-                    <Route
-                        path="quizzes/:quizId/results"
-                        element={<QuizResultsPage />}
-                    />
+                        <Route path="/categories" element={<CategoryPage />} />
+                        <Route
+                            path="/categories/featured"
+                            element={<FeaturedCategoriesPage />}
+                        />
+                        <Route
+                            path="/categories/popular"
+                            element={<PopularCategoriesPage />}
+                        />
+                        <Route
+                            path="/categories/recently-added"
+                            element={<RecentCategoriesPage />}
+                        />
+                        <Route
+                            path="/categories/:slug"
+                            element={<CategoryDetailPage />}
+                        />
+
+                        <Route
+                            path="quizzes/:quizId"
+                            element={<QuizDetailPage />}
+                        />
+
+                        <Route
+                            path="quizzes/:quizId/take"
+                            element={<TakeQuizPage />}
+                        />
+                        <Route
+                            path="quizzes/:quizId/results"
+                            element={<QuizResultsPage />}
+                        />
+                    </Route>
                 </Route>
-                {/* </Route> */}
 
                 <Route path="404" element={<NotFoundPage />} />
             </Route>

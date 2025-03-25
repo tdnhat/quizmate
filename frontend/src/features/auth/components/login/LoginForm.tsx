@@ -1,6 +1,5 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
 import {
     Form,
     FormControl,
@@ -17,22 +16,19 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { PasswordInput } from "@/features/auth/components/PasswordInput";
 import { LoadingButton } from "@/features/auth/components/LoadingButton";
 import { FormFooter } from "@/features/auth/components/FormFooter";
-
-const LoginFormSchema = z.object({
-    username: z.string().min(3, "Username must be at least 3 characters"),
-    password: z.string().min(8, "Password must be at least 8 characters"),
-});
-
-type LoginFormValues = z.infer<typeof LoginFormSchema>;
+import {
+    LoginFormValues,
+    LoginFormSchema,
+} from "@/features/auth/schemas/loginFormSchema";
 
 const LoginForm = () => {
-    const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
     const location = useLocation();
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const from = (location.state as any)?.from || "/dashboard";
+    const from = (location.state as any)?.from || "/home";
 
     useEffect(() => {
         if (isAuthenticated) {
@@ -43,25 +39,32 @@ const LoginForm = () => {
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(LoginFormSchema),
         defaultValues: {
-            username: "",
+            email: "",
             password: "",
         },
     });
 
     const onSubmit = async (values: LoginFormValues) => {
         try {
-            setIsLoading(true);
-            console.log(values);
-            await login(values.username, values.password);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-        } catch (error) {
+            setIsSubmitting(true);
+            await login(values.email, values.password);
+        } catch (error: any) {
             console.error("Login failed:", error);
-            form.setError("root", {
-                type: "manual",
-                message: "Invalid username or password",
-            });
+
+            // Handle specific error cases
+            if (error.response?.status === 401) {
+                form.setError("root", {
+                    type: "manual",
+                    message: "Invalid email or password",
+                });
+            } else {
+                form.setError("root", {
+                    type: "manual",
+                    message: "Login failed. Please try again.",
+                });
+            }
         } finally {
-            setIsLoading(false);
+            setIsSubmitting(false);
         }
     };
 
@@ -76,6 +79,7 @@ const LoginForm = () => {
                 <Form {...form}>
                     <form
                         onSubmit={form.handleSubmit(onSubmit)}
+                        noValidate
                         className="space-y-4"
                     >
                         {form.formState.errors.root && (
@@ -86,16 +90,16 @@ const LoginForm = () => {
                         {/* Email Field */}
                         <FormField
                             control={form.control}
-                            name="username"
+                            name="email"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Username</FormLabel>
+                                    <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Username"
-                                            type="text"
-                                            disabled={isLoading}
-                                            autoComplete="username"
+                                            placeholder="Email"
+                                            type="email"
+                                            disabled={isSubmitting}
+                                            autoComplete="email"
                                             {...field}
                                         />
                                     </FormControl>
@@ -114,7 +118,7 @@ const LoginForm = () => {
                                     <FormControl>
                                         <PasswordInput
                                             placeholder="Password"
-                                            disabled={isLoading}
+                                            disabled={isSubmitting}
                                             autoComplete="current-password"
                                             {...field}
                                         />
@@ -134,7 +138,7 @@ const LoginForm = () => {
 
                         {/* Submit Button */}
                         <LoadingButton
-                            isLoading={isLoading}
+                            isLoading={isSubmitting}
                             loadingText="Logging in..."
                             className="bg-cyan-500 hover:bg-cyan-600 text-white"
                         >

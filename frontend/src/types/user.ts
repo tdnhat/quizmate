@@ -1,8 +1,10 @@
 export interface User {
     id: string;
-    username: string;
     email: string;
     avatarUrl: string;
+    userName: string;
+    displayName: string;
+    phoneNumber: string;
     role: string;
     savedQuizzes: string[];
     completedQuizzes: string[];

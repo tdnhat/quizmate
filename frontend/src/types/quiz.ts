@@ -1,5 +1,17 @@
 import { User } from "./user";
 
+export type QuizFilters = {
+    search?: string;
+    categorySlug?: string;
+    duration?: number;
+    isPublic?: boolean;
+    difficulty?: DifficultyLevel;
+    page: number;
+    pageSize: number;
+    isDescending: boolean;
+    sortBy: string;
+}
+
 export type DifficultyLevel = "Beginner" | "Intermediate" | "Advanced";
 
 export interface QuizAuthor {
@@ -29,7 +41,8 @@ export interface Question {
 export interface Quiz {
     id: string;
     title: string;
-    description: string;
+    description?: string;
+    categoryName?: string;
     author: User;
     thumbnail?: string;
     timeMinutes: number;

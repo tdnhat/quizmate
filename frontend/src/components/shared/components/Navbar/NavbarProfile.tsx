@@ -20,14 +20,17 @@ const NavbarProfile = () => {
     const navigate = useNavigate();
     const [hasImageError, setHasImageError] = useState(false);
 
-    const username = user?.username || "Guest";
+    console.log(user);
+
+    const name = user?.displayName || user?.userName || "Guest";
     const avatarUrl = user?.avatarUrl || undefined;
 
     const getInitials = (name: string) => {
         return name
             .split(" ")
             .map((n) => n.charAt(0))
-            .join("");
+            .join("")
+            .toUpperCase();
     };
 
     const handleLogout = async () => {
@@ -42,13 +45,13 @@ const NavbarProfile = () => {
                     {!hasImageError && avatarUrl ? (
                         <img
                             src={avatarUrl}
-                            alt={username}
+                            alt={name}
                             className="w-8 h-8 rounded-full"
                             onError={() => setHasImageError(true)}
                         />
                     ) : (
                         <div className="w-8 h-8 rounded-full bg-indigo-100 text-cyan-600 flex items-center justify-center text-sm font-semibold">
-                            {getInitials(username)}
+                            {getInitials(name)}
                         </div>
                     )}
                 </button>
@@ -60,17 +63,17 @@ const NavbarProfile = () => {
                     {!hasImageError && avatarUrl ? (
                         <img
                             src={avatarUrl}
-                            alt={username}
+                            alt={name}
                             className="w-8 h-8 rounded-full"
                             onError={() => setHasImageError(true)}
                         />
                     ) : (
                         <div className="w-10 h-10 rounded-full bg-indigo-100 text-cyan-600 flex items-center justify-center text-sm font-semibold">
-                            {getInitials(username)}
+                            {getInitials(name)}
                         </div>
                     )}
                     <div className="px-3 py-2 text-sm font-semibold tracking-wide text-gray-700 truncate">
-                        {username}
+                        {name}
                     </div>
                 </div>
 
