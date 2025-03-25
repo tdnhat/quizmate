@@ -4,7 +4,7 @@ const NotFoundPage = () => {
     const navigate = useNavigate();
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-50 px-4 py-12">
+        <div className="flex flex-col items-center justify-center min-h-[calc(100vh-100px)] bg-gray-50 px-4 py-12">
             <div className="max-w-lg w-full text-center">
                 {/* 404 SVG Image */}
                 <img

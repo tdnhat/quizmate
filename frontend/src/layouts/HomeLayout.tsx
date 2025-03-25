@@ -31,7 +31,7 @@ const HomeLayout = () => {
     ];
 
     return (
-        <div className="flex h-screen bg-gray-100">
+        <div className="flex bg-gray-100 min-h-[calc(100vh-70px)]">
             {/* Sidebar for desktop */}
             <aside className="bg-white text-white w-64 flex-shrink-0 transition-all duration-300 fixed inset-y-0 left-0 z-20 md:relative md:translate-x-0">
                 {/* Nav links */}

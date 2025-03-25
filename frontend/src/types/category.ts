@@ -2,8 +2,10 @@ export interface Category {
     id: string;
     name: string;
     description: string;
-    quizCount: number;
     color: string;
-    image: string;
+    image?: string;
     slug: string;
+    isFeatured: boolean;
+    createdAt: Date;
+    quizCount: number;
 }

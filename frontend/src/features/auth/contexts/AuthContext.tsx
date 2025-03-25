@@ -5,18 +5,20 @@ import {
     removeLocalStorageItem,
     setLocalStorageItem,
 } from "@/utils/local-storage";
-import { createContext, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
-    login: (username: string, password: string) => Promise<void>;
+    login: (email: string, password: string) => Promise<void>;
     register: (
         username: string,
         email: string,
-        password: string
+        password: string,
+        confirmPassword: string
     ) => Promise<void>;
     logout: () => void;
 }
@@ -36,85 +38,124 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const navigate = useNavigate();
+    const queryClient = useQueryClient();
 
-    // Check if user is logged in
-    useEffect(() => {
-        const checkAuthStatus = async () => {
-            console.log("🔍 Checking authentication status...");
-            try {
-                const token = getLocalStorageItem("token");
-                console.log("Token exists:", !!token);
+    const { isLoading } = useQuery({
+        queryKey: ["auth"],
+        queryFn: async () => {
+            const token = getLocalStorageItem("token");
 
-                if (!token) {
-                    setIsLoading(false);
-                    console.log("No token found, not authenticated");
-                    return;
-                }
-
-                console.log("Token found, verifying with API...");
-                const response = await api.get("/account/me");
-                console.log("API response:", response.data);
-                setUser(response.data);
-                console.log("User set:", response.data);
-            } catch (error) {
-                console.error("Authentication error:", error);
-                removeLocalStorageItem("token");
-            } finally {
-                setIsLoading(false);
-                console.log("Auth check complete - isAuthenticated:", !!user); // Check this value
+            if (!token) {
+                return null;
             }
-        };
 
-        checkAuthStatus();
-    }, []);
+            const response = await api.get("/auth/me");
+            setUser(response.data);
+            return response.data;
+        },
+        retry: false,
+        staleTime: 5 * 60 * 1000, // 5 minutes
+    });
 
-    const login = async (username: string, password: string) => {
-        try {
-            setIsLoading(true);
-            const response = await api.post("/account/login", {
-                username,
-                password,
-            });
-            const { token, user } = response.data;
-
+    const loginMutation = useMutation({
+        mutationFn: async ({
+            email,
+            password,
+        }: {
+            email: string;
+            password: string;
+        }) => {
+            const response = await api.post(
+                "/auth/login",
+                {
+                    email,
+                    password,
+                },
+                {
+                    timeout: 10000, // 10 seconds
+                }
+            );
+            return response.data;
+        },
+        onSuccess: (data) => {
+            const { token, user } = data;
             setLocalStorageItem("token", token);
             setUser(user);
-            navigate("/");
-        } catch (error) {
+            queryClient.setQueryData(["currentUser"], user);
+            navigate("/home");
+        },
+        onError: (error: any) => {
+            console.log(error.response.data);
             throw new Error("Invalid credentials");
-        } finally {
-            setIsLoading(false);
-        }
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["auth"] });
+        },
+    });
+
+    const registerMutation = useMutation({
+        mutationFn: async ({
+            username,
+            email,
+            password,
+            confirmPassword,
+        }: {
+            username: string;
+            email: string;
+            password: string;
+            confirmPassword: string;
+        }) => {
+            const response = await api.post("/auth/register", {
+                username,
+                email,
+                password,
+                confirmPassword,
+            },
+            {
+                timeout: 10000, // 10 seconds
+            }
+            );
+            return response.data;
+        },
+        onSuccess: (data) => {
+            const { token, user } = data;
+            setLocalStorageItem("token", token);
+            setUser(user);
+            queryClient.setQueryData(["currentUser"], user);
+            navigate("/home");
+        },
+        onError: (error: any) => {
+            console.log(error.response.data);
+            throw new Error("Registration failed");
+        },
+        onSettled: () => {
+            queryClient.invalidateQueries({ queryKey: ["auth"] });
+        },
+    });
+
+    const login = async (email: string, password: string) => {
+        await loginMutation.mutateAsync({ email, password });
     };
 
     const register = async (
         username: string,
         email: string,
-        password: string
+        password: string,
+        confirmPassword: string
     ) => {
-        try {
-            setIsLoading(true);
-            const response = await api.post("/account/register", {
-                username,
-                email,
-                password,
-            });
-            const { token, user } = response.data;
-            setLocalStorageItem("token", token);
-            setUser(user);
-            navigate("/");
-        } catch (error) {
-            throw new Error("Registration failed");
-        } finally {
-            setIsLoading(false);
-        }
+        await registerMutation.mutateAsync({
+            username,
+            email,
+            password,
+            confirmPassword,
+        });
     };
 
     const logout = () => {
         removeLocalStorageItem("token");
         setUser(null);
+        queryClient.setQueryData(["currentUser"], null);
         navigate("/login");
     };
 

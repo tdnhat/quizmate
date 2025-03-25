@@ -1,4 +1,5 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { ChevronRightIcon } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -33,9 +34,10 @@ const Navbar = () => {
                 </div>
             </div>
             {isAuthenticated ? (
-                <Link to="/dashboard">
-                    <button className="bg-cyan-500 text-white font-medium py-2 px-4 rounded-lg shadow hover:bg-cyan-600 transition">
-                        Dashboard
+                <Link to="/home">
+                    <button className="flex items-center w-32 justify-center gap-2 bg-white text-gray-500 cursor-pointer font-medium py-2 px-4 rounded-lg shadow hover:bg-gray-100 transition">
+                        Home
+                        <ChevronRightIcon className="ml-2w-4 h-4" />
                     </button>
                 </Link>
             ) : (

@@ -1,8 +1,6 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 import {
     Form,
     FormControl,
@@ -18,29 +16,13 @@ import { PasswordInput } from "@/features/auth/components/PasswordInput";
 import { FormError } from "@/features/auth/components/FormError";
 import { FormFooter } from "@/features/auth/components/FormFooter";
 import { LoadingButton } from "@/features/auth/components/LoadingButton";
-
-const RegisterFormSchema = z
-    .object({
-        username: z.string().min(3, "Username must be at least 3 characters"),
-        email: z.string().email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
-        acceptTerms: z.boolean().refine((val) => val === true, {
-            message: "You must accept the terms and privacy policy to register",
-        }),
-        passwordConfirmation: z
-            .string()
-            .min(8, "Password must be at least 8 characters"),
-    })
-    .refine((data) => data.passwordConfirmation === data.password, {
-        message: "Passwords do not match",
-        path: ["passwordConfirmation"],
-    });
-
-type RegisterFormValues = z.infer<typeof RegisterFormSchema>;
+import {
+    RegisterFormSchema,
+    RegisterFormValues,
+} from "../../schemas/registerFormSchema";
 
 const RegisterForm = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const { register } = useAuth();
+    const { register, isLoading } = useAuth();
     const navigate = useNavigate();
 
     const form = useForm<RegisterFormValues>({
@@ -49,16 +31,19 @@ const RegisterForm = () => {
             username: "",
             email: "",
             password: "",
-            passwordConfirmation: "",
+            confirmPassword: "",
             acceptTerms: false,
         },
     });
 
     const onSubmit = async (values: RegisterFormValues) => {
         try {
-            setIsLoading(true);
-            console.log(values);
-            await register(values.username, values.email, values.password);
+            await register(
+                values.username,
+                values.email,
+                values.password,
+                values.confirmPassword
+            );
             await new Promise((resolve) => setTimeout(resolve, 1000));
             navigate("/login", {
                 replace: true,
@@ -67,11 +52,33 @@ const RegisterForm = () => {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Registration failed:", error);
-            // Handle specific error cases
+            console.log("Full error response:", error.response?.data);
+
+            if (Array.isArray(error.response?.data)) {
+                const duplicateUserError = error.response.data.find(
+                    (err: { code: string }) => err.code === "DuplicateUserName"
+                );
+
+                if (duplicateUserError) {
+                    form.setError("username", {
+                        type: "manual",
+                        message:
+                            duplicateUserError.description ||
+                            "This username is already taken.",
+                    });
+                    return;
+                }
+            }
+
             if (error.response?.status === 409) {
                 form.setError("email", {
                     type: "manual",
                     message: "This email is already registered",
+                });
+            } else if (error.response?.data?.errors?.ConfirmPassword) {
+                form.setError("confirmPassword", {
+                    type: "manual",
+                    message: error.response.data.errors.ConfirmPassword[0],
                 });
             } else {
                 form.setError("root", {
@@ -79,8 +86,6 @@ const RegisterForm = () => {
                     message: "Registration failed. Please try again.",
                 });
             }
-        } finally {
-            setIsLoading(false);
         }
     };
 
@@ -164,7 +169,7 @@ const RegisterForm = () => {
                         {/* Password Confirmation Field */}
                         <FormField
                             control={form.control}
-                            name="passwordConfirmation"
+                            name="confirmPassword"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Confirm Password</FormLabel>

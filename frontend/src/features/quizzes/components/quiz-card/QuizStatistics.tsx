@@ -12,7 +12,7 @@ const QuizStatistics = ({
     completions,
 }: QuizStatisticsProps) => {
     return (
-        <div className="flex items-center justify-between mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
+        <div className="flex w-full items-center justify-start gap-4 mt-3 pt-3 border-t border-gray-100 text-xs text-gray-500">
             <div className="flex items-center">
                 <Clock size={14} className="mr-1" />
                 {timeMinutes} min
