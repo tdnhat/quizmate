@@ -15,7 +15,10 @@ namespace QuizMate.Api.Mappers
                 Slug = category.Slug,
                 Color = category.Color,
                 Image = category.Image ?? string.Empty,
-                Description = category.Description ?? string.Empty
+                Description = category.Description ?? string.Empty,
+                QuizCount = category.Quizzes.Count,
+                IsFeatured = category.IsFeatured,
+                CreatedAt = category.CreatedAt
             };
         }
 
@@ -28,7 +31,9 @@ namespace QuizMate.Api.Mappers
                 Slug = categoryDto.Slug,
                 Color = categoryDto.Color,
                 Image = categoryDto.Image ?? string.Empty,
-                Description = categoryDto.Description ?? string.Empty
+                Description = categoryDto.Description ?? string.Empty,
+                IsFeatured = categoryDto.IsFeatured,
+                CreatedAt = categoryDto.CreatedAt
             };
         }
 

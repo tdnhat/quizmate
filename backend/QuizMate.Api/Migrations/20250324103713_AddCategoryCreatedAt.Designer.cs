@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250324103713_AddCategoryCreatedAt")]
+    partial class AddCategoryCreatedAt
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e91d3f78-917d-4e99-b5ab-cb06cf1cc7ad",
+                            Id = "662158af-c3af-48c8-9814-3b6ebf49d3da",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "aa9f09a7-c7e8-422d-8f99-0244a1861d26",
+                            Id = "9702f8eb-da50-458d-b585-97ea82402fe0",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -295,9 +298,6 @@ namespace QuizMate.Api.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("QuizCount")
-                        .HasColumnType("int");
 
                     b.Property<string>("Slug")
                         .IsRequired()

@@ -24,7 +24,7 @@ namespace QuizMate.Api.Controllers
             return Ok(categories.ToDtoList());
         }
 
-        [HttpGet("id/{id}")]
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetCategoryById([FromRoute] string id)
         {
             if (!ModelState.IsValid)
@@ -47,6 +47,42 @@ namespace QuizMate.Api.Controllers
                 return BadRequest(ModelState);
             }
             var category = await _unitOfWork.CategoryRepository.GetCategoryBySlugAsync(slug);
+            if (category == null)
+            {
+                return NotFound();
+            }
+            return Ok(category.ToDto());
+        }
+
+        [HttpGet("featured")]
+        public async Task<IActionResult> GetFeaturedCategories()
+        {
+            var categories = await _unitOfWork.CategoryRepository.GetFeaturedCategoriesAsync();
+            return Ok(categories.ToDtoList());
+        }
+
+        [HttpGet("popular")]
+        public async Task<IActionResult> GetPopularCategories()
+        {
+            var categories = await _unitOfWork.CategoryRepository.GetPopularCategoriesAsync();
+            return Ok(categories.ToDtoList());
+        }
+
+        [HttpGet("recently-added")]
+        public async Task<IActionResult> GetRecentlyAddedCategories()
+        {
+            var categories = await _unitOfWork.CategoryRepository.GetRecentlyAddedCategoriesAsync();
+            return Ok(categories.ToDtoList());
+        }
+
+        [HttpPost("toggle-featured/{id}")]
+        public async Task<IActionResult> ToggleFeatured([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var category = await _unitOfWork.CategoryRepository.ToggleFeaturedAsync(id);
             if (category == null)
             {
                 return NotFound();

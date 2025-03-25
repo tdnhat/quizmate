@@ -9,5 +9,8 @@ namespace QuizMate.Api.Models
         public string Color { get; set; } = string.Empty;
         public string? Image { get; set; }
         public List<Quiz> Quizzes { get; set; } = new List<Quiz>();
+        public bool IsFeatured { get; set; } = false;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public int QuizCount { get; set; } = 0;
     }
 }

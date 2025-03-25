@@ -63,15 +63,21 @@ namespace QuizMate.Api.Repositories
             }
 
             // Filter by category
-            if (!string.IsNullOrEmpty(queryObject.CategoryId))
+            if (!string.IsNullOrEmpty(queryObject.CategorySlug))
             {
-                query = query.Where(q => q.CategoryId == queryObject.CategoryId);
+                query = query.Where(q => q.Category.Slug == queryObject.CategorySlug);
             }
 
             // Filter by difficulty
             if (!string.IsNullOrEmpty(queryObject.Difficulty))
             {
                 query = query.Where(q => q.Difficulty == queryObject.Difficulty);
+            }
+
+            // Filter by duration
+            if (queryObject.Duration != null)
+            {
+                query = query.Where(q => q.TimeMinutes <= queryObject.Duration);
             }
 
             // Filter by public/private
@@ -133,7 +139,15 @@ namespace QuizMate.Api.Repositories
             .Include(q => q.Questions)
             .FirstOrDefaultAsync(q => q.Id == id);
         }
-
+        public async Task<IEnumerable<Quiz>> GetQuizzesByCategorySlugAsync(string slug)
+        {
+            return await _context.Quizzes
+                .Include(q => q.Category)
+                .Include(q => q.AppUser)
+                .Include(q => q.Questions)
+                .Where(q => q.Category.Slug == slug)
+                .ToListAsync();
+        }
         public async Task<Quiz?> UpdateQuizAsync(string id, Quiz quiz)
         {
             var existingQuiz = await _context.Quizzes
