@@ -36,23 +36,67 @@ namespace QuizMate.Api.Repositories
 
         public async Task<List<Category>> GetAllCategoriesAsync()
         {
-            return await _context.Categories.ToListAsync();
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .ToListAsync();
         }
 
         public async Task<Category?> GetCategoryByIdAsync(string id)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .FirstOrDefaultAsync(c => c.Id == id);
         }
 
         public async Task<Category?> GetCategoryBySlugAsync(string slug)
         {
-            return await _context.Categories.FirstOrDefaultAsync(c => c.Slug == slug);
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .FirstOrDefaultAsync(c => c.Slug == slug);
         }
 
+        public async Task<List<Category>> GetFeaturedCategoriesAsync()
+        {
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .Where(c => c.IsFeatured)
+                .ToListAsync();
+        }
+
+        public async Task<List<Category>> GetPopularCategoriesAsync()
+        {
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .OrderByDescending(c => c.Quizzes.Count)
+                .ToListAsync();
+        }
+
+        public async Task<List<Category>> GetRecentlyAddedCategoriesAsync()
+        {
+            return await _context.Categories
+                .Include(c => c.Quizzes)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<Category?> ToggleFeaturedAsync(string id)
+        {
+            var category = await _context.Categories
+                .Include(c => c.Quizzes)
+                .FirstOrDefaultAsync(c => c.Id == id);
+            if (category == null)
+            {
+                return null;
+            }
+            category.IsFeatured = !category.IsFeatured;
+            await _context.SaveChangesAsync();
+            return category;
+        }
 
         public async Task<Category?> UpdateCategoryAsync(string id, Category category)
         {
-            var existingCategory = await _context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+            var existingCategory = await _context.Categories
+                .FirstOrDefaultAsync(c => c.Id == id);
             if (existingCategory == null)
             {
                 return null;
@@ -61,6 +105,8 @@ namespace QuizMate.Api.Repositories
             existingCategory.Color = category.Color;
             existingCategory.Image = category.Image;
             existingCategory.Description = category.Description;
+            existingCategory.Slug = SlugHelper.GenerateSlug(category.Name);
+
             await _context.SaveChangesAsync();
             return existingCategory;
         }

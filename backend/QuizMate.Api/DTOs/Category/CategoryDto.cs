@@ -8,6 +8,8 @@ namespace QuizMate.Api.DTOs.Category
         public string Color { get; set; }
         public string Image { get; set; }
         public string Description { get; set; }
-        
+        public int QuizCount { get; set; }
+        public bool IsFeatured { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

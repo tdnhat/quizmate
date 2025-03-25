@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250323033613_AddCategoryQuizCount")]
+    partial class AddCategoryQuizCount
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "e91d3f78-917d-4e99-b5ab-cb06cf1cc7ad",
+                            Id = "6f19d074-b95e-4585-ae11-a94b715f1162",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "aa9f09a7-c7e8-422d-8f99-0244a1861d26",
+                            Id = "53861358-fd2a-43ce-a3d2-8b2c05971ab0",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -280,17 +283,11 @@ namespace QuizMate.Api.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("IsFeatured")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()

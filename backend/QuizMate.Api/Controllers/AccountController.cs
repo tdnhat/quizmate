@@ -60,10 +60,10 @@ namespace QuizMate.Api.Controllers
 
             var appUser = new AppUser
             {
+                UserName = registerDto.Username,
                 Email = registerDto.Email,
-                UserName = registerDto.Email.Split('@')[0],
-                DisplayName = registerDto.Email.Split('@')[0],
-                AvatarUrl = "https://ui-avatars.com/api/?name=" + registerDto.Email.Split('@')[0],
+                DisplayName = registerDto.Username,
+                AvatarUrl = "https://ui-avatars.com/api/?name=" + registerDto.Username,
                 CreatedAt = DateTime.UtcNow
             };
 

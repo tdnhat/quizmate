@@ -17,12 +17,10 @@ namespace QuizMate.Api.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
-        private readonly INotificationService _notificationService;
-        public ResultController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, INotificationService notificationService)
+        public ResultController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
-            _notificationService = notificationService;
         }
 
         [HttpGet]
@@ -90,12 +88,6 @@ namespace QuizMate.Api.Controllers
             result.AppUserId = user.Id;
             var submittedResult = await _unitOfWork.ResultRepository.SubmitQuizAsync(result);
             await _unitOfWork.SaveAsync();
-
-            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(submittedResult.QuizId);
-            if (quiz != null)
-            {
-                await _notificationService.NotifyResultSubmission(submittedResult, quiz.Title);
-            }
 
             return CreatedAtAction(nameof(GetResultById), new { id = submittedResult.Id }, submittedResult.ToDto());
         }

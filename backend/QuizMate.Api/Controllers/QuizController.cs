@@ -48,6 +48,22 @@ namespace QuizMate.Api.Controllers
             return Ok(quiz.ToDto());
         }
 
+        [HttpGet("category/{slug}")]
+        public async Task<IActionResult> GetQuizzesByCategorySlug([FromRoute] string slug)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var quizzes = await _unitOfWork.QuizRepository.GetQuizzesByCategorySlugAsync(slug);
+            if (quizzes == null)
+            {
+                return NotFound();
+            }
+            return Ok(quizzes.Select(quiz => quiz.ToSummaryDto()));
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequestDto createQuizRequestDto)
