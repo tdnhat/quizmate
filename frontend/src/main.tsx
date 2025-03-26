@@ -5,6 +5,7 @@ import { AuthProvider } from "./features/auth/contexts/AuthContext.tsx";
 import { CategoriesProvider } from "./features/categories/contexts/CategoriesContext.tsx";
 import { QuizzesProvider } from "./features/quizzes/contexts/QuizzesContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "react-hot-toast";
 
 const queryClient = new QueryClient({
     defaultOptions: {
@@ -22,6 +23,7 @@ createRoot(document.getElementById("root")!).render(
                 <CategoriesProvider>
                     <QuizzesProvider>
                         <App />
+                        <Toaster position="bottom-right" reverseOrder={false} />
                     </QuizzesProvider>
                 </CategoriesProvider>
             </AuthProvider>

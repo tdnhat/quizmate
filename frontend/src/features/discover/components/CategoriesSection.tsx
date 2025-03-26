@@ -4,9 +4,14 @@ import SectionHeader from "@/features/discover/components/SectionHeader";
 import { useQuery } from "@tanstack/react-query";
 import { getFeaturedCategories } from "@/api/category";
 import { ArrowRight } from "lucide-react";
+import { CategoriesProvider } from "@/features/categories/contexts/CategoriesContext";
 
 const CategoriesSection = () => {
-    const { data: featuredCategories = [], isLoading, error } = useQuery({
+    const {
+        data: featuredCategories = [],
+        isLoading,
+        error,
+    } = useQuery({
         queryKey: ["categories", "featured"],
         queryFn: getFeaturedCategories,
     });
@@ -26,16 +31,19 @@ const CategoriesSection = () => {
     }
 
     return (
-        <div className="flex flex-col w-full">
-            <SectionHeader
-                title="Featured Categories"
-                actionLink="/categories"
-                actionText="View all"
-                icon={<ArrowRight size={16} />}
-            />
+            <div className="flex flex-col w-full">
+                <SectionHeader
+                    title="Featured Categories"
+                    actionLink="/categories"
+                    actionText="View all"
+                    icon={<ArrowRight size={16} />}
+                />
 
-            <CategoryGrid categories={featuredCategories} isLoading={isLoading} />
-        </div>
+                <CategoryGrid
+                    categories={featuredCategories}
+                    isLoading={isLoading}
+                />
+            </div>
     );
 };
 

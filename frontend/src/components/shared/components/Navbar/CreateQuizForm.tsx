@@ -25,7 +25,7 @@ export const CreateQuizForm = ({
             title: "",
             description: "",
             category: "",
-            thumbnail: "",
+            thumbnail: undefined,
             timeMinutes: 5,
             difficulty: "Beginner",
             tags: [],

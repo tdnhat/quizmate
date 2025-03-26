@@ -28,7 +28,6 @@ export const NavbarCreate = () => {
     const handleSubmit = async (values: QuizFormValues) => {
         try {
             setIsLoading(true);
-            console.log(values);
             await new Promise((resolve) => setTimeout(resolve, 1000));
 
             setOpen(false);
@@ -50,7 +49,7 @@ export const NavbarCreate = () => {
                 <Button
                     size="sm"
                     disabled={isLoading || isCreatingQuiz}
-                    className="bg-cyan-500 hover:cursor-pointer hover:bg-cyan-600 transition-colors text-white"
+                    className="bg-cyan-600 hover:cursor-pointer hover:bg-cyan-700 transition-colors text-white"
                 >
                     Create
                 </Button>

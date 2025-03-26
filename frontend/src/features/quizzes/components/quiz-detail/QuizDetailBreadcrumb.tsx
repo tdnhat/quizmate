@@ -1,19 +1,10 @@
-import {
-    Breadcrumb,
-    BreadcrumbSeparator,
-    BreadcrumbItem,
-    BreadcrumbList,
-    BreadcrumbPage,
-} from "@/components/ui/breadcrumb";
 import { Link } from "react-router-dom";
 
-interface CategoryDetailBreadcrumbProps {
-    categoryName?: string;
-}
+import { Breadcrumb, BreadcrumbList, BreadcrumbItem, BreadcrumbSeparator, BreadcrumbPage } from "@/components/ui/breadcrumb";
+import { useTakeQuiz } from "../../hooks/useTakeQuiz";
 
-const CategoryDetailBreadcrumb = ({
-    categoryName,
-}: CategoryDetailBreadcrumbProps) => {
+const QuizDetailBreadcrumb = () => {
+    const { quiz } = useTakeQuiz();
     return (
         <Breadcrumb className="mb-4">
             <BreadcrumbList>
@@ -27,7 +18,7 @@ const CategoryDetailBreadcrumb = ({
                 </BreadcrumbItem>
                 <BreadcrumbSeparator />
                 <BreadcrumbItem>
-                    {categoryName ? (
+                    {quiz?.categoryName ? (
                         <Link
                             to="/categories"
                             className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
@@ -38,17 +29,17 @@ const CategoryDetailBreadcrumb = ({
                         <BreadcrumbPage>Categories</BreadcrumbPage>
                     )}
                 </BreadcrumbItem>
-                {categoryName && (
+                {quiz?.title && (
                     <>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbPage>{categoryName}</BreadcrumbPage>
+                            <BreadcrumbPage>{quiz?.title}</BreadcrumbPage>
                         </BreadcrumbItem>
                     </>
                 )}
             </BreadcrumbList>
         </Breadcrumb>
-    );
+    );  
 };
 
-export default CategoryDetailBreadcrumb;
+export default QuizDetailBreadcrumb;

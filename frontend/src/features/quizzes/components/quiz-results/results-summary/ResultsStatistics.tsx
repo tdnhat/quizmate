@@ -1,17 +1,21 @@
-import { QuizResult } from "@/features/quizzes/contexts/QuizResultsContext";
+import { useQuizResults } from "@/features/quizzes/hooks/useQuizResults";
 import { formatTime } from "@/lib/utils";
 
-interface ResultStatisticsProps {
-    result: QuizResult;
-}
+const ResultStatistics = () => {
+    const { quizResult } = useQuizResults();
 
-const ResultStatistics = ({ result }: ResultStatisticsProps) => {
+    if (!quizResult) {
+        return <div>No results available</div>;
+    }
+
+    console.log(quizResult);
+
     const {
         correctAnswersCount,
         incorrectAnswersCount,
         unansweredCount,
         timeTaken,
-    } = result;
+    } = quizResult;
 
     return (
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full text-center">

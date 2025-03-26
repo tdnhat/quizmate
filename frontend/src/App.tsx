@@ -12,10 +12,10 @@ import LibraryPage from "./pages/home/LibraryPage";
 import ReportsPage from "./pages/home/ReportsPage";
 import TeamsPage from "./pages/home/TeamsPage";
 import NotFoundPage from "./pages/NotFoundPage";
-import CreateQuizPage from "./pages/home/CreateQuizPage";
-import QuizDetailPage from "./pages/home/QuizDetailPage";
-import TakeQuizPage from "./pages/home/TakeQuizPage";
-import QuizResultsPage from "./pages/home/QuizResultsPage";
+import CreateQuizPage from "./pages/home/quizzes/CreateQuizPage";
+import QuizDetailPage from "./pages/home/quizzes/QuizDetailPage";
+import TakeQuizPage from "./pages/home/quizzes/TakeQuizPage";
+import QuizResultsPage from "./pages/home/quizzes/QuizResultsPage";
 import CategoryPage from "./pages/home/categories/CategoryPage";
 import FeaturedCategoriesPage from "./pages/home/categories/FeaturedCategoriesPage";
 import PopularCategoriesPage from "./pages/home/categories/PopularCategoriesPage";
@@ -35,7 +35,7 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                     <Route element={<HomeLayout />}>
                         <Route path="/home" element={<HomePage />} />
-                        <Route path="/discover" element={<DiscoverPage />} />
+                        {/* <Route path="/home" element={<DiscoverPage />} /> */}
                         <Route path="/library" element={<LibraryPage />} />
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="teams" element={<TeamsPage />} />
@@ -64,16 +64,16 @@ function App() {
                         />
 
                         <Route
-                            path="quizzes/:quizId"
+                            path="quizzes/:quizSlug"
                             element={<QuizDetailPage />}
                         />
 
                         <Route
-                            path="quizzes/:quizId/take"
+                            path="quizzes/:quizSlug/take"
                             element={<TakeQuizPage />}
                         />
                         <Route
-                            path="quizzes/:quizId/results"
+                            path="quizzes/:quizSlug/results/:resultId"
                             element={<QuizResultsPage />}
                         />
                     </Route>

@@ -2,13 +2,12 @@
 import { Outlet, NavLink, useNavigate } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
-    Home,
     BarChart2,
-    Users,
     Settings,
     LogOut,
-    Compass,
-    List,
+    Layers,
+    BookCheck,
+    House,
 } from "lucide-react";
 
 const HomeLayout = () => {
@@ -22,11 +21,10 @@ const HomeLayout = () => {
 
     // Define navigation items with icons
     const navItems = [
-        { icon: Home, name: "Home", path: "/home" },
-        { icon: Compass, name: "Discover", path: "/discover" },
-        { icon: List, name: "Library", path: "/library" },
+        { icon: House, name: "Home", path: "/home" },
+        { icon: Layers, name: "Categories", path: "/categories" },
+        { icon: BookCheck, name: "Quizzes", path: "/quizzes" },
         { icon: BarChart2, name: "Reports", path: "/reports" },
-        { icon: Users, name: "Teams", path: "/teams" },
         { icon: Settings, name: "Settings", path: "/settings" },
     ];
 

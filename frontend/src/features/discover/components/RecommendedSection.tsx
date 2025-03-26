@@ -14,8 +14,8 @@ const RecommendedSection = () => {
         return (
             <div className="flex flex-col w-full">
                 <SectionHeader
-                    title="Categories"
-                    actionLink="/categories"
+                    title="Recommended for you"
+                    actionLink="/quizzes"
                     actionText="View all"
                     icon={<ArrowRight size={16} />}
                 />

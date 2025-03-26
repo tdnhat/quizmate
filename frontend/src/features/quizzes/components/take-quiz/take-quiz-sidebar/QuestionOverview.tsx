@@ -5,26 +5,21 @@ import { Button } from "@/components/ui/button";
 import QuestionLegend from "./QuestionLegend";
 import { useTakeQuiz } from "@/features/quizzes/hooks/useTakeQuiz";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import LoadingIndicator from "@/components/shared/components/LoadingIndicator";
 import QuizSummary from "./QuizSummary";
-
+import { toast } from "react-hot-toast";
 const QuestionOverview = () => {
-    const [isLoading, setIsLoading] = useState(false);
-    const { submitQuiz, quiz } = useTakeQuiz();
+    const { submitQuiz, quiz, isSubmitting } = useTakeQuiz();
     const navigate = useNavigate();
 
     const handleSubmitQuiz = async () => {
         try {
-            setIsLoading(true);
-            await submitQuiz();
-            await new Promise((resolve) => setTimeout(resolve, 2000));
-            console.log("Quiz submitted successfully");
-            navigate(`/quizzes/${quiz.id}/results`);
+            const resultId = await submitQuiz();
+            await new Promise((resolve) => setTimeout(resolve, 500));
+            navigate(`/quizzes/${quiz.slug}/results/${resultId}`);
         } catch (error) {
             console.error("Error submitting quiz:", error);
-        } finally {
-            setIsLoading(false);
+            toast.error("Error submitting quiz");
         }
     };
 
@@ -48,10 +43,10 @@ const QuestionOverview = () => {
 
                 <Button
                     onClick={handleSubmitQuiz}
-                    disabled={isLoading}
+                    disabled={isSubmitting}
                     className="bg-cyan-500 w-full hover:bg-cyan-600 text-white hover:cursor-pointer transition-colors"
                 >
-                    {isLoading ? (
+                    {isSubmitting ? (
                         <>
                             <LoadingIndicator />
                             <span>Submitting...</span>

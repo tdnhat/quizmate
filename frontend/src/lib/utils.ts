@@ -1,4 +1,5 @@
 import { DifficultyLevel } from "@/types/quiz";
+import { User } from "@/types/user";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -25,4 +26,17 @@ export const formatTime = (seconds: number) => {
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, "0")}`;
+};
+
+export const getUserInitials = (user: User) => {
+    console.log(user);
+    if (user.displayName) {
+        return user.displayName
+            .split(" ")
+            .map((word) => word[0])
+            .slice(0, 2)
+            .join("")
+            .toUpperCase();
+    }
+    return user.userName.charAt(0).toUpperCase();
 };

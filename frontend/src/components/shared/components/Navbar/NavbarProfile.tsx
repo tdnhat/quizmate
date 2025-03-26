@@ -20,17 +20,11 @@ const NavbarProfile = () => {
     const navigate = useNavigate();
     const [hasImageError, setHasImageError] = useState(false);
 
-    console.log(user);
-
     const name = user?.displayName || user?.userName || "Guest";
     const avatarUrl = user?.avatarUrl || undefined;
 
     const getInitials = (name: string) => {
-        return name
-            .split(" ")
-            .map((n) => n.charAt(0))
-            .join("")
-            .toUpperCase();
+        return name.charAt(0).toUpperCase();
     };
 
     const handleLogout = async () => {

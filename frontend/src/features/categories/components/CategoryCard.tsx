@@ -5,6 +5,24 @@ interface Props {
     category: Category;
 }
 
+const gradientPresets = {
+    blue: "from-blue-500 to-cyan-400",
+    green: "from-green-500 to-emerald-400",
+    purple: "from-purple-500 to-indigo-400",
+    red: "from-red-600 to-rose-500",
+    orange: "from-orange-500 to-amber-400",
+    yellow: "from-yellow-600 to-amber-500",
+    lime: "from-lime-600 to-green-500",
+    teal: "from-teal-600 to-cyan-500",
+    indigo: "from-indigo-600 to-blue-500",
+    pink: "from-pink-600 to-rose-500",
+    emerald: "from-emerald-600 to-green-500",
+    sky: "from-sky-600 to-blue-400",
+    violet: "from-violet-600 to-purple-500",
+    slate: "from-slate-700 to-gray-600",
+    default: "from-blue-700 to-blue-500",
+};
+
 const CategoryCard = ({ category }: Props) => {
     return (
         <Link
@@ -14,9 +32,12 @@ const CategoryCard = ({ category }: Props) => {
             {/* Background gradient overlay */}
             <div
                 className={`absolute inset-0 bg-gradient-to-br ${
-                    category.color
-                        ? category.color
-                        : "from-blue-700 to-blue-500"
+                    category.colorPreset &&
+                    category.colorPreset in gradientPresets
+                        ? gradientPresets[
+                            category.colorPreset as keyof typeof gradientPresets
+                        ]
+                        : gradientPresets.default
                 } transition-all duration-300 group-hover:opacity-90`}
             ></div>
 
@@ -30,9 +51,6 @@ const CategoryCard = ({ category }: Props) => {
                     }}
                 />
             )}
-
-            {/* Hover overlay for darkening effect */}
-            <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-20 transition-opacity duration-700"></div>
 
             {/* Content overlay */}
             <div className="absolute inset-0 p-4 flex flex-col justify-between">

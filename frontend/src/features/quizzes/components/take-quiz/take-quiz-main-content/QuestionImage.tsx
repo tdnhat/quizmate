@@ -4,12 +4,12 @@ const QuestionImage = () => {
     const { getCurrentQuestion, currentQuestionIndex } = useTakeQuiz();
     const currentQuestion = getCurrentQuestion();
     
-    if (!currentQuestion?.image) return null;
+    if (!currentQuestion?.imageUrl) return null;
     
     return (
-        <div className="mt-2 ml-11 relative h-40 w-full overflow-hidden rounded-md">
+        <div className="flex justify-center items-center my-2 relative max-h-60 w-full overflow-hidden rounded-md">
             <img
-                src={currentQuestion.image || "/placeholder.svg"}
+                src={currentQuestion.imageUrl || "/placeholder.svg"}
                 alt={`Image for question ${currentQuestionIndex + 1}`}
                 className="object-cover"
                 onError={(e) => {

@@ -1,36 +1,13 @@
-import { useParams } from "react-router-dom";
 import { useQuizResults } from "../../hooks/useQuizResults";
-import { useEffect } from "react";
 import ResultsSummary from "./results-summary/ResultsSummary";
 import QuestionReview from "./question-review/QuestionReview";
 import Loader from "@/components/shared/components/Loader";
 
 const QuizResultsContainer = () => {
-    const { quizId } = useParams();
-    const { quizResult, isLoading, error, fetchQuizResult } = useQuizResults();
-
-    useEffect(() => {
-        if (quizId) {
-            fetchQuizResult(quizId);
-        }
-    }, [quizId, fetchQuizResult]);
+    const { quizResult, isLoading } = useQuizResults();
 
     if (isLoading) {
         return <Loader />;
-    }
-
-    if (error) {
-        return (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
-                <p>{error}</p>
-                <button
-                    onClick={() => quizId && fetchQuizResult(quizId)}
-                    className="mt-2 text-sm text-red-700 underline"
-                >
-                    Retry
-                </button>
-            </div>
-        );
     }
 
     if (!quizResult) {
@@ -45,13 +22,11 @@ const QuizResultsContainer = () => {
             </div>
 
             {/* Score Summary Section */}
-            <ResultsSummary result={quizResult} />
+            <ResultsSummary />
 
             {/* Question Review Section */}
-            <div>
-                <h2 className="text-xl font-semibold mb-4">Question Review</h2>
-                <QuestionReview result={quizResult} />
-            </div>
+            <QuestionReview />
+
         </div>
     );
 };

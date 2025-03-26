@@ -7,11 +7,11 @@ interface QuizThumbnailProps {
 
 const QuizThumbnail = ({ quiz }: QuizThumbnailProps) => {
     return (
-        <div className="relative h-36">
+        <div className="relative h-36 overflow-hidden">
             <img
                 src={quiz.thumbnail}
                 alt={quiz.title}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-cover transition-transform duration-500 ease-in-out transform group-hover:scale-110"
                 onError={(e) => {
                     // Fallback to a gradient if image fails to load
                     const target = e.target as HTMLImageElement;
