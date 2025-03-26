@@ -102,7 +102,7 @@ namespace QuizMate.Api.Repositories
                 return null;
             }
             existingCategory.Name = category.Name;
-            existingCategory.Color = category.Color;
+            existingCategory.ColorPreset = category.ColorPreset;
             existingCategory.Image = category.Image;
             existingCategory.Description = category.Description;
             existingCategory.Slug = SlugHelper.GenerateSlug(category.Name);

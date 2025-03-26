@@ -1,3 +1,5 @@
+using QuizMate.Api.DTOs.Account;
+
 namespace QuizMate.Api.DTOs.Quiz
 {
     public class QuizSummaryDto
@@ -18,7 +20,7 @@ namespace QuizMate.Api.DTOs.Quiz
         public int Completions { get; set; }
 
         public string CategoryName { get; set; }
-        public string AppUserName { get; set; }
+        public UserDto AppUser { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();
 

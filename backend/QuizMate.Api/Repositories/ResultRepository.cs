@@ -27,6 +27,8 @@ namespace QuizMate.Api.Repositories
         {
             return await _context.Results
                 .Include(r => r.Quiz)
+                    .ThenInclude(q => q.Questions)
+                        .ThenInclude(q => q.Answers)
                 .Include(r => r.AppUser)
                 .Include(r => r.ResultAnswers)
                 .FirstOrDefaultAsync(r => r.Id == id);
@@ -36,6 +38,8 @@ namespace QuizMate.Api.Repositories
         {
             return await _context.Results
                 .Include(r => r.Quiz)
+                    .ThenInclude(q => q.Questions)
+                        .ThenInclude(q => q.Answers)
                 .Include(r => r.AppUser)
                 .Include(r => r.ResultAnswers)
                 .Where(r => r.AppUserId == userId)

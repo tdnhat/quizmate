@@ -1,4 +1,5 @@
 using QuizMate.Api.DTOs.Question;
+using QuizMate.Api.DTOs.Answer;
 using QuizMate.Api.Models;
 
 namespace QuizMate.Api.Mappers
@@ -15,7 +16,7 @@ namespace QuizMate.Api.Mappers
                 Points = question.Points,
                 ImageUrl = question.ImageUrl,
                 Explanation = question.Explanation,
-                Answers = question.Answers.Select(a => a.ToDto()).ToList()
+                Answers = question.Answers.Select(a => a.ToDto()).ToList() ?? new List<AnswerDto>()
             };
         }
 
