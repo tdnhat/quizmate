@@ -1,14 +1,13 @@
-import { QuizResult } from "@/features/quizzes/contexts/QuizResultsContext";
 import { Button } from "@/components/ui/button";
-import { HomeIcon, RefreshCcwIcon } from "lucide-react";
-import ResultStatistics from "./Resultsstatistics";
+import ResultStatistics from "./ResultsStatistics";
+import { useQuizResults } from "@/features/quizzes/hooks/useQuizResults";
 
-interface ResultsSummaryProps {
-    result: QuizResult;
-}
+const ResultsSummary = () => {
+    const { quizResult } = useQuizResults();
 
-const ResultsSummary = ({ result }: ResultsSummaryProps) => {
-    const { score, maxScore } = result;
+    if (!quizResult) {
+        return <div>No results available</div>;
+    }
 
     return (
         <div className="bg-white p-6 rounded-lg shadow">
@@ -16,15 +15,15 @@ const ResultsSummary = ({ result }: ResultsSummaryProps) => {
                 {/* Score */}
                 <div className="flex flex-col items-center gap-2">
                     <span className="text-5xl font-bold text-cyan-700">
-                        {score}{" "}
+                        {quizResult.score}{" "}
                         <span className="text-xl font-semibold text-gray-500">
-                            / {maxScore}
+                            / {quizResult.maxScore}
                         </span>
                     </span>
                 </div>
 
                 {/* Result Statistics */}
-                <ResultStatistics result={result} />
+                <ResultStatistics />
 
                 <span>Keep up the good work!</span>
 

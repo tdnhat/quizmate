@@ -1,31 +1,27 @@
-import { User } from "@/types/user";
 import { useState, useEffect } from "react";
 
 interface AuthorInfoProps {
-    author?: User;
+    displayName?: string;
+    avatarUrl?: string;
+    userName?: string;
 }
 
-const AuthorInfo = ({ author }: AuthorInfoProps) => {
+const AuthorInfo = ({ displayName, avatarUrl, userName }: AuthorInfoProps) => {
     const [showInitials, setShowInitials] = useState(true);
 
     useEffect(() => {
-        if (author && author.avatarUrl) {
+        if (avatarUrl) {
             setShowInitials(false);
         }
-    }, [author]);
+    }, [avatarUrl]);
 
     const getInitials = () => {
-        if (!author || !author.userName) return "?";
+        if (!displayName) return "?";
 
-        return (
-            author.userName
-                .split(/[-\s]/)[0]
-                .charAt(0)
-                .toUpperCase() || "?"
-        );
+        return displayName.split(/[-\s]/)[0].charAt(0).toUpperCase() || "?";
     };
 
-    if (!author || !author.userName) {
+    if (!displayName || !userName) {
         return (
             <div className="flex items-center space-x-2">
                 <div className="w-6 h-6 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center text-xs font-semibold">
@@ -40,10 +36,10 @@ const AuthorInfo = ({ author }: AuthorInfoProps) => {
 
     return (
         <div className="flex items-center space-x-2">
-            {!showInitials && author.avatarUrl ? (
+            {!showInitials && avatarUrl ? (
                 <img
-                    src={author.avatarUrl}
-                    alt={author.userName}
+                    src={avatarUrl}
+                    alt={displayName}
                     className="w-6 h-6 rounded-full"
                     onError={() => setShowInitials(true)}
                 />
@@ -53,7 +49,7 @@ const AuthorInfo = ({ author }: AuthorInfoProps) => {
                 </div>
             )}
             <span className="text-xs text-gray-600 truncate max-w-[100px]">
-                {author.userName}
+                {displayName}
             </span>
         </div>
     );

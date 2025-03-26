@@ -1,20 +1,22 @@
 import { Button } from "@/components/ui/button";
 import { ChevronRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { useTakeQuiz } from "@/features/quizzes/hooks/useTakeQuiz";
 
-interface QuizCTAButtonProps {
-    quizId: string;
-}
-
-const QuizCTAButton = ({ quizId }: QuizCTAButtonProps) => {
+const QuizCTAButton = () => {
+    const { quiz } = useTakeQuiz();
     const navigate = useNavigate();
 
     const handleTakeQuiz = () => {
-        navigate(`/quizzes/${quizId}/take`);
+        navigate(`/quizzes/${quiz?.slug}/take`, {
+            state: {
+                quiz,
+            },
+        });
     };
     return (
         <Button
-            className="w-full text-lg py-6 bg-cyan-500 text-white cursor-pointer hover:bg-cyan-700 transition-colors"
+            className="w-full text-lg py-6 bg-cyan-600 text-white cursor-pointer hover:bg-cyan-700 transition-colors"
             size="lg"
             onClick={handleTakeQuiz}
         >

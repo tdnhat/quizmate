@@ -1,9 +1,15 @@
-import { Question, Quiz } from "@/types/quiz";
+import { submitQuizResults } from "@/api/quiz";
+import { Question, Quiz, QuizResultPayload } from "@/types/quiz";
+import { useMutation } from "@tanstack/react-query";
 import { createContext, ReactNode, useState } from "react";
 
 type QuizAnswer = {
     questionId: string;
     selectedOptionId: string;
+};
+
+type SubmitQuizResponse = {
+    id: string;
 };
 
 type QuizContextType = {
@@ -13,12 +19,13 @@ type QuizContextType = {
     timeRemaining: number;
     quizCompleted: boolean;
     flaggedQuestions: string[];
+    isSubmitting: boolean;
     navigateToQuestion: (index: number) => void;
     goToNextQuestion: () => void;
     goToPreviousQuestion: () => void;
     updateTimeRemaining: (seconds: number) => void;
     submitAnswer: (questionId: string, selectedOptionId: string) => void;
-    submitQuiz: () => void;
+    submitQuiz: () => Promise<string>;
     isQuestionAnswered: (questionId: string) => boolean;
     getSelectedOptionId: (questionId: string) => string | undefined;
     getCurrentQuestion: () => Question | undefined;
@@ -42,6 +49,17 @@ export const TakeQuizProvider = ({ children, quiz }: TakeQuizProviderProps) => {
     );
     const [quizCompleted, setQuizCompleted] = useState(false);
     const [flaggedQuestions, setFlaggedQuestions] = useState<string[]>([]);
+
+    const { mutateAsync, isPending: isSubmitting } = useMutation<
+        SubmitQuizResponse,
+        Error,
+        QuizResultPayload
+    >({
+        mutationFn: submitQuizResults,
+        onSuccess: () => {
+            setQuizCompleted(true);
+        },
+    });
 
     const navigateToQuestion = (index: number) => {
         if (index >= 0 && index < (quiz.questions?.length || 0)) {
@@ -82,11 +100,17 @@ export const TakeQuizProvider = ({ children, quiz }: TakeQuizProviderProps) => {
         }
     };
 
-    const submitQuiz = () => {
-        setQuizCompleted(true);
-        console.log("Quiz submitted");
-        console.log(answers);
-        console.log("Time taken:", quiz.timeMinutes * 60 - timeRemaining);
+    const submitQuiz = async (): Promise<string> => {
+            const response = await mutateAsync({
+                quizId: quiz.id,
+                timeTaken: quiz.timeMinutes * 60 - timeRemaining,
+                resultAnswers: answers.map((a) => ({
+                    questionId: a.questionId,
+                    answerId: a.selectedOptionId,
+            })),
+        });
+        console.log(response);
+        return response.id;
     };
 
     const isQuestionAnswered = (questionId: string) => {
@@ -127,6 +151,7 @@ export const TakeQuizProvider = ({ children, quiz }: TakeQuizProviderProps) => {
         timeRemaining,
         quizCompleted,
         flaggedQuestions,
+        isSubmitting,
         navigateToQuestion,
         goToNextQuestion,
         goToPreviousQuestion,

@@ -12,6 +12,17 @@ export type QuizFilters = {
     sortBy: string;
 }
 
+export interface QuizResultAnswer {
+    questionId: string;
+    answerId: string;
+}
+
+export interface QuizResultPayload {
+    quizId: string;
+    timeTaken: number;
+    resultAnswers: QuizResultAnswer[];
+}
+
 export type DifficultyLevel = "Beginner" | "Intermediate" | "Advanced";
 
 export interface QuizAuthor {
@@ -31,19 +42,20 @@ export interface Question {
     id: string;
     quizId: string;
     text: string;
-    type: string;
+    questionType: string;
     points: number;
     answers: Answer[];
     explanation?: string;
-    image?: string;
+    imageUrl?: string;
 }
 
 export interface Quiz {
     id: string;
+    slug: string;
     title: string;
     description?: string;
     categoryName?: string;
-    author: User;
+    appUser: User;
     thumbnail?: string;
     timeMinutes: number;
     questionCount: number;

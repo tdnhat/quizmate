@@ -6,14 +6,14 @@ interface QuizPreviewQuestionsProps {
 }
 
 const QuizPreviewQuestions = ({ questions }: QuizPreviewQuestionsProps) => {
-    return (
+        return (
         <div>
             <h2 className="text-2xl font-semibold mb-4">Quiz Preview</h2>
             <div className="space-y-4">
-                {questions &&
-                    questions
-                        .slice(0, 2)
-                        .map((question, index) => (
+                    {questions &&
+                        questions
+                            .slice(0, 2)
+                            .map((question, index) => (
                             <QuizQuestionPreview
                                 key={question.id}
                                 question={question}

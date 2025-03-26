@@ -27,7 +27,7 @@ const QuestionDisplay = () => {
                         </div>
                     </div>
 
-                    {currentQuestion.image && <QuestionImage />}
+                    {currentQuestion.imageUrl && <QuestionImage />}
 
                     <AnswersList />
 

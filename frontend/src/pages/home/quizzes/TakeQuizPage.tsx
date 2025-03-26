@@ -1,13 +1,19 @@
 import TakeQuizContainer from "@/features/quizzes/components/take-quiz/TakeQuizContainer";
 import { TakeQuizProvider } from "@/features/quizzes/contexts/TakeQuizContext";
-import { useQuizzes } from "@/features/quizzes/hooks/useQuizzes";
-import { useParams } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const TakeQuizPage = () => {
-    const { quizId } = useParams();
-    const { quizzes } = useQuizzes();
+    const location = useLocation();
+    const navigate = useNavigate();
+    const quiz = location.state?.quiz;
 
-    const quiz = quizzes.find((quiz) => quiz.id === quizId);
+    // If no quiz data is passed, redirect to quiz detail page
+    useEffect(() => {
+        if (!quiz) {
+            navigate(-1);
+        }
+    }, [quiz, navigate]);
 
     if (!quiz) {
         return null;

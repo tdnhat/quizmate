@@ -2,7 +2,7 @@ export interface Category {
     id: string;
     name: string;
     description: string;
-    color: string;
+    colorPreset: string;
     image?: string;
     slug: string;
     isFeatured: boolean;

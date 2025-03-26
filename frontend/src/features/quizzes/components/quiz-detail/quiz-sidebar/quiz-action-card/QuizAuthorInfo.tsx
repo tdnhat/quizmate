@@ -1,4 +1,5 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { getUserInitials } from "@/lib/utils";
 import { User } from "@/types/user";
 import { Link } from "react-router-dom";
 
@@ -14,15 +15,26 @@ const QuizAuthorInfo = ({ author }: QuizAuthorInfoProps) => {
             </h3>
             <div className="flex items-center">
                 <Avatar className="h-10 w-10 mr-3">
-                    <AvatarImage src={author.avatarUrl} alt={author.username} />
-                    <AvatarFallback>
-                        {author.username.split("-")[0].charAt(0).toUpperCase()}
-                    </AvatarFallback>
+                    {author.avatarUrl ? (
+                        <AvatarImage
+                            src={author.avatarUrl}
+                            alt={author.userName}
+                            onError={(e) => {
+                                (e.target as HTMLImageElement).style.display =
+                                    "none";
+                            }}
+                        />
+                    ) : null}
+                    <AvatarFallback>{getUserInitials(author)}</AvatarFallback>
                 </Avatar>
                 <div>
-                    <p className="font-medium">{author.username}</p>
+                    <p className="font-medium">
+                        {author.displayName
+                            ? author.displayName
+                            : author.userName}
+                    </p>
                     <Link
-                        to={`/authors/${author.username}`}
+                        to={`/authors/${author.userName}`}
                         className="text-sm text-blue-600 hover:underline"
                     >
                         View profile

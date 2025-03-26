@@ -12,7 +12,7 @@ interface QuizCardProps {
 const QuizCard = ({ quiz }: QuizCardProps) => {
     return (
         <Link
-            to={`/quizzes/${quiz.id}`}
+            to={`/quizzes/${quiz.slug}`}
             className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-gray-100 hover:border-gray-200 group"
         >
             {/* Thumbnail with overlay */}
@@ -29,7 +29,11 @@ const QuizCard = ({ quiz }: QuizCardProps) => {
                 </p>
 
                 <div className="flex items-center mt-3 justify-between">
-                    <AuthorInfo author={quiz.author} />
+                    <AuthorInfo
+                        userName={quiz.appUser.userName}
+                        displayName={quiz.appUser.displayName}
+                        avatarUrl={quiz.appUser.avatarUrl}
+                    />
 
                     <RatingDisplay rating={quiz.rating} />
                 </div>
