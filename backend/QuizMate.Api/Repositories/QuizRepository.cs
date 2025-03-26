@@ -137,8 +137,20 @@ namespace QuizMate.Api.Repositories
             .Include(q => q.Category)
             .Include(q => q.AppUser)
             .Include(q => q.Questions)
+                .ThenInclude(q => q.Answers)
             .FirstOrDefaultAsync(q => q.Id == id);
         }
+
+        public async Task<Quiz?> GetQuizBySlugAsync(string slug)
+        {
+            return await _context.Quizzes
+                .Include(q => q.Category)
+                .Include(q => q.AppUser)
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Slug == slug);
+        }
+
         public async Task<IEnumerable<Quiz>> GetQuizzesByCategorySlugAsync(string slug)
         {
             return await _context.Quizzes

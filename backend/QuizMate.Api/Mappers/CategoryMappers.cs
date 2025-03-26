@@ -13,7 +13,7 @@ namespace QuizMate.Api.Mappers
                 Id = category.Id,
                 Name = category.Name,
                 Slug = category.Slug,
-                Color = category.Color,
+                ColorPreset = category.ColorPreset,
                 Image = category.Image ?? string.Empty,
                 Description = category.Description ?? string.Empty,
                 QuizCount = category.Quizzes.Count,
@@ -29,7 +29,7 @@ namespace QuizMate.Api.Mappers
                 Id = categoryDto.Id,
                 Name = categoryDto.Name,
                 Slug = categoryDto.Slug,
-                Color = categoryDto.Color,
+                ColorPreset = categoryDto.ColorPreset,
                 Image = categoryDto.Image ?? string.Empty,
                 Description = categoryDto.Description ?? string.Empty,
                 IsFeatured = categoryDto.IsFeatured,
@@ -52,7 +52,7 @@ namespace QuizMate.Api.Mappers
             return new Category
             {
                 Name = createCategoryRequestDto.Name,
-                Color = createCategoryRequestDto.Color ?? ColorHelper.GetRandomGradient(),
+                ColorPreset = createCategoryRequestDto.ColorPreset ?? ColorHelper.GetRandomColorPreset(),
                 Image = createCategoryRequestDto.Image ?? string.Empty,
                 Description = createCategoryRequestDto.Description ?? string.Empty
             };
@@ -64,7 +64,7 @@ namespace QuizMate.Api.Mappers
             {
                 Id = id,
                 Name = updateCategoryRequestDto.Name,
-                Color = updateCategoryRequestDto.Color ?? ColorHelper.GetRandomGradient(),
+                ColorPreset = updateCategoryRequestDto.ColorPreset ?? ColorHelper.GetRandomColorPreset(),
                 Image = updateCategoryRequestDto.Image ?? string.Empty,
                 Description = updateCategoryRequestDto.Description ?? string.Empty
             };

@@ -1,5 +1,7 @@
 using QuizMate.Api.Models;
 using QuizMate.Api.DTOs.Question;
+using QuizMate.Api.DTOs.Account;
+
 namespace QuizMate.Api.DTOs.Quiz
 {
     public class QuizDto
@@ -21,7 +23,7 @@ namespace QuizMate.Api.DTOs.Quiz
         public int Completions { get; set; }
 
         public string CategoryName { get; set; }
-        public string AppUserName { get; set; }
+        public UserDto AppUser { get; set; }
 
         public List<string> Tags { get; set; } = new List<string>();
 

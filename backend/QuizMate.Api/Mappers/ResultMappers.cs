@@ -10,10 +10,13 @@ namespace QuizMate.Api.Mappers
             return new ResultDto
             {
                 Id = result.Id,
-                QuizId = result.QuizId,
+                Quiz = result.Quiz.ToDto(),
                 AppUserId = result.AppUserId,
                 Score = result.Score,
                 MaxScore = result.MaxScore,
+                CorrectAnswersCount = result.CorrectAnswersCount,
+                IncorrectAnswersCount = result.IncorrectAnswersCount,
+                UnansweredCount = result.UnansweredCount,
                 IsPassed = result.IsPassed,
                 PassRate = result.PassRate,
                 AttemptedAt = result.AttemptedAt,
@@ -27,7 +30,6 @@ namespace QuizMate.Api.Mappers
             return new Result
             {
                 QuizId = createResultRequestDto.QuizId,
-                AppUserId = createResultRequestDto.AppUserId,
                 TimeTaken = createResultRequestDto.TimeTaken,
                 ResultAnswers = createResultRequestDto.ResultAnswers.Select(ra => ra.ToModel()).ToList()
             };
