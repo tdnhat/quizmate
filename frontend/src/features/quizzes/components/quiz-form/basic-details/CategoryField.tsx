@@ -1,5 +1,4 @@
 import { Control } from "react-hook-form";
-import { Category } from "@/types/category";
 import {
     FormControl,
     FormField,
@@ -15,22 +14,22 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { useCategories } from "@/features/categories/hooks/useCategories";
 
 interface CategoryFieldProps {
     control: Control<QuizFormValues>;
-    categories: Category[];
     isLoading: boolean;
 }
 
 const CategoryField = ({
     control,
-    categories,
     isLoading,
 }: CategoryFieldProps) => {
+    const { categories } = useCategories();
     return (
         <FormField
             control={control}
-            name="category"
+            name="categoryId"
             render={({ field }) => (
                 <FormItem>
                     <FormLabel className="mb-2">Category</FormLabel>

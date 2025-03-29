@@ -1,4 +1,3 @@
-import { Category } from "@/types/category";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -7,11 +6,8 @@ import { useQuizForm } from "../../hooks/useQuizForm";
 import { quizFormSchema, QuizFormValues } from "../../schemas/quizFormSchema";
 import { QuizBasicDetails } from "./basic-details/QuizBasicDetails";
 import { ChevronRightIcon } from "lucide-react";
-interface BasicDetailsStepProps {
-    categories: Category[];
-}
 
-export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
+export const BasicDetailsStep = () => {
     const { formValues, setFormValues, goToNextStep } = useQuizForm();
 
     const form = useForm<QuizFormValues>({
@@ -19,10 +15,12 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
         defaultValues: {
             title: formValues.title || "",
             description: formValues.description || "",
-            category: formValues.category || "",
+            categoryId: formValues.categoryId || "",
             thumbnail: formValues.thumbnail || undefined,
             timeMinutes: formValues.timeMinutes || 5,
             difficulty: formValues.difficulty || "Beginner",
+            isPublic: formValues.isPublic ?? true,
+            passingScore: formValues.passingScore || 0,
             tags: formValues.tags || [],
             questions: formValues.questions || [],
         },
@@ -47,14 +45,13 @@ export const BasicDetailsStep = ({ categories }: BasicDetailsStepProps) => {
 
                 <QuizBasicDetails
                     form={form}
-                    categories={categories}
                     isLoading={false}
                 />
 
                 <div className="flex justify-end">
                     <Button
                         type="submit"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors"
+                        className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors cursor-pointer"
                     >
                         Next
                         <ChevronRightIcon className="h-4 w-4" />

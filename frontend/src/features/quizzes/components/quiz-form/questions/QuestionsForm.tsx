@@ -11,7 +11,6 @@ import {
 } from "../../../schemas/quizFormSchema";
 import { ChevronLeftIcon } from "lucide-react";
 import { QuestionDetails } from "./QuestionDetails";
-import { v4 as uuidv4 } from "uuid";
 import { AnswersList } from "./AnswersList";
 
 interface QuestionsFormProps {
@@ -27,36 +26,31 @@ export const QuestionsForm = ({ initialValues, editIndex, onComplete }: Question
         resolver: zodResolver(questionFormSchema),
         defaultValues: initialValues || {
             text: "",
-            type: "multiple-choice",
+            questionType: "SingleChoice",
             points: 1,
-            answers: [
-                { id: uuidv4(), text: "", isCorrect: false, explanation: "" },
-                { id: uuidv4(), text: "", isCorrect: false, explanation: "" }
-            ],
-            image: undefined,
+            answers: [],
+            imageUrl: undefined,
             explanation: ""
         },
     });
 
-    const questionType = form.watch("type");
+    const questionType = form.watch("questionType");
 
     // When type changes to true-false, reset answers
     useEffect(() => {
-        if (questionType === "true-false") {
+        if (questionType === "TrueFalse") {
             const currentAnswers = form.getValues("answers");
             if (currentAnswers.length !== 2 || 
                 currentAnswers[0].text.toLowerCase() !== "true" || 
                 currentAnswers[1].text.toLowerCase() !== "false") {
                 
                 const trueAnswer: AnswerFormValues = { 
-                    id: uuidv4(), 
                     text: "True", 
                     isCorrect: false,
                     explanation: "" 
                 };
                 
                 const falseAnswer: AnswerFormValues = { 
-                    id: uuidv4(), 
                     text: "False", 
                     isCorrect: false,
                     explanation: "" 

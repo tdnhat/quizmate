@@ -1,8 +1,7 @@
 import { UseFormReturn, useFieldArray } from "react-hook-form";
 import { QuestionFormValues } from "../../../schemas/quizFormSchema";
 import { Button } from "@/components/ui/button";
-import { PlusIcon, Trash2 } from "lucide-react";
-import { v4 as uuidv4 } from "uuid";
+import { PlusIcon } from "lucide-react";
 import { useEffect } from "react";
 import { AnswerItem } from "./AnswerItem";
 
@@ -16,13 +15,13 @@ export const AnswersList = ({ form }: AnswersListProps) => {
         name: "answers",
     });
 
-    const questionType = form.watch("type");
+    const questionType = form.watch("questionType");
     const answers = form.watch("answers");
-    
+
     // Ensure at least one answer is marked as correct
     useEffect(() => {
         if (answers && answers.length > 0) {
-            const hasCorrectAnswer = answers.some(answer => answer.isCorrect);
+            const hasCorrectAnswer = answers.some((answer) => answer.isCorrect);
             if (!hasCorrectAnswer) {
                 // If no answer is marked as correct, mark the first one
                 const updatedAnswers = [...answers];
@@ -35,7 +34,6 @@ export const AnswersList = ({ form }: AnswersListProps) => {
     const handleAddAnswer = () => {
         if (fields.length < 6) {
             append({
-                id: uuidv4(),
                 text: "",
                 isCorrect: false,
                 explanation: "",
@@ -47,7 +45,7 @@ export const AnswersList = ({ form }: AnswersListProps) => {
         <div className="space-y-4 border rounded-md p-4 bg-gray-50">
             <div className="flex justify-between items-center">
                 <h3 className="font-medium">Answers</h3>
-                {questionType === "multiple-choice" && fields.length < 6 && (
+                {questionType === "SingleChoice" && fields.length < 6 && (
                     <Button
                         type="button"
                         variant="outline"
@@ -60,20 +58,22 @@ export const AnswersList = ({ form }: AnswersListProps) => {
                     </Button>
                 )}
             </div>
-            
+
             <div className="space-y-4">
                 {fields.map((field, index) => (
                     <AnswerItem
                         key={field.id}
                         form={form}
                         index={index}
-                        disabled={questionType === "true-false"}
-                        canDelete={questionType === "multiple-choice" && fields.length > 2}
+                        disabled={questionType === "TrueFalse"}
+                        canDelete={
+                            questionType === "SingleChoice" && fields.length > 2
+                        }
                         onDelete={() => remove(index)}
                     />
                 ))}
             </div>
-            
+
             {form.formState.errors.answers && (
                 <div className="text-sm text-red-500 mt-1">
                     {form.formState.errors.answers.message}
