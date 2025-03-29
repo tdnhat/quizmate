@@ -49,7 +49,7 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                     control={form.control}
-                    name="type"
+                    name="questionType"
                     render={({ field }) => (
                         <FormItem>
                             <FormLabel>Question Type</FormLabel>
@@ -63,10 +63,10 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
                                     </SelectTrigger>
                                 </FormControl>
                                 <SelectContent>
-                                    <SelectItem value="multiple-choice">
-                                        Multiple Choice
+                                    <SelectItem value="SingleChoice">
+                                        Single Choice
                                     </SelectItem>
-                                    <SelectItem value="true-false">
+                                    <SelectItem value="TrueFalse">
                                         True/False
                                     </SelectItem>
                                 </SelectContent>
@@ -103,7 +103,7 @@ export const QuestionDetails = ({ form }: QuestionDetailsProps) => {
 
             <ImageUploadField
                 control={form.control}
-                name="image"
+                name="imageUrl"
                 label="Question Image (Optional)"
                 isLoading={isLoading}
             />

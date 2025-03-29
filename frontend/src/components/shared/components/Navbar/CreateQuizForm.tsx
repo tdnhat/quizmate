@@ -6,7 +6,10 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import LoadingIndicator from "../LoadingIndicator";
 import { QuizBasicDetails } from "@/features/quizzes/components/quiz-form/basic-details/QuizBasicDetails";
-import { quizFormSchema, QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import {
+    quizFormSchema,
+    QuizFormValues,
+} from "@/features/quizzes/schemas/quizFormSchema";
 
 interface CreateQuizFormProps {
     categories: Category[];
@@ -29,6 +32,7 @@ export const CreateQuizForm = ({
             timeMinutes: 5,
             difficulty: "Beginner",
             tags: [],
+            isPublic: true,
         },
     });
 
@@ -54,6 +58,7 @@ export const CreateQuizForm = ({
                         form={form}
                         categories={categories}
                         isLoading={isLoading}
+                        layout="compact"
                     />
                 </form>
             </Form>

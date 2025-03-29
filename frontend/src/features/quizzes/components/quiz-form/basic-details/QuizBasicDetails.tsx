@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { UseFormReturn } from "react-hook-form";
-import { Category } from "@/types/category";
 import { DescriptionField } from "./DescriptionField";
 import CategoryField from "./CategoryField";
 import ThumbnailField from "./ThumbnailField";
@@ -12,19 +11,18 @@ import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { useQuizForm } from "../../../hooks/useQuizForm";
 interface QuizBasicDetailsProps {
     form: UseFormReturn<QuizFormValues>;
-    categories: Category[];
     isLoading?: boolean;
+    layout?: "default" | "compact";
 }
 
 export const QuizBasicDetails = ({
     form,
-    categories,
     isLoading: propIsLoading = false,
+    layout = "default",
 }: QuizBasicDetailsProps) => {
     const [currentTag, setCurrentTag] = useState("");
     const { isLoading: contextIsLoading } = useQuizForm();
     const isLoading = propIsLoading || contextIsLoading;
-
 
     const handleAddTag = (tag: string) => {
         const currentTags = form.getValues("tags");
@@ -46,6 +44,50 @@ export const QuizBasicDetails = ({
         );
     };
 
+    if (layout === "compact") {
+        return (
+            <>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div className="flex flex-col gap-4 md:col-span-2">
+                        <TitleField
+                            control={form.control}
+                            isLoading={isLoading}
+                        />
+                        <DescriptionField control={form.control} />
+                        <div className="flex flex-col sm:flex-row gap-4">
+                            <CategoryField
+                                control={form.control}
+                                isLoading={isLoading}
+                            />
+                            <TimeField
+                                control={form.control}
+                                isLoading={isLoading}
+                            />
+                        </div>
+                        <TagsField
+                            control={form.control}
+                            isLoading={isLoading}
+                            currentTag={currentTag}
+                            setCurrentTag={setCurrentTag}
+                            handleAddTag={handleAddTag}
+                            handleRemoveTag={handleRemoveTag}
+                        />
+                        <DifficultyField
+                            control={form.control}
+                            isLoading={isLoading}
+                        />
+                    </div>
+                    <div className="flex flex-col gap-4">
+                        <ThumbnailField
+                            control={form.control}
+                            isLoading={isLoading}
+                        />
+                    </div>
+                </div>
+            </>
+        );
+    }
+
     return (
         <>
             <TitleField control={form.control} isLoading={isLoading} />
@@ -53,7 +95,6 @@ export const QuizBasicDetails = ({
             <div className="flex items-center gap-4 justify-start">
                 <CategoryField
                     control={form.control}
-                    categories={categories}
                     isLoading={isLoading}
                 />
                 <TimeField control={form.control} isLoading={isLoading} />

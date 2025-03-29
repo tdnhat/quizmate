@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CreateQuizForm } from "./CreateQuizForm";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
 
 export const NavbarCreate = () => {
     const { categories } = useCategories();
@@ -23,7 +24,6 @@ export const NavbarCreate = () => {
     const location = useLocation();
 
     const isCreatingQuiz = location.pathname.includes("/quizzes/create");
-
 
     const handleSubmit = async (values: QuizFormValues) => {
         try {
@@ -49,24 +49,26 @@ export const NavbarCreate = () => {
                 <Button
                     size="sm"
                     disabled={isLoading || isCreatingQuiz}
-                    className="bg-cyan-600 hover:cursor-pointer hover:bg-cyan-700 transition-colors text-white"
+                    className="bg-cyan-600 hover:cursor-pointer hover:bg-cyan-700 transition-colors text-white hidden sm:block"
                 >
                     Create
                 </Button>
             </DialogTrigger>
-            <DialogContent className="sm:max-w-[500px]">
-                <DialogHeader>
+            <DialogContent className="sm:max-w-[90%] md:max-w-[85%] lg:max-w-5xl max-h-[90vh] overflow-y-auto">
+                <DialogHeader className="mb-4">
                     <DialogTitle>Create new quiz</DialogTitle>
                     <DialogDescription>
                         Fill in the details below to create a new quiz
                     </DialogDescription>
                 </DialogHeader>
 
-                <CreateQuizForm
-                    categories={categories}
-                    onSubmit={handleSubmit}
-                    isLoading={isLoading}
-                />
+                <QuizFormProvider>
+                    <CreateQuizForm
+                        categories={categories}
+                        onSubmit={handleSubmit}
+                        isLoading={isLoading}
+                    />
+                </QuizFormProvider>
             </DialogContent>
         </Dialog>
     );

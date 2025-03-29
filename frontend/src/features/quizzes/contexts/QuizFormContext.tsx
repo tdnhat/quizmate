@@ -1,13 +1,23 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { QuestionFormValues, QuizFormValues } from "../schemas/quizFormSchema";
+import { Quiz } from "@/types/quiz";
+import { useMutation } from "@tanstack/react-query";
+import { submitCreateQuizForm } from "@/api/quiz";
 
 type QuizFormStep = "basic-details" | "questions" | "review";
+
+export type SubmitQuizPayload = Partial<QuizFormValues> & { isDraft: boolean };
+
+export type SubmitQuizResponse = Quiz;
 
 interface QuizFormContextType {
     formValues: Partial<QuizFormValues>;
     questions: QuestionFormValues[];
     currentStep: QuizFormStep;
     isLoading: boolean;
+    isSubmitting: boolean;
+    submissionError: string | null;
+    submittedQuizId: string | null;
     setFormValues: (values: Partial<QuizFormValues>) => void;
     addQuestion: (question: QuestionFormValues) => void;
     updateQuestion: (index: number, question: QuestionFormValues) => void;
@@ -16,6 +26,7 @@ interface QuizFormContextType {
     goToNextStep: () => void;
     goToPreviousStep: () => void;
     resetForm: () => void;
+    submitQuiz: (isDraft: boolean) => Promise<SubmitQuizResponse | undefined>;
 }
 
 export const QuizFormContext = createContext<QuizFormContextType | undefined>(
@@ -38,17 +49,32 @@ export const QuizFormProvider = ({
         initialValues?.questions || []
     );
     const [isLoading, setIsLoading] = useState(false);
+    const [submittedQuizId, setSubmittedQuizId] = useState<string | null>(null);
 
-    // Sync questions with formValues whenever either changes
+    const {
+        mutateAsync,
+        isPending: isSubmitting,
+        error: submissionError,
+        reset: resetMutation,
+    } = useMutation<SubmitQuizResponse, Error, SubmitQuizPayload>({
+        mutationFn: (payload: SubmitQuizPayload) => submitCreateQuizForm(payload),
+        onSuccess: (data) => {
+            console.log("Quiz submitted successfully:", data);
+            setSubmittedQuizId(data.id);
+        },
+        onError: (error) => {
+            console.error("Error submitting quiz:", error);
+            setSubmittedQuizId(null);
+        },
+    });
+
     useEffect(() => {
-        // Update formValues when questions change
         setFormValues((prev) => ({
             ...prev,
             questions: questions,
         }));
     }, [questions]);
 
-    // Update questions array when formValues.questions changes from outside
     useEffect(() => {
         if (formValues.questions) {
             setQuestions(formValues.questions);
@@ -98,9 +124,10 @@ export const QuizFormProvider = ({
         setFormValues({});
         setQuestions([]);
         setCurrentStep("basic-details");
+        setSubmittedQuizId(null);
+        resetMutation();
     };
 
-    // Custom setFormValues that preserves questions state
     const handleSetFormValues = (values: Partial<QuizFormValues>) => {
         setIsLoading(true);
         setFormValues((prev) => {
@@ -108,17 +135,34 @@ export const QuizFormProvider = ({
                 ...prev,
                 ...values,
             };
-            
-            // If new values include questions, update the questions state
+
             if (values.questions) {
                 setQuestions(values.questions);
             }
-            
+
             return newValues;
         });
         setTimeout(() => {
             setIsLoading(false);
         }, 300);
+    };
+
+    const submitQuiz = async (
+        isDraft: boolean
+    ): Promise<SubmitQuizResponse | undefined> => {
+        try {
+            const payload: SubmitQuizPayload = {
+                ...formValues,
+                questions,
+                isDraft,
+            };
+            
+            const response = await mutateAsync(payload);
+            return response;
+        } catch (error) {
+            console.error("Error submitting quiz:", error);
+            return undefined;
+        }
     };
 
     return (
@@ -128,6 +172,9 @@ export const QuizFormProvider = ({
                 questions,
                 currentStep,
                 isLoading,
+                isSubmitting,
+                submissionError: submissionError?.message || null,
+                submittedQuizId,
                 setFormValues: handleSetFormValues,
                 addQuestion,
                 updateQuestion,
@@ -136,6 +183,7 @@ export const QuizFormProvider = ({
                 goToNextStep,
                 goToPreviousStep,
                 resetForm,
+                submitQuiz,
             }}
         >
             {children}

@@ -1,39 +1,60 @@
-import { Category } from "@/types/category";
 import { FormStepIndicator } from "./FormStepIndicator";
 import { useQuizForm } from "../../hooks/useQuizForm";
 import { BasicDetailsStep } from "./BasicDetailsStep";
 import { QuestionsStep } from "./QuestionsStep";
 import { ReviewStep } from "./ReviewStep";
-import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
-interface MultiStepQuizFormProps {
-    categories: Category[];
-}
-
-export const MultiStepQuizForm = ({ categories }: MultiStepQuizFormProps) => {
-    const { currentStep, formValues, goToStep } = useQuizForm();
-    const [isLoading, setIsLoading] = useState(false);
-
+export const MultiStepQuizForm = () => {
+    const {
+        currentStep,
+        goToStep,
+        submitQuiz,
+        isSubmitting,
+        submissionError,
+        resetForm,
+    } = useQuizForm();
+    
     const location = useLocation();
-
+    const navigate = useNavigate();
+    
     const isFromModal = !!location.state?.isFromModal;
 
+    // Handle navigation from modal
     useEffect(() => {
         if (isFromModal) {
             goToStep("questions");
         }
     }, [isFromModal, goToStep]);
 
-    const handleSubmit = async () => {
+    // Handle submission errors
+    useEffect(() => {
+        if (submissionError) {
+            console.error("Quiz submission failed:", submissionError);
+            toast.error(`Failed to submit quiz: ${submissionError}`);
+        }
+    }, [submissionError]);
+
+    // Handle form submission
+    const handleSubmit = async (isDraft: boolean) => {
         try {
-            setIsLoading(true);
-            console.log("Form values:", formValues);
-            await new Promise((resolve) => setTimeout(resolve, 1000));
+            const result = await submitQuiz(isDraft);
+            
+            if (result) {
+                toast.success(
+                    isDraft
+                        ? "Quiz saved as draft successfully!"
+                        : "Quiz published successfully!"
+                );
+                
+                // Navigate to the appropriate page after successful submission
+                navigate("/quizzes");
+            }
         } catch (error) {
-            console.error("Failed to create quiz:", error);
-        } finally {
-            setIsLoading(false);
+            // Error is already handled by the context and the effect above
+            console.error("Error in handleSubmit:", error);
         }
     };
 
@@ -42,14 +63,13 @@ export const MultiStepQuizForm = ({ categories }: MultiStepQuizFormProps) => {
             <FormStepIndicator />
 
             <div className="py-4">
-                {currentStep === "basic-details" && (
-                    <BasicDetailsStep categories={categories} />
-                )}
-
+                {currentStep === "basic-details" && <BasicDetailsStep />}
                 {currentStep === "questions" && <QuestionsStep />}
-
                 {currentStep === "review" && (
-                    <ReviewStep onSubmit={handleSubmit} isLoading={isLoading} />
+                    <ReviewStep
+                        onSubmit={handleSubmit}
+                        isLoading={isSubmitting}
+                    />
                 )}
             </div>
         </div>

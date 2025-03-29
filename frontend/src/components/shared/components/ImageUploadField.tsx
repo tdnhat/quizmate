@@ -126,7 +126,7 @@ const ImageUploadField = <
                 }, [value]);
 
                 return (
-                    <FormItem className="space-y-4">
+                    <FormItem>
                         <FormLabel>{label}</FormLabel>
                         <div className="space-y-4">
                             {isLoading ? (
@@ -174,15 +174,9 @@ const ImageUploadField = <
                                 >
                                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                         <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
-                                        <p className="mb-2 text-sm font-semibold">
-                                            <span className="font-semibold">
-                                                Click to upload
-                                            </span>{" "}
-                                            or drag and drop
-                                        </p>
-                                        <p className="text-xs text-muted-foreground">
-                                            PNG, JPG or GIF (Optional)
-                                        </p>
+                                        <div className="text-sm text-center text-muted-foreground">
+                                            Upload image
+                                        </div>
                                     </div>
                                 </label>
                             )}
