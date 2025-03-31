@@ -12,7 +12,7 @@ interface QuizCardProps {
 const QuizCard = ({ quiz }: QuizCardProps) => {
     return (
         <Link
-            to={`/quizzes/${quiz.slug}`}
+            to={`/quizzes/${quiz.slug}?source=quizzes`}
             className="bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-gray-100 hover:border-gray-200 group"
         >
             {/* Thumbnail with overlay */}
