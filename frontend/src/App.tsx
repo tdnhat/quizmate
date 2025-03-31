@@ -7,7 +7,6 @@ import MainLayout from "./layouts/MainLayout";
 import { ProtectedRoute } from "./layouts/ProtectedRoute";
 import HomePage from "./pages/home/HomePage";
 import HomeLayout from "./layouts/HomeLayout";
-import DiscoverPage from "./pages/home/DiscoverPage";
 import LibraryPage from "./pages/home/LibraryPage";
 import ReportsPage from "./pages/home/ReportsPage";
 import TeamsPage from "./pages/home/TeamsPage";
@@ -21,6 +20,10 @@ import FeaturedCategoriesPage from "./pages/home/categories/FeaturedCategoriesPa
 import PopularCategoriesPage from "./pages/home/categories/PopularCategoriesPage";
 import RecentCategoriesPage from "./pages/home/categories/RecentCategoriesPage";
 import CategoryDetailPage from "./pages/home/categories/CategoryDetailPage";
+import QuizPage from "./pages/home/quizzes/QuizPage";
+import PopularQuizzesPage from "./pages/home/quizzes/PopularQuizzesPage";
+import FeaturedQuizzesPage from "./pages/home/quizzes/FeaturedQuizzesPage";
+import RecentlyAddedQuizzesPage from "./pages/home/quizzes/RecentlyAddedQuizzesPage";
 
 function App() {
     return (
@@ -35,10 +38,14 @@ function App() {
                 <Route element={<ProtectedRoute />}>
                     <Route element={<HomeLayout />}>
                         <Route path="/home" element={<HomePage />} />
-                        {/* <Route path="/home" element={<DiscoverPage />} /> */}
                         <Route path="/library" element={<LibraryPage />} />
                         <Route path="/reports" element={<ReportsPage />} />
                         <Route path="teams" element={<TeamsPage />} />
+
+                        <Route path="/quizzes" element={<QuizPage />} />
+
+                        <Route path="/quizzes/popular" element={<PopularQuizzesPage />} />
+                        <Route path="/quizzes/recently-added" element={<RecentlyAddedQuizzesPage />} />
 
                         <Route
                             path="/quizzes/create"
