@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>QuizMate Hub Test</title>
+    </head>
+    <body>
+        <div>
+            <input type="text" id="sessionId" placeholder="Session ID" />
+            <button id="joinSession">Join Session</button>
+            <button id="startSession">Start Session</button>
+            <button id="nextQuestion">Next Question</button>
+        </div>
+        <div id="messages"></div>
+
+        <script
+            src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"
+            integrity="sha512-7SRCYIJtR6F8ocwW7UxW6wGKqbSyqREDbfCORCbGLatU0iugBLwyOXpzhkPyHIFdBO0K2VCu57fvP2Twgx1o2A=="
+            crossorigin="anonymous"
+        ></script>
+        <script>
+            const connection = new signalR.HubConnectionBuilder()
+                .withUrl("http://localhost:5118/hubs/quiz-session", {
+                    accessTokenFactory: () =>
+                        "eyJhbGciOiJIUzUxMiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InRkbjI4M0BnbWFpbC5jb20iLCJnaXZlbl9uYW1lIjoidGRuMjgzIiwibmJmIjoxNzQzNTg4OTk2LCJleHAiOjE3NDQxOTM3OTYsImlhdCI6MTc0MzU4ODk5NiwiaXNzIjoiaHR0cDovL2xvY2FsaG9zdDo1MTE4IiwiYXVkIjoiaHR0cDovL2xvY2FsaG9zdDo1MTE4In0.uEA2iyB3s5Cr3uwrj4Xjzo9hHFX-iuTBAbF0Ts_o10cqx1SNU3JZAerD5KfSNc7wPXZ65mi0ESJKULwGBS-kBw",
+                })
+                .build();
+
+            // Event handlers
+            connection.on("ParticipantJoined", (data) => {
+                addMessage(`Participant joined: ${data.username}`);
+            });
+
+            connection.on("SessionStarted", () => {
+                addMessage("Session started!");
+            });
+
+            connection.on("NewQuestion", (data) => {
+                addMessage(`New question: ${data.text}`);
+            });
+
+            // Connect to hub
+            connection
+                .start()
+                .then(() => {
+                    addMessage("Connected to hub");
+                })
+                .catch((err) => addMessage("Error: " + err));
+
+            // Button handlers
+            document
+                .getElementById("joinSession")
+                .addEventListener("click", () => {
+                    const sessionId =
+                        document.getElementById("sessionId").value;
+                    connection
+                        .invoke("JoinSession", sessionId)
+                        .then(() => addMessage(`Joined session ${sessionId}`))
+                        .catch((err) => addMessage("Error: " + err));
+                });
+
+            document
+                .getElementById("startSession")
+                .addEventListener("click", () => {
+                    const sessionId =
+                        document.getElementById("sessionId").value;
+                    connection
+                        .invoke("StartSession", sessionId)
+                        .then(() => addMessage("Started session"))
+                        .catch((err) => addMessage("Error: " + err));
+                });
+
+            document
+                .getElementById("nextQuestion")
+                .addEventListener("click", () => {
+                    const sessionId =
+                        document.getElementById("sessionId").value;
+                    connection
+                        .invoke("NextQuestion", sessionId)
+                        .then(() => addMessage("Next question requested"))
+                        .catch((err) => addMessage("Error: " + err));
+                });
+
+            function addMessage(message) {
+                const div = document.createElement("div");
+                div.textContent = message;
+                document.getElementById("messages").appendChild(div);
+            }
+        </script>
+    </body>
+</html>

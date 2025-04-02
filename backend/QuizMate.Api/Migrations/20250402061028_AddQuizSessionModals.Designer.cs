@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250402061028_AddQuizSessionModals")]
+    partial class AddQuizSessionModals
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "38dc3480-6414-4f43-a530-d8d9ef18aee6",
+                            Id = "0c1d32bd-bf36-4014-ab2b-baf6a52b7ece",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "6c717f26-127f-4fe7-b948-765a88276af0",
+                            Id = "168da7f1-8caf-4212-b19d-1f0a471c6a40",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -406,137 +409,6 @@ namespace QuizMate.Api.Migrations
                     b.ToTable("Quizzes");
                 });
 
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSession", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("CurrentQuestionIndex")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("EndedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("HostId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("JoinCode")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("QuizId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<DateTime?>("StartedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("Status")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HostId");
-
-                    b.HasIndex("JoinCode")
-                        .IsUnique()
-                        .HasFilter("[Status] IN ('Waiting', 'Active')");
-
-                    b.HasIndex("QuizId");
-
-                    b.ToTable("QuizSessions");
-                });
-
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSessionAnswer", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("AnswerId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("ParticipantId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("PointsEarned")
-                        .HasColumnType("int");
-
-                    b.Property<string>("QuestionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("QuizSessionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<TimeSpan>("TimeTaken")
-                        .HasColumnType("time");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AnswerId");
-
-                    b.HasIndex("ParticipantId");
-
-                    b.HasIndex("QuestionId");
-
-                    b.ToTable("QuizSessionAnswers");
-                });
-
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSessionParticipant", b =>
-                {
-                    b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ConnectionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<DateTime?>("LeftAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("QuizSessionId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<int>("Score")
-                        .HasColumnType("int");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ConnectionId")
-                        .IsUnique();
-
-                    b.HasIndex("QuizSessionId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizSessionParticipants");
-                });
-
             modelBuilder.Entity("QuizMate.Api.Models.Result", b =>
                 {
                     b.Property<string>("Id")
@@ -734,71 +606,6 @@ namespace QuizMate.Api.Migrations
                     b.Navigation("Category");
                 });
 
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSession", b =>
-                {
-                    b.HasOne("QuizMate.Api.Models.AppUser", "Host")
-                        .WithMany()
-                        .HasForeignKey("HostId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("QuizMate.Api.Models.Quiz", "Quiz")
-                        .WithMany()
-                        .HasForeignKey("QuizId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Host");
-
-                    b.Navigation("Quiz");
-                });
-
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSessionAnswer", b =>
-                {
-                    b.HasOne("QuizMate.Api.Models.Answer", "Answer")
-                        .WithMany()
-                        .HasForeignKey("AnswerId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.HasOne("QuizMate.Api.Models.QuizSessionParticipant", "Participant")
-                        .WithMany()
-                        .HasForeignKey("ParticipantId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizMate.Api.Models.Question", "Question")
-                        .WithMany()
-                        .HasForeignKey("QuestionId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("Answer");
-
-                    b.Navigation("Participant");
-
-                    b.Navigation("Question");
-                });
-
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSessionParticipant", b =>
-                {
-                    b.HasOne("QuizMate.Api.Models.QuizSession", "QuizSession")
-                        .WithMany("Participants")
-                        .HasForeignKey("QuizSessionId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("QuizMate.Api.Models.AppUser", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.NoAction)
-                        .IsRequired();
-
-                    b.Navigation("QuizSession");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("QuizMate.Api.Models.Result", b =>
                 {
                     b.HasOne("QuizMate.Api.Models.AppUser", "AppUser")
@@ -888,11 +695,6 @@ namespace QuizMate.Api.Migrations
                     b.Navigation("Questions");
 
                     b.Navigation("Results");
-                });
-
-            modelBuilder.Entity("QuizMate.Api.Models.QuizSession", b =>
-                {
-                    b.Navigation("Participants");
                 });
 
             modelBuilder.Entity("QuizMate.Api.Models.Result", b =>

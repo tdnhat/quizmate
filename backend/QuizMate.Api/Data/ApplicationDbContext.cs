@@ -20,6 +20,10 @@ namespace QuizMate.Api.Data
         public DbSet<ResultAnswer> ResultAnswers { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<SavedQuiz> SavedQuizzes { get; set; }
+        public DbSet<QuizSession> QuizSessions { get; set; }
+        public DbSet<QuizSessionParticipant> QuizSessionParticipants { get; set; }
+        public DbSet<QuizSessionAnswer> QuizSessionAnswers { get; set; }
+
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
@@ -94,6 +98,66 @@ namespace QuizMate.Api.Data
                 .HasConversion(
                     v => string.Join(',', v),
                     v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList());
+
+            // Quiz Session configurations
+            builder.Entity<QuizSession>()
+                .HasOne(qs => qs.Quiz)
+                .WithMany()
+                .HasForeignKey(qs => qs.QuizId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<QuizSession>()
+                .HasOne(qs => qs.Host)
+                .WithMany()
+                .HasForeignKey(qs => qs.HostId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<QuizSession>()
+                .HasMany(qs => qs.Participants)
+                .WithOne(p => p.QuizSession)
+                .HasForeignKey(p => p.QuizSessionId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<QuizSession>()
+                .Property(qs => qs.Status)
+                .HasConversion<string>();
+
+            // Quiz Session Participant configurations
+            builder.Entity<QuizSessionParticipant>()
+                .HasOne(p => p.User)
+                .WithMany()
+                .HasForeignKey(p => p.UserId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<QuizSessionParticipant>()
+                .HasIndex(p => p.ConnectionId)
+                .IsUnique();
+
+            // Quiz Session Answer configurations
+            builder.Entity<QuizSessionAnswer>()
+                .HasOne(a => a.Participant)
+                .WithMany()
+                .HasForeignKey(a => a.ParticipantId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<QuizSessionAnswer>()
+                .HasOne(a => a.Question)
+                .WithMany()
+                .HasForeignKey(a => a.QuestionId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            builder.Entity<QuizSessionAnswer>()
+                .HasOne(a => a.Answer)
+                .WithMany()
+                .HasForeignKey(a => a.AnswerId)
+                .OnDelete(DeleteBehavior.NoAction);
+
+            // Ensure unique join codes for active sessions
+            builder.Entity<QuizSession>()
+                .HasIndex(qs => qs.JoinCode)
+                .IsUnique()
+                .HasFilter("[Status] IN ('Waiting', 'Active')");
+
 
             List<IdentityRole> roles = new List<IdentityRole>
             {

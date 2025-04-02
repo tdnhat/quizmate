@@ -7,6 +7,7 @@ namespace QuizMate.Api.Interfaces
         IAnswerRepository AnswerRepository { get; }
         IResultRepository ResultRepository { get; }
         ICategoryRepository CategoryRepository { get; }
+        IQuizSessionRepository QuizSessionRepository { get; }
         Task<bool> SaveAsync();
     }
 }
