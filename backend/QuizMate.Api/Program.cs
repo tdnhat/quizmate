@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using QuizMate.Api.Data;
+using QuizMate.Api.Hubs;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
 using QuizMate.Api.Repositories;
@@ -83,10 +84,29 @@ builder.Services.AddAuthentication(options =>
             System.Text.Encoding.UTF8.GetBytes(builder.Configuration["JWT:SigningKey"])
         )
     };
+    
+    // Add event handling for SignalR authentication
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            var accessToken = context.Request.Query["access_token"];
+            
+            // If the request is for our hub...
+            var path = context.HttpContext.Request.Path;
+            if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/hubs/quiz-session"))
+            {
+                // Read the token out of the query string
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
+builder.Services.AddSignalR();
 
 var app = builder.Build();
 
@@ -97,13 +117,18 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+
 app.UseHttpsRedirection();
+
+app.UseRouting();
+
+app.MapHub<QuizSessionHub>("/hubs/quiz-session");
 
 app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
-    // .WithOrigins("https://localhost:44351")
+    .WithOrigins("http://localhost:3000")
     .SetIsOriginAllowed(origin => true)
 );
 
