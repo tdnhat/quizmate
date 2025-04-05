@@ -14,7 +14,7 @@ namespace QuizMate.Api.Interfaces
         Task<QuizSessionParticipant> GetParticipantAsync(string sessionId, string userId);
         Task<QuizSessionParticipant> GetParticipantByConnectionIdAsync(string connectionId);
         Task UpdateParticipantConnectionStatusAsync(string userId, string connectionId, bool isActive);
-        Task RecordAnswerAsync(string sessionId, string participantId, string questionId, string answerId, bool isCorrect, int pointsEarned);
+        Task RecordAnswerAsync(string sessionId, string participantId, string questionId, string answerId, bool isCorrect, int pointsEarned, int timeTaken);
         Task<object> GetSessionResultsAsync(string sessionId);
         Task<bool> EndSessionAsync(string sessionId);
         Task<QuizSession> JoinSessionAsync(string sessionId, string userId, string connectionId = null);
