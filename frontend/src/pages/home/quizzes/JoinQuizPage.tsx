@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle, LogIn } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { useJoinQuiz } from "../../hooks/participant";
+import { useJoinQuiz } from "@/features/quizzes/hooks";
 
 export const JoinQuizPage = () => {
     const { joinCode } = useParams<{ joinCode: string }>();

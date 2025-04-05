@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 import { QuizSessionState } from "../../types/quizSession";
-import { useQuizSessionHub } from "../../hooks/useQuizSessionHub";
+import { useQuizSessionHub } from "../core";
 
 interface UseParticipateQuizParams {
     sessionId: string | undefined;

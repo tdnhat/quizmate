@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useParticipateQuiz } from "../../hooks/participant/useParticipateQuiz";
+import { useParticipateQuiz } from "@/features/quizzes/hooks";
 import {
     Card,
     CardContent,
@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, AlertTriangle, Clock, CheckCircle, Award, XCircle } from "lucide-react";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { HubConnectionState } from "@microsoft/signalr";
-import { QuizSessionState } from "../../types/quizSession";
+import { QuizSessionState } from "../../../features/quizzes/types/quizSession";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";

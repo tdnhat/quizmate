@@ -1,11 +1,8 @@
 import { createContext, ReactNode } from 'react';
 import { Quiz } from '@/types/quiz';
 import { useAuth } from '@/features/auth/hooks/useAuth';
-import { useQuizSession } from '../hooks/useQuizSession';
-import { useQuizConnection } from '../hooks/useQuizConnection';
-import { useQuizEvents } from '../hooks/useQuizEvents';
-import { useQuizActions } from '../hooks/useQuizActions';
 import { HostQuizContextType, Participant } from '../types/session';
+import { useQuizActions, useQuizConnection, useQuizEvents, useQuizSession } from '../hooks';
 
 export const HostQuizContext = createContext<HostQuizContextType | undefined>(undefined);
 

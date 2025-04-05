@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { createQuizSession } from "../api/quizSessionApi";
+import { createQuizSession } from "../../api/sessionApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { Quiz } from "@/types/quiz";
 
@@ -14,6 +14,7 @@ interface UseQuizSessionResult {
 }
 
 /**
+ * @deprecated Use hooks from the session folder instead
  * Hook to handle quiz session creation
  */
 export const useQuizSession = ({
@@ -32,10 +33,7 @@ export const useQuizSession = ({
                 setIsLoading(true);
                 setError(null);
 
-                const createdSessionId = await createQuizSession(
-                    quiz.id,
-                    token
-                );
+                const createdSessionId = await createQuizSession(quiz.id);
                 console.log("Session created with ID:", createdSessionId);
                 setSessionId(createdSessionId);
             } catch (err) {
@@ -54,4 +52,4 @@ export const useQuizSession = ({
         isLoading,
         error,
     };
-};
+}; 

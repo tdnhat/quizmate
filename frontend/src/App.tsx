@@ -38,6 +38,11 @@ function App() {
 
                 <Route path="/join/:joinCode" element={<JoinQuizPage />} />
 
+                <Route
+                    path="quizzes/participate/:sessionId"
+                    element={<ParticipateQuizPage />}
+                />
+
                 <Route element={<ProtectedRoute />}>
                     <Route element={<HomeLayout />}>
                         <Route path="/home" element={<HomePage />} />
@@ -92,11 +97,6 @@ function App() {
                         <Route
                             path="quizzes/:quizSlug/host"
                             element={<HostQuizPage />}
-                        />
-
-                        <Route
-                            path="quizzes/participate/:sessionId"
-                            element={<ParticipateQuizPage />}
                         />
 
                         <Route

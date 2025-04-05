@@ -3,7 +3,7 @@ import { RefreshCcw, Play, Square, Clock, ExternalLink } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import ParticipantsList from "./ParticipantList";
-import useHostQuiz from "../../hooks/useHostQuiz";
+import { useHostQuiz } from "../../hooks";
 import QuestionDisplay from "./QuestionDisplay";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

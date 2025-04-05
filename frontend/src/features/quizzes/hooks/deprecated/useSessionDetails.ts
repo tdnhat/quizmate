@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { getSessionDetails } from "../api/quizSessionApi";
+import { getSessionDetails } from "../../api/sessionApi";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 
 interface UseSessionDetailsParams {
@@ -13,6 +13,7 @@ interface UseSessionDetailsResult {
 }
 
 /**
+ * @deprecated Use hooks from the session folder instead
  * Hook to fetch session details including join code
  */
 export const useSessionDetails = ({
@@ -22,7 +23,7 @@ export const useSessionDetails = ({
     const [joinCode, setJoinCode] = useState<string>("");
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const [error, setError] = useState<string | null>(null);
-
+    
     useEffect(() => {
         if (!token || !sessionId) return;
 
@@ -31,7 +32,7 @@ export const useSessionDetails = ({
                 setIsLoading(true);
                 setError(null);
 
-                const details = await getSessionDetails(sessionId, token);
+                const details = await getSessionDetails(sessionId);
                 console.log("Session details retrieved:", details);
                 setJoinCode(details.joinCode);
             } catch (err) {
@@ -50,4 +51,4 @@ export const useSessionDetails = ({
         isLoading,
         error,
     };
-};
+}; 

@@ -5,7 +5,7 @@ import QuizSessionHubConnection, {
   ScoreUpdate,
   QuizResults
 } from '@/services/signalr/hubs/quizSessionHub';
-import { QuizSessionState } from '../types/quizSession';
+import { QuizSessionState } from '../../types/quizSession';
 
 interface UseQuizEventsParams {
   hubConnection: QuizSessionHubConnection | null;
