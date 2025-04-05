@@ -16,6 +16,7 @@ interface UseQuizActionsResult {
 }
 
 /**
+ * @deprecated Use hooks from the host folder instead
  * Hook to handle quiz session actions like start, next question, and end
  */
 export const useQuizActions = ({ 

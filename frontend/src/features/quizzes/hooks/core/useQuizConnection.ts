@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import QuizSessionHubConnection from "@/services/signalr/hubs/quizSessionHub";
 
 interface UseQuizConnectionParams {
-    token: string | null;
+    token: string | undefined;
     sessionId: string;
 }
 

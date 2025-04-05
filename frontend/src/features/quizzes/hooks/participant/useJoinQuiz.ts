@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import { getSessionByJoinCode, SessionInfo } from "../../api/quizParticipantApi";
+import { SessionInfo } from "../../api/sessionApi";
+import { useSessionByJoinCode } from "./useSessionByJoinCode";
 
 interface UseJoinQuizParams {
     joinCode: string | undefined;
@@ -21,46 +22,32 @@ export const useJoinQuiz = ({
 }: UseJoinQuizParams): UseJoinQuizResult => {
     const { token, isAuthenticated, user } = useAuth();
     const [sessionInfo, setSessionInfo] = useState<SessionInfo | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
-    // Fetch session info by join code when authenticated
+    // Use the Query hook to fetch session data
+    const { 
+        data: sessionData, 
+        isLoading: isQueryLoading, 
+        error: queryError 
+    } = useSessionByJoinCode(joinCode || "", token);
+
+    // Update state when session data changes
     useEffect(() => {
-        if (!joinCode) {
+        if (sessionData) {
+            setSessionInfo(sessionData);
+        }
+    }, [sessionData]);
+
+    // Update error state when query error changes
+    useEffect(() => {
+        if (queryError) {
+            setError((queryError as Error).message || "Failed to fetch session info");
+        } else if (!joinCode) {
             setError("No join code provided");
-            setIsLoading(false);
-            return;
+        } else {
+            setError(null);
         }
-
-        // Don't attempt to fetch if not authenticated
-        if (!isAuthenticated || !token) {
-            setIsLoading(false);
-            return;
-        }
-
-        const fetchSessionInfo = async () => {
-            try {
-                setIsLoading(true);
-                setError(null);
-                const data = await getSessionByJoinCode(
-                    joinCode,
-                    token || undefined
-                );
-                setSessionInfo(data);
-            } catch (err) {
-                console.error("Failed to fetch session info:", err);
-                const error = err as Error;
-                setError(
-                    error.message ||
-                        "This quiz session does not exist or has already ended."
-                );
-            } finally {
-                setIsLoading(false);
-            }
-        };
-
-        fetchSessionInfo();
-    }, [joinCode, token, isAuthenticated]);
+    }, [queryError, joinCode]);
 
     // Handle joining the quiz
     const handleJoin = (navigate: (path: string) => void) => {
@@ -72,37 +59,22 @@ export const useJoinQuiz = ({
             return;
         }
 
-        // If authenticated but no session info yet, try to fetch it
-        if (!sessionInfo && token) {
-            setIsLoading(true);
-            getSessionByJoinCode(joinCode || "", token)
-                .then((data) => {
-                    setSessionInfo(data);
-                    navigate(`/quizzes/participate/${data.id}`);
-                })
-                .catch((err) => {
-                    console.error("Failed to join quiz:", err);
-                    const error = err as Error;
-                    setError(
-                        error.message ||
-                            "Failed to join quiz. Please try again."
-                    );
-                })
-                .finally(() => {
-                    setIsLoading(false);
-                });
-            return;
-        }
-
         // If we have session info and are authenticated, navigate to participate
         if (sessionInfo && user) {
             navigate(`/quizzes/participate/${sessionInfo.id}`);
+            return;
+        }
+
+        // If authenticated but no session info yet, try loading it
+        if (!sessionInfo && token && joinCode) {
+            // The query will handle loading the data
+            // The useEffect will update sessionInfo when data arrives
         }
     };
 
     return {
         sessionInfo,
-        isLoading,
+        isLoading: isQueryLoading,
         error,
         handleJoin,
     };

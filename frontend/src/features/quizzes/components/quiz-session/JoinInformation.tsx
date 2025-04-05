@@ -7,7 +7,7 @@ import {
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { useSessionDetails } from "../../hooks/useSessionDetails";
+import { useSessionDetails } from "../../hooks/session";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Check, Copy } from "lucide-react";
