@@ -26,7 +26,7 @@ const gradientPresets = {
 const CategoryCard = ({ category }: Props) => {
     return (
         <Link
-            to={`/categories/${category.slug}?source=categories`}
+            to={`/categories/${category.slug}`}
             className="group relative block h-40 rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-shadow"
         >
             {/* Background gradient overlay */}

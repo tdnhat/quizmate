@@ -1,5 +1,5 @@
 import { Card, CardContent } from "@/components/ui/card";
-import QuizCTAButton from "./QuizCTAButton";
+import QuizCTAButton from "./QuizCTAButtons";
 import QuizStatistics from "./QuizStatistics";
 
 const QuizActionCard = () => {

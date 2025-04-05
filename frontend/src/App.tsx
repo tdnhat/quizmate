@@ -22,8 +22,9 @@ import RecentCategoriesPage from "./pages/home/categories/RecentCategoriesPage";
 import CategoryDetailPage from "./pages/home/categories/CategoryDetailPage";
 import QuizPage from "./pages/home/quizzes/QuizPage";
 import PopularQuizzesPage from "./pages/home/quizzes/PopularQuizzesPage";
-import FeaturedQuizzesPage from "./pages/home/quizzes/FeaturedQuizzesPage";
 import RecentlyAddedQuizzesPage from "./pages/home/quizzes/RecentlyAddedQuizzesPage";
+import HostQuizPage from "./pages/home/quizzes/HostQuizPage";
+import { JoinQuizPage, ParticipateQuizPage } from "./features/quizzes";
 
 function App() {
     return (
@@ -35,6 +36,8 @@ function App() {
                     <Route path="/register" element={<Register />} />
                 </Route>
 
+                <Route path="/join/:joinCode" element={<JoinQuizPage />} />
+
                 <Route element={<ProtectedRoute />}>
                     <Route element={<HomeLayout />}>
                         <Route path="/home" element={<HomePage />} />
@@ -44,8 +47,14 @@ function App() {
 
                         <Route path="/quizzes" element={<QuizPage />} />
 
-                        <Route path="/quizzes/popular" element={<PopularQuizzesPage />} />
-                        <Route path="/quizzes/recently-added" element={<RecentlyAddedQuizzesPage />} />
+                        <Route
+                            path="/quizzes/popular"
+                            element={<PopularQuizzesPage />}
+                        />
+                        <Route
+                            path="/quizzes/recently-added"
+                            element={<RecentlyAddedQuizzesPage />}
+                        />
 
                         <Route
                             path="/quizzes/create"
@@ -79,6 +88,17 @@ function App() {
                             path="quizzes/:quizSlug/take"
                             element={<TakeQuizPage />}
                         />
+
+                        <Route
+                            path="quizzes/:quizSlug/host"
+                            element={<HostQuizPage />}
+                        />
+
+                        <Route
+                            path="quizzes/participate/:sessionId"
+                            element={<ParticipateQuizPage />}
+                        />
+
                         <Route
                             path="quizzes/:quizSlug/results/:resultId"
                             element={<QuizResultsPage />}
