@@ -137,7 +137,7 @@ namespace QuizMate.Api.Repositories
             return sessions;
         }
 
-        public async Task RecordAnswerAsync(string sessionId, string participantId, string questionId, string answerId, bool isCorrect, int pointsEarned)
+        public async Task RecordAnswerAsync(string sessionId, string participantId, string questionId, string answerId, bool isCorrect, int pointsEarned, int timeTaken)
         {
             var answer = new QuizSessionAnswer
             {
@@ -146,7 +146,8 @@ namespace QuizMate.Api.Repositories
                 QuestionId = questionId,
                 AnswerId = answerId,
                 IsCorrect = isCorrect,
-                PointsEarned = pointsEarned
+                PointsEarned = pointsEarned,
+                TimeTaken = TimeSpan.FromSeconds(timeTaken)
             };
             await _context.QuizSessionAnswers.AddAsync(answer);
             await _context.SaveChangesAsync();
