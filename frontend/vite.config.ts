@@ -14,6 +14,16 @@ export default defineConfig({
   server: {
     port: 3000,
     open: true,
-    allowedHosts: ['all']
+    allowedHosts: ['all'],
+    hmr: {
+      overlay: false, // Disable the error overlay
+    },
+  },
+  optimizeDeps: {
+    include: ['react-hot-toast', 'qrcode.react'],
+    force: true, // Force dependency optimization on startup
+  },
+  define: {
+    'process.env.API_URL': JSON.stringify(process.env.API_URL || 'http://localhost:5118')
   }
 })

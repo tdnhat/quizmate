@@ -13,6 +13,7 @@ interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;
     isLoading: boolean;
+    token: string | null;
     login: (email: string, password: string) => Promise<void>;
     register: (
         username: string,
@@ -27,6 +28,7 @@ export const AuthContext = createContext<AuthContextType>({
     user: null,
     isAuthenticated: false,
     isLoading: true,
+    token: null,
     login: async () => {},
     register: async () => {},
     logout: () => {},
@@ -38,6 +40,7 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
+    const [token, setToken] = useState<string | null>(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -52,6 +55,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
             const response = await api.get("/auth/me");
             setUser(response.data);
+            setToken(token);
             return response.data;
         },
         retry: false,
@@ -106,15 +110,17 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             password: string;
             confirmPassword: string;
         }) => {
-            const response = await api.post("/auth/register", {
-                username,
-                email,
-                password,
-                confirmPassword,
-            },
-            {
-                timeout: 10000, // 10 seconds
-            }
+            const response = await api.post(
+                "/auth/register",
+                {
+                    username,
+                    email,
+                    password,
+                    confirmPassword,
+                },
+                {
+                    timeout: 10000, // 10 seconds
+                }
             );
             return response.data;
         },
@@ -165,6 +171,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 user,
                 isAuthenticated: !!user,
                 isLoading,
+                token,
                 login,
                 register,
                 logout,
