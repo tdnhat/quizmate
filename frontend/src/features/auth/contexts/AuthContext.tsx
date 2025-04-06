@@ -14,12 +14,18 @@ interface AuthContextType {
     isAuthenticated: boolean;
     isLoading: boolean;
     token: string | undefined;
-    login: (email: string, password: string) => Promise<void>;
+    returnUrl: string | undefined;
+    login: (
+        email: string,
+        password: string,
+        redirectUrl?: string
+    ) => Promise<void>;
     register: (
         username: string,
         email: string,
         password: string,
-        confirmPassword: string
+        confirmPassword: string,
+        redirectUrl?: string
     ) => Promise<void>;
     logout: () => void;
 }
@@ -29,6 +35,7 @@ export const AuthContext = createContext<AuthContextType>({
     isAuthenticated: false,
     isLoading: true,
     token: undefined,
+    returnUrl: undefined,
     login: async () => {},
     register: async () => {},
     logout: () => {},
@@ -41,6 +48,7 @@ interface AuthProviderProps {
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [token, setToken] = useState<string | null>(null);
+    const [returnUrl, setReturnUrl] = useState<string | null>(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
@@ -66,9 +74,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         mutationFn: async ({
             email,
             password,
+            redirectUrl,
         }: {
             email: string;
             password: string;
+            redirectUrl?: string;
         }) => {
             const response = await api.post(
                 "/auth/login",
@@ -80,18 +90,25 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     timeout: 10000, // 10 seconds
                 }
             );
-            return response.data;
+            return { ...response.data, redirectUrl };
         },
         onSuccess: (data) => {
-            const { token, user } = data;
+            const { token, user, redirectUrl } = data;
             setLocalStorageItem("token", token);
             setUser(user);
             queryClient.setQueryData(["currentUser"], user);
-            navigate("/home");
+            // Use the redirectUrl if provided, otherwise default to "/home"
+            setReturnUrl(redirectUrl || "/home");
+            navigate(redirectUrl || "/home");
         },
-        onError: (error: any) => {
-            console.log(error.response.data);
-            throw new Error("Invalid credentials");
+        onError: (error: unknown) => {
+            if (error instanceof Error) {
+                console.log(
+                    (error as { response?: { data?: unknown } }).response?.data
+                );
+                throw new Error("Invalid credentials");
+            }
+            throw error;
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["auth"] });
@@ -104,11 +121,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             email,
             password,
             confirmPassword,
+            redirectUrl,
         }: {
             username: string;
             email: string;
             password: string;
             confirmPassword: string;
+            redirectUrl?: string;
         }) => {
             const response = await api.post(
                 "/auth/register",
@@ -122,39 +141,54 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                     timeout: 10000, // 10 seconds
                 }
             );
-            return response.data;
+            return { ...response.data, redirectUrl };
         },
         onSuccess: (data) => {
-            const { token, user } = data;
+            const { token, user, redirectUrl } = data;
+            console.log(`[AuthContext.tsx] Registration successful, redirectUrl: ${redirectUrl}`);
             setLocalStorageItem("token", token);
             setUser(user);
             queryClient.setQueryData(["currentUser"], user);
-            navigate("/home");
+            // Use the redirectUrl if provided, otherwise default to "/home"
+            setReturnUrl(redirectUrl || "/home");
+            console.log(`[AuthContext.tsx] Navigating to: ${redirectUrl || "/home"}`);
+            navigate(redirectUrl || "/home", { replace: true });
         },
-        onError: (error: any) => {
-            console.log(error.response.data);
-            throw new Error("Registration failed");
+        onError: (error: unknown) => {
+            if (error instanceof Error) {
+                console.log(
+                    (error as { response?: { data?: unknown } }).response?.data
+                );
+                throw new Error("Registration failed");
+            }
+            throw error;
         },
         onSettled: () => {
             queryClient.invalidateQueries({ queryKey: ["auth"] });
         },
     });
 
-    const login = async (email: string, password: string) => {
-        await loginMutation.mutateAsync({ email, password });
+    const login = async (
+        email: string,
+        password: string,
+        redirectUrl?: string
+    ) => {
+        await loginMutation.mutateAsync({ email, password, redirectUrl });
     };
 
     const register = async (
         username: string,
         email: string,
         password: string,
-        confirmPassword: string
+        confirmPassword: string,
+        redirectUrl?: string
     ) => {
         await registerMutation.mutateAsync({
             username,
             email,
             password,
             confirmPassword,
+            redirectUrl,
         });
     };
 
@@ -171,7 +205,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 user,
                 isAuthenticated: !!user,
                 isLoading,
-                token,
+                token: token ?? undefined,
+                returnUrl: returnUrl ?? undefined,
                 login,
                 register,
                 logout,

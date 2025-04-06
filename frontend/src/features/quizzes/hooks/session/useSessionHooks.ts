@@ -141,7 +141,7 @@ export const useSessionByJoinCode = (joinCode: string, token?: string) => {
             if (error instanceof Error && error.message.includes("not found")) {
                 return false;
             }
-            return failureCount < 3;
+            return failureCount < 2;
         }
     });
 };

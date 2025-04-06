@@ -20,10 +20,23 @@ import {
     RegisterFormSchema,
     RegisterFormValues,
 } from "../../schemas/registerFormSchema";
+import { useEffect } from "react";
+interface RegisterFormProps {
+    returnUrl?: string | null;
+}
 
-const RegisterForm = () => {
-    const { register, isLoading } = useAuth();
+const RegisterForm = ({ returnUrl }: RegisterFormProps) => {
+    const { register, isLoading, isAuthenticated } = useAuth();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        console.log(`[RegisterForm.tsx] isAuthenticated: ${isAuthenticated}, returnUrl: ${returnUrl}`);
+        if (isAuthenticated) {
+            const destination = returnUrl || "/home";
+            console.log(`[RegisterForm.tsx] Navigating to: ${destination}`);
+            navigate(destination, { replace: true });
+        }
+    }, [isAuthenticated, navigate, returnUrl]);
 
     const form = useForm<RegisterFormValues>({
         resolver: zodResolver(RegisterFormSchema),
@@ -38,17 +51,14 @@ const RegisterForm = () => {
 
     const onSubmit = async (values: RegisterFormValues) => {
         try {
+            console.log(`[RegisterForm.tsx] Submitting registration with returnUrl: ${returnUrl}`);
             await register(
                 values.username,
                 values.email,
                 values.password,
-                values.confirmPassword
+                values.confirmPassword,
+                returnUrl || undefined
             );
-            await new Promise((resolve) => setTimeout(resolve, 1000));
-            navigate("/login", {
-                replace: true,
-                state: { message: "Registration successful. Please log in." },
-            });
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
         } catch (error: any) {
             console.error("Registration failed:", error);

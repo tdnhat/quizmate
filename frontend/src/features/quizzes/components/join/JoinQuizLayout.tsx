@@ -6,7 +6,7 @@ interface JoinQuizLayoutProps {
 
 export const JoinQuizLayout = ({ children }: JoinQuizLayoutProps) => {
     return (
-        <div className="flex items-center justify-center min-h-[calc(100vh-100px)] p-4 bg-cyan-50">
+        <div className="flex items-center justify-center min-h-screen p-4 bg-cyan-50">
             {children}
         </div>
     );

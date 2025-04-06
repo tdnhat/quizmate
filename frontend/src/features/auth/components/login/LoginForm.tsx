@@ -12,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { PasswordInput } from "@/features/auth/components/PasswordInput";
 import { LoadingButton } from "@/features/auth/components/LoadingButton";
 import { FormFooter } from "@/features/auth/components/FormFooter";
@@ -21,20 +21,26 @@ import {
     LoginFormSchema,
 } from "@/features/auth/schemas/loginFormSchema";
 
-const LoginForm = () => {
+interface LoginFormProps {
+    returnUrl?: string | null;
+}
+
+const LoginForm = ({ returnUrl }: LoginFormProps) => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { login, isAuthenticated } = useAuth();
     const navigate = useNavigate();
-    const location = useLocation();
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const from = (location.state as any)?.from || "/home";
+    let joinCode = null;
+    if (returnUrl && returnUrl.startsWith("/join/")) {
+        joinCode = returnUrl.substring(6); // Remove '/join/' to get the code
+    }
 
     useEffect(() => {
         if (isAuthenticated) {
-            navigate(from, { replace: true });
+            const destination = returnUrl || "/home";
+            navigate(destination, { replace: true });
         }
-    }, [isAuthenticated, navigate, from]);
+    }, [isAuthenticated, navigate, returnUrl]);
 
     const form = useForm<LoginFormValues>({
         resolver: zodResolver(LoginFormSchema),
@@ -47,21 +53,24 @@ const LoginForm = () => {
     const onSubmit = async (values: LoginFormValues) => {
         try {
             setIsSubmitting(true);
-            await login(values.email, values.password);
-        } catch (error: any) {
-            console.error("Login failed:", error);
-
-            // Handle specific error cases
-            if (error.response?.status === 401) {
-                form.setError("root", {
-                    type: "manual",
-                    message: "Invalid email or password",
-                });
-            } else {
-                form.setError("root", {
-                    type: "manual",
-                    message: "Login failed. Please try again.",
-                });
+            await login(values.email, values.password, returnUrl || undefined);
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("Login failed:", error.message);
+                if (
+                    (error as { response?: { status: number } }).response
+                        ?.status === 401
+                ) {
+                    form.setError("root", {
+                        type: "manual",
+                        message: "Invalid email or password",
+                    });
+                } else {
+                    form.setError("root", {
+                        type: "manual",
+                        message: "Login failed. Please try again.",
+                    });
+                }
             }
         } finally {
             setIsSubmitting(false);
@@ -149,7 +158,11 @@ const LoginForm = () => {
                         <FormFooter
                             text="Don't have an account?"
                             linkText="Register"
-                            linkTo="/register"
+                            linkTo={
+                                joinCode
+                                    ? `/register?returnUrl=${encodeURIComponent(`/join/${joinCode}`)}`
+                                    : "/register"
+                            }
                         />
                     </form>
                 </Form>
