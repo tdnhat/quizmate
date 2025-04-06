@@ -29,7 +29,6 @@ export const formatTime = (seconds: number) => {
 };
 
 export const getUserInitials = (user: User) => {
-    console.log(user);
     if (user.displayName) {
         return user.displayName
             .split(" ")
@@ -39,4 +38,48 @@ export const getUserInitials = (user: User) => {
             .toUpperCase();
     }
     return user.userName.charAt(0).toUpperCase();
+};
+
+// Get initials from username
+export const getInitialsFromName = (name: string) => {
+    return name
+        .split(" ")
+        .map((part) => part.charAt(0))
+        .join("")
+        .toUpperCase()
+        .substring(0, 2);
+};
+
+// Get random color by initials
+export const getColorByInitialsFromName = (initials: string) => {
+    const colors = [
+        "bg-blue-100 text-blue-700",
+        "bg-purple-100 text-purple-700",
+        "bg-green-100 text-green-700",
+        "bg-orange-100 text-orange-700",
+        "bg-pink-100 text-pink-700",
+    ];
+    const charCode = initials.charCodeAt(0);
+    return colors[charCode % colors.length];
+};
+
+// Get time since joined with better fallback handling
+export const getTimeSince = (joinedAt?: Date | string) => {
+    if (!joinedAt) return "Recently";
+
+    try {
+        const joinTime =
+            typeof joinedAt === "string"
+                ? new Date(joinedAt).getTime()
+                : joinedAt.getTime();
+        const now = new Date().getTime();
+        const diffInMinutes = Math.floor((now - joinTime) / (1000 * 60));
+
+        if (diffInMinutes < 1) return "Just now";
+        if (diffInMinutes === 1) return "1 minute ago";
+        return `${diffInMinutes} minutes ago`;
+    } catch (error) {
+        console.error(error);
+        return "Recently";
+    }
 };

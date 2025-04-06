@@ -29,6 +29,7 @@ interface UseQuizSessionParams {
 
 interface UseQuizSessionResult {
     sessionId: string;
+    hostId: string;
     isLoading: boolean;
     error: string | null;
 }
@@ -66,6 +67,7 @@ export const useQuizSession = ({
 }: UseQuizSessionParams): UseQuizSessionResult => {
     const { token } = useAuth();
     const [sessionId, setSessionId] = useState<string>("");
+    const [hostId, setHostId] = useState<string>("");
     const [error, setError] = useState<string | null>(null);
     const { mutate, isPending: isLoading } = useCreateQuizSession();
 
@@ -77,6 +79,7 @@ export const useQuizSession = ({
             onSuccess: (createdSessionId) => {
                 console.log("Session created with ID:", createdSessionId);
                 setSessionId(createdSessionId);
+                setHostId(quiz.appUser?.id || "");
             },
             onError: (err) => {
                 console.error("Failed to create session:", err);
@@ -87,6 +90,7 @@ export const useQuizSession = ({
 
     return {
         sessionId,
+        hostId,
         isLoading,
         error,
     };

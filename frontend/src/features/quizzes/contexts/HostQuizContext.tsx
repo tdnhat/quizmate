@@ -18,6 +18,7 @@ export const HostQuizProvider = ({
   // Step 1: Create a quiz session
   const { 
     sessionId,
+    hostId,
     isLoading: isSessionLoading,
     error: sessionError 
   } = useQuizSession({ quiz });
@@ -73,6 +74,7 @@ export const HostQuizProvider = ({
       value={{
         quiz,
         sessionId,
+        hostId,
         participants,
         currentQuestion,
         isLoading,

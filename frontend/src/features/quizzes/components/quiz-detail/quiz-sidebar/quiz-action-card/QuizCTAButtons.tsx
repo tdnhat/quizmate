@@ -22,7 +22,7 @@ const QuizCTAButtons = () => {
     };
     return (
         <>
-        <Button
+            <Button
                 className="w-full text-lg py-6 bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
                 size="lg"
                 onClick={handleHostQuiz}
@@ -36,7 +36,7 @@ const QuizCTAButtons = () => {
                 variant="secondary"
                 onClick={handleTakeQuiz}
             >
-                Practice
+                Exam Mode
                 <ChevronRight className="ml-2 h-5 w-5" />
             </Button>
         </>

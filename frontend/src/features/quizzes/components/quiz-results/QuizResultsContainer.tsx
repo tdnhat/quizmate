@@ -1,7 +1,7 @@
 import { useQuizResults } from "../../hooks/useQuizResults";
 import ResultsSummary from "./results-summary/ResultsSummary";
 import QuestionReview from "./question-review/QuestionReview";
-import Loader from "@/components/shared/components/Loader";
+import Loader from "@/components/shared/components/loaders/Loader";
 
 const QuizResultsContainer = () => {
     const { quizResult, isLoading } = useQuizResults();
