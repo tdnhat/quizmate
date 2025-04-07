@@ -5,6 +5,17 @@ import { QuizSessionState } from "../../types/quizSession";
 import { useQuizSessionHub } from "../core";
 import { ParticipantJoinedEvent } from "@/services/signalr/hubs/quizSessionHub";
 
+interface QuizResults {
+    topParticipants: {
+        userId: string;
+        username: string;
+        score: number;
+    }[];
+    userRank?: number;
+    userScore?: number;
+    totalParticipants?: number;
+}
+
 interface UseParticipateQuizParams {
     sessionId: string | undefined;
 }
@@ -37,6 +48,7 @@ interface ParticipantState {
     score: number;
     questionStartTime: number | null;
     participants: ParticipantJoinedEvent[];
+    quizResults: QuizResults | null;
 }
 
 export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
@@ -55,6 +67,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         score: 0,
         questionStartTime: null,
         participants: [],
+        quizResults: null,
     });
     const [isLoading, setIsLoading] = useState(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,10 +81,24 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
     // Handle hub connection error
     useEffect(() => {
         if (connectionError) {
-            setParticipantState((prev) => ({
-                ...prev,
-                error: `Connection error: ${connectionError}`,
-            }));
+            // Check if the connection error suggests the session is no longer available
+            if (connectionError.includes("Cannot connect") || 
+                connectionError.includes("Connection closed") ||
+                connectionError.includes("session not found") ||
+                connectionError.includes("Cannot join this session")) {
+                
+                console.log("Connection error suggests session has ended:", connectionError);
+                setParticipantState((prev) => ({
+                    ...prev,
+                    error: null,
+                    sessionState: QuizSessionState.Ended
+                }));
+            } else {
+                setParticipantState((prev) => ({
+                    ...prev,
+                    error: `Connection error: ${connectionError}`,
+                }));
+            }
             setIsLoading(false);
         }
     }, [connectionError]);
@@ -245,12 +272,13 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
-        connection.on("quizEnded", () => {
-            console.log("quizEnded event received");
+        connection.on("quizEnded", (results) => {
+            console.log("quizEnded event received with results:", results);
             setParticipantState((prev) => ({
                 ...prev,
                 sessionState: QuizSessionState.Ended,
                 currentQuestion: null,
+                quizResults: results
             }));
         });
 
@@ -397,12 +425,28 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         // Handle score updates
         connection.on("scoreUpdate", (data: { userId: string; score: number }) => {
             console.log("scoreUpdate event received", data);
-            if (data.userId === userId) {
-                setParticipantState((prev) => ({
+            setParticipantState((prev) => {
+                // Update the participant's score in the participants array
+                const updatedParticipants = prev.participants.map(p => 
+                    p.userId === data.userId 
+                        ? { ...p, score: data.score }
+                        : p
+                );
+                
+                // Also update the current user's score if it's their score update
+                if (data.userId === userId) {
+                    return {
+                        ...prev,
+                        score: data.score,
+                        participants: updatedParticipants
+                    };
+                }
+                
+                return {
                     ...prev,
-                    score: data.score
-                }));
-            }
+                    participants: updatedParticipants
+                };
+            });
         });
 
         connection.on("error", (error: string) => {
@@ -475,12 +519,28 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                     })
                     .catch((err: Error) => {
                         console.error("Error joining session:", err);
-                        setParticipantState((prev) => ({
-                            ...prev,
-                            error:
-                                "Failed to join the quiz session: " +
-                                err.message,
-                        }));
+                        
+                        // Check if the error indicates the session has ended or doesn't exist
+                        const errorMessage = err.message || '';
+                        const cannotJoinError = errorMessage.includes("Cannot join this session");
+                        
+                        if (cannotJoinError) {
+                            // If we can't join, assume the session has ended
+                            console.log("Session appears to be ended or invalid, showing ended state");
+                            setParticipantState((prev) => ({
+                                ...prev,
+                                error: null, // Clear error so we don't show error screen
+                                sessionState: QuizSessionState.Ended
+                            }));
+                        } else {
+                            // For other errors, show the error message
+                            setParticipantState((prev) => ({
+                                ...prev,
+                                error:
+                                    "Failed to join the quiz session: " +
+                                    err.message,
+                            }));
+                        }
                         setIsLoading(false);
                     });
             } else {
@@ -490,6 +550,26 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                 }));
                 setIsLoading(false);
             }
+
+            // Handle connection closure
+            connection.onclose((error) => {
+                console.log("Connection closed", error);
+                
+                // If the connection is closed with a specific error about joining or the quiz is over
+                if (error && (
+                    String(error).includes("Cannot join") || 
+                    String(error).includes("not found") ||
+                    String(error).includes("quiz has ended") ||
+                    String(error).includes("session closed")
+                )) {
+                    console.log("Connection closed with session-ended error:", error);
+                    setParticipantState(prev => ({
+                        ...prev,
+                        error: null,
+                        sessionState: QuizSessionState.Ended
+                    }));
+                }
+            });
 
             return cleanup;
         }
@@ -610,5 +690,6 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         submitAnswer,
         score: participantState.score,
         participants: participantState.participants,
+        quizResults: participantState.quizResults,
     };
 }; 

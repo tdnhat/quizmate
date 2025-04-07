@@ -157,10 +157,28 @@ export const useQuizEvents = ({ hubConnection }: UseQuizEventsParams): UseQuizEv
     }
 
     hubConnection.onQuizEnded((results) => {
+      console.log("Host received quiz ended with results:", results);
       setQuizResults(results);
       setIsSessionStarted(false);
       setSessionState(QuizSessionState.Ended);
     });
+
+    // Add direct handler for quizEnded event as fallback
+    hubConnection?.connection?.on("quizEnded", (results) => {
+      console.log("Quiz ended event received (fallback):", results);
+      setQuizResults(results);
+      setIsSessionStarted(false);
+      setSessionState(QuizSessionState.Ended);
+    });
+
+    return () => {
+      // Clean up event handlers
+      hubConnection?.connection?.off("scoreUpdate");
+      hubConnection?.connection?.off("sessionStateChanged");
+      hubConnection?.connection?.off("questionCompleted");
+      hubConnection?.connection?.off("showingResults");
+      hubConnection?.connection?.off("quizEnded");
+    };
   }, [hubConnection]);
 
   return {

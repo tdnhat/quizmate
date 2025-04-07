@@ -226,6 +226,7 @@ const HostQuizContainer = () => {
                                         onRefresh={handleRefresh}
                                         showScores={true}
                                         hostId={hostId}
+                                        isSearchable={false}
                                     />
                                 </CardContent>
                             </Card>
