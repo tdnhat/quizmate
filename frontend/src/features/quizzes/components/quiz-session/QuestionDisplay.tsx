@@ -1,6 +1,8 @@
 import { Button } from "@/components/ui/button";
 import { QuestionData } from "@/services/signalr/hubs/quizSessionHub";
 import { ChevronRight, Play } from "lucide-react";
+import SessionSummarize from "./SessionSummarize";
+import { Participant } from "../../types/session";
 
 interface QuestionDisplayProps {
     currentQuestion: QuestionData | null;
@@ -9,6 +11,7 @@ interface QuestionDisplayProps {
     isLoading: boolean;
     questionNumber: number;
     totalQuestions: number;
+    participants?: Participant[];
 }
 
 const QuestionDisplay = ({
@@ -18,6 +21,7 @@ const QuestionDisplay = ({
     isLoading,
     questionNumber,
     totalQuestions,
+    participants = [],
 }: QuestionDisplayProps) => {
     const isLastQuestion = questionNumber === totalQuestions - 1;
 
@@ -73,13 +77,11 @@ const QuestionDisplay = ({
 
             <div className="flex justify-end space-x-3 mt-6">
                 {isLastQuestion ? (
-                    <Button 
-                        onClick={onEndSession} 
-                        disabled={isLoading}
-                        className="bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
-                    >
-                        End Quiz
-                    </Button>
+                    <SessionSummarize 
+                        participants={participants}
+                        onEndSession={onEndSession}
+                        isLoading={isLoading}
+                    />
                 ) : (
                     <Button 
                         onClick={onNextQuestion} 

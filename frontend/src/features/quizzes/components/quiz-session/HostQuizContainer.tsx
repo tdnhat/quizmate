@@ -213,6 +213,7 @@ const HostQuizContainer = () => {
                                     currentQuestion?.questionIndex ?? 0
                                 }
                                 totalQuestions={quiz.questions?.length ?? 0}
+                                participants={participants}
                             />
                         </div>
                         <div>
