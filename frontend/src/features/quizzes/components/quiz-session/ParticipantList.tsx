@@ -1,24 +1,27 @@
-import { useState } from "react";
-import { Search, RefreshCcw, Users } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import { useState, useRef, useEffect } from "react";
 import { Participant } from "../../types/session";
 import {
-    getColorByInitialsFromName,
-    getInitialsFromName,
-    getTimeSince,
+    filterParticipants,
+    sortParticipants,
 } from "@/lib/utils";
 import { useDebounce } from "@/components/shared/hooks/useDebounce";
 import {
     Table,
     TableBody,
-    TableCell,
     TableHead,
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { AnimatePresence } from "framer-motion";
+import {
+    EmptyRow,
+    ListHeader,
+    ParticipantRow,
+    RefreshButton,
+    SearchInput
+} from "./participants";
 
+// Types
 interface ParticipantsListProps {
     participants: Participant[];
     onRefresh?: () => void;
@@ -26,44 +29,46 @@ interface ParticipantsListProps {
     hostId?: string;
 }
 
+// Main component
 const ParticipantsList = ({
     participants,
     onRefresh,
     showScores = false,
     hostId,
 }: ParticipantsListProps) => {
+    // State and refs
     const [searchQuery, setSearchQuery] = useState("");
-    const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms debounce
+    const debouncedSearchQuery = useDebounce(searchQuery, 300);
+    const prevParticipantsRef = useRef<Participant[]>([]);
 
-    // Filter participants based on search query and exclude host if hostId is provided
-    const filteredParticipants = participants
-        .filter((p) => !hostId || p.userId !== hostId) // Filter out host if hostId is provided
-        .filter((p) =>
-            p.username
-                .toLowerCase()
-                .includes(debouncedSearchQuery.toLowerCase())
-        );
+    // Filter and sort logic
+    const filteredParticipants = filterParticipants(participants, debouncedSearchQuery, hostId);
+    const sortedParticipants = sortParticipants(filteredParticipants, showScores);
+
+    // Track score changes for animation
+    useEffect(() => {
+        prevParticipantsRef.current = participants;
+    }, [participants]);
+
+    // Helper to check if score has changed
+    const hasScoreChanged = (participant: Participant): boolean => {
+        if (!showScores) return false;
+        const prevParticipant = prevParticipantsRef.current.find(p => p.userId === participant.userId);
+        return !!(prevParticipant && prevParticipant.score !== participant.score);
+    };
 
     return (
         <div className="space-y-4">
-            <div className="flex items-center gap-4">
-                <h3 className="text-lg font-semibold">Participants</h3>
-                <div className="flex items-center text-muted-foreground text-sm">
-                    <Users className="h-4 w-4 mr-1" />
-                    {filteredParticipants.length}
-                </div>
-            </div>
-
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
-                <Input
-                    placeholder="Search participants..."
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10"
-                />
-            </div>
-
+            {/* Header */}
+            <ListHeader participantCount={filteredParticipants.length} />
+            
+            {/* Search */}
+            <SearchInput 
+                value={searchQuery} 
+                onChange={(e) => setSearchQuery(e.target.value)} 
+            />
+            
+            {/* Table */}
             <div className="border rounded-md">
                 <Table>
                     <TableHeader>
@@ -80,83 +85,32 @@ const ParticipantsList = ({
                         </TableRow>
                     </TableHeader>
                     <TableBody>
-                        {filteredParticipants.length > 0 ? (
-                            filteredParticipants.map((participant) => (
-                                <TableRow key={participant.userId}>
-                                    <TableCell>
-                                        <div className="flex items-center gap-4">
-                                            <div
-                                                className={`flex h-8 w-8 items-center justify-center rounded-full ${getColorByInitialsFromName(
-                                                    getInitialsFromName(
-                                                        participant.username
-                                                    )
-                                                )}`}
-                                            >
-                                                {getInitialsFromName(
-                                                    participant.username
-                                                )}
-                                            </div>
-                                            <div>
-                                                <p className="font-medium line-clamp-1">
-                                                    {participant.username}
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </TableCell>
-                                    {showScores ? (
-                                        <TableCell>
-                                            <Badge className="bg-purple-100 text-purple-800">
-                                                {participant.score || 0} pts
-                                            </Badge>
-                                        </TableCell>
-                                    ) : (
-                                        <>
-                                            <TableCell>
-                                                <Badge
-                                                    className={
-                                                        participant.isActive
-                                                            ? "bg-green-100 text-green-800"
-                                                            : "bg-gray-100 text-gray-800"
-                                                    }
-                                                >
-                                                    {participant.isActive
-                                                        ? "Connected"
-                                                        : "Disconnected"}
-                                                </Badge>
-                                            </TableCell>
-                                            <TableCell className="text-sm text-muted-foreground">
-                                                {getTimeSince(
-                                                    participant.joinedAt
-                                                )}
-                                            </TableCell>
-                                        </>
-                                    )}
-                                </TableRow>
-                            ))
-                        ) : (
-                            <TableRow>
-                                <TableCell
-                                    colSpan={showScores ? 2 : 3}
-                                    className="text-center text-muted-foreground"
-                                >
-                                    No participants
-                                </TableCell>
-                            </TableRow>
-                        )}
+                        <AnimatePresence>
+                            {sortedParticipants.length > 0 ? (
+                                sortedParticipants.map((participant) => {
+                                    // Force boolean type for showScores
+                                    const isShowingScores = showScores === true;
+                                    
+                                    return (
+                                        <ParticipantRow 
+                                            key={participant.userId}
+                                            participant={participant}
+                                            showScores={isShowingScores}
+                                            hasScoreChanged={hasScoreChanged(participant)}
+                                        />
+                                    );
+                                })
+                            ) : (
+                                <EmptyRow colSpan={showScores ? 2 : 3} />
+                            )}
+                        </AnimatePresence>
                     </TableBody>
                 </Table>
             </div>
 
-            {onRefresh && (
-                <div className="flex justify-center mt-4">
-                    <Button
-                        variant="outline"
-                        className="flex items-center gap-2"
-                        onClick={onRefresh}
-                    >
-                        <RefreshCcw className="h-4 w-4" /> Refresh List
-                    </Button>
-                </div>
+            {/* Refresh button */}
+            {onRefresh && !showScores && (
+                <RefreshButton onClick={onRefresh} />
             )}
         </div>
     );

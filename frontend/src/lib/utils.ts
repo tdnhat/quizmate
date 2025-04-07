@@ -1,3 +1,4 @@
+import { Participant } from "@/features/quizzes/types/session";
 import { DifficultyLevel } from "@/types/quiz";
 import { User } from "@/types/user";
 import { clsx, type ClassValue } from "clsx";
@@ -81,5 +82,52 @@ export const getTimeSince = (joinedAt?: Date | string) => {
     } catch (error) {
         console.error(error);
         return "Recently";
+    }
+};
+
+// Filter participants
+export const filterParticipants = (participants: Participant[], searchQuery: string, hostId?: string): Participant[] => {
+    return participants
+        .filter((p) => !hostId || p.userId !== hostId)
+        .filter((p) => p.username.toLowerCase().includes(searchQuery.toLowerCase()));
+}
+
+// Sort participants
+export const sortParticipants = (participants: Participant[], showScores: boolean | undefined): Participant[] => {
+    return showScores 
+        ? [...participants].sort((a, b) => (b.score || 0) - (a.score || 0))
+        : participants;
+}
+
+/**
+ * Gets the color gradient class based on the score value
+ * Higher scores get warmer/brighter colors, lower scores get cooler colors
+ * @param score The participant's score
+ * @param maxPossibleScore The maximum possible score for scaling (default: 100)
+ * @returns CSS classes for background and text color
+ */
+export const getScoreGradientColors = (score: number, maxPossibleScore: number = 100): string => {
+    // Ensure score is a number and not undefined
+    const safeScore = score || 0;
+    
+    // Normalize the score to a percentage (0-1 range)
+    const normalizedScore = Math.min(safeScore / maxPossibleScore, 1);
+    
+    // Color ranges from cool to warm based on score percentage
+    if (normalizedScore >= 0.8) {
+        // 80-100% - Gold/Yellow (Highest tier)
+        return 'bg-amber-100 text-amber-800 border border-amber-300';
+    } else if (normalizedScore >= 0.6) {
+        // 60-80% - Orange (High tier)
+        return 'bg-orange-100 text-orange-800 border border-orange-300';
+    } else if (normalizedScore >= 0.4) {
+        // 40-60% - Purple (Mid-high tier)
+        return 'bg-purple-100 text-purple-800 border border-purple-300';
+    } else if (normalizedScore >= 0.2) {
+        // 20-40% - Blue (Mid-low tier)
+        return 'bg-blue-100 text-blue-800 border border-blue-300';
+    } else {
+        // 0-20% - Gray (Low tier)
+        return 'bg-gray-100 text-gray-800 border border-gray-300';
     }
 };
