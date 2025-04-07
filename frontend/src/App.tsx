@@ -24,7 +24,8 @@ import QuizPage from "./pages/home/quizzes/QuizPage";
 import PopularQuizzesPage from "./pages/home/quizzes/PopularQuizzesPage";
 import RecentlyAddedQuizzesPage from "./pages/home/quizzes/RecentlyAddedQuizzesPage";
 import HostQuizPage from "./pages/home/quizzes/HostQuizPage";
-import { JoinQuizPage, ParticipateQuizPage } from "./features/quizzes";
+import { JoinQuizPage } from "./pages/home/quizzes/JoinQuizPage";
+import { ParticipateQuizPage } from "./pages/home/quizzes/ParticipateQuizPage";
 
 function App() {
     return (

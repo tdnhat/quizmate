@@ -10,17 +10,17 @@ const MainLayout = () => {
                 <Outlet />
             </main>
             <Toaster
-                position="top-right"
+                position="bottom-right"
                 toastOptions={{
                     duration: 2000,
                     style: {
-                        background: "#363636",
-                        color: "#fff",
+                        background: "#ffffff", // light theme bg
+                        color: "#1f2937", // dark gray text (Tailwind gray-800)
                     },
                     success: {
                         iconTheme: {
-                            primary: "#10B981",
-                            secondary: "#FFFFFF",
+                            primary: "#0891b2", // cyan-600
+                            secondary: "#e0f7fa", // light cyan-ish secondary (for contrast)
                         },
                     },
                 }}

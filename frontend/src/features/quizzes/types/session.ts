@@ -19,6 +19,7 @@ export interface Participant {
 export interface HostQuizContextType {
   quiz: Quiz | null;
   sessionId: string;
+  hostId: string;
   participants: Participant[];
   currentQuestion: QuestionData | null;
   isLoading: boolean;

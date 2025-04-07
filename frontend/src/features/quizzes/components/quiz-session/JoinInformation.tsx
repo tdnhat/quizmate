@@ -101,9 +101,9 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                         {isLoading ? (
                             <Skeleton className="h-10 w-full" />
                         ) : (
-                            <div className="flex flex-col sm:flex-row items-center gap-2 mt-1">
+                            <div className="flex flex-col sm:flex-row items-center mt-1">
                                 <div className="flex-1 w-full">
-                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md font-mono text-xl tracking-widest justify-center">
+                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md rounded-r-none font-mono text-xl tracking-widest justify-center">
                                         {joinCode || "-"}
                                     </div>
                                 </div>
@@ -112,7 +112,7 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                                     size="default"
                                     onClick={handleCopyCode}
                                     disabled={!joinCode}
-                                    className="shrink-0 h-10 w-24"
+                                    className="shrink-0 h-10 w-24 rounded-l-none"
                                 >
                                     {codeCopied ? (
                                         <Check className="h-4 w-4 text-green-500" />
@@ -130,9 +130,9 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                         {isLoading ? (
                             <Skeleton className="h-10 w-full" />
                         ) : (
-                            <div className="flex flex-col sm:flex-row items-center gap-2 mt-1">
+                            <div className="flex flex-col sm:flex-row items-center mt-1">
                                 <div className="flex-1 w-full">
-                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md text-sm truncate">
+                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md rounded-r-none text-sm truncate">
                                         {joinUrl || "-"}
                                     </div>
                                 </div>
@@ -141,7 +141,7 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                                     size="default"
                                     onClick={handleCopyLink}
                                     disabled={!joinUrl}
-                                    className="shrink-0 h-10 w-24 "
+                                    className="shrink-0 h-10 w-24 rounded-l-none"
                                 >
                                     {linkCopied ? (
                                         <Check className="h-4 w-4 text-green-500" />

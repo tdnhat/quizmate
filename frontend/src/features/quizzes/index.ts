@@ -17,6 +17,3 @@ export { useQuizSessionHub } from "./hooks/core/useQuizSessionHub";
 // Types
 export * from "./types/session";
 export * from "./types/quizSession";
-
-// Participant Components
-export { JoinQuizPage, ParticipateQuizPage } from "./components/participant";

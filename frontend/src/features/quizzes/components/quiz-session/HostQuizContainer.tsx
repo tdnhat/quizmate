@@ -1,18 +1,25 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, Play, Square, Clock, ExternalLink } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import {
+    RefreshCcw,
+    Play,
+    ExternalLink,
+    Pause,
+} from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
 import ParticipantsList from "./ParticipantList";
 import { useHostQuiz } from "../../hooks";
 import QuestionDisplay from "./QuestionDisplay";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import JoinInformation from "./JoinInformation";
+import DotLoader from "@/components/shared/components/loaders/DotLoader";
+import QuizSessionBreadcrumb from "./QuizSessionBreadcrumb";
 
 const HostQuizContainer = () => {
     const {
         quiz,
         sessionId,
+        hostId,
         participants,
         currentQuestion,
         isLoading,
@@ -23,29 +30,8 @@ const HostQuizContainer = () => {
         error,
     } = useHostQuiz();
     const navigate = useNavigate();
-    const [sessionTime, setSessionTime] = useState(0);
-
-    // Session timer
-    useEffect(() => {
-        let interval: NodeJS.Timeout | null = null;
-        if (isSessionStarted) {
-            interval = setInterval(() => {
-                setSessionTime((prevTime) => prevTime + 1);
-            }, 1000);
-        }
-        return () => {
-            if (interval) clearInterval(interval);
-        };
-    }, [isSessionStarted]);
-
-    // Format session time as mm:ss
-    const formatSessionTime = (seconds: number): string => {
-        const mins = Math.floor(seconds / 60)
-            .toString()
-            .padStart(2, "0");
-        const secs = (seconds % 60).toString().padStart(2, "0");
-        return `${mins}:${secs}`;
-    };
+    const [isRefreshingParticipants, setIsRefreshingParticipants] =
+        useState(false);
 
     if (!quiz) {
         return <div>No quiz found</div>;
@@ -53,11 +39,8 @@ const HostQuizContainer = () => {
 
     if (isLoading) {
         return (
-            <div className="flex justify-center items-center min-h-[400px]">
-                <div className="flex flex-col items-center">
-                    <div className="animate-spin h-8 w-8 border-4 border-primary border-t-transparent rounded-full mb-4"></div>
-                    <p>Loading session...</p>
-                </div>
+            <div className="flex justify-center items-center mt-16">
+                <DotLoader />
             </div>
         );
     }
@@ -67,15 +50,19 @@ const HostQuizContainer = () => {
         navigate(`/quizzes/${quiz.slug}`);
     };
 
-    // Force page refresh to reset the connection
+    // Refresh participants only instead of full page reload
     const handleRefresh = () => {
-        window.location.reload();
+        setIsRefreshingParticipants(true);
+        setTimeout(() => {
+            setIsRefreshingParticipants(false);
+        }, 1000);
     };
 
     return (
         <div className="space-y-6">
+            <QuizSessionBreadcrumb quiz={quiz} />
             <Card className="mb-6">
-                <CardHeader className="flex flex-row items-center justify-between pb-2">
+                <CardHeader className="flex flex-row items-center justify-between">
                     <div>
                         <CardTitle className="text-2xl">
                             Quiz Session Dashboard
@@ -83,25 +70,6 @@ const HostQuizContainer = () => {
                         <p className="text-muted-foreground mt-1">
                             {quiz.title}
                         </p>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <Clock className="h-5 w-5 text-muted-foreground" />
-                        <div>
-                            <span className="text-sm text-muted-foreground">
-                                SESSION TIME
-                            </span>
-                            <p className="font-mono text-xl">
-                                {formatSessionTime(sessionTime)}
-                            </p>
-                        </div>
-                        {!isSessionStarted && (
-                            <Badge variant="outline">Inactive</Badge>
-                        )}
-                        {isSessionStarted && (
-                            <Badge className="bg-green-100 text-green-800">
-                                Active
-                            </Badge>
-                        )}
                     </div>
                 </CardHeader>
             </Card>
@@ -114,11 +82,18 @@ const HostQuizContainer = () => {
                             {/* Join Information */}
                             <JoinInformation sessionId={sessionId} />
                             <Card>
-                                <CardContent className="p-6">
-                                    <ParticipantsList
-                                        participants={participants}
-                                        onRefresh={handleRefresh}
-                                    />
+                                <CardContent>
+                                    {isRefreshingParticipants ? (
+                                        <div className="flex justify-center items-center py-6">
+                                            <DotLoader />
+                                        </div>
+                                    ) : (
+                                        <ParticipantsList
+                                            participants={participants}
+                                            onRefresh={handleRefresh}
+                                            hostId={hostId}
+                                        />
+                                    )}
                                 </CardContent>
                             </Card>
 
@@ -130,7 +105,9 @@ const HostQuizContainer = () => {
                                         </p>
                                         <Button
                                             variant="outline"
-                                            onClick={handleRefresh}
+                                            onClick={() =>
+                                                window.location.reload()
+                                            }
                                             size="sm"
                                         >
                                             <RefreshCcw className="h-4 w-4 mr-2" />
@@ -143,7 +120,6 @@ const HostQuizContainer = () => {
 
                         {/* Second column - Join Info & Controls */}
                         <div className="space-y-6">
-                            {/* Quiz Controls - Now at top */}
                             <Card>
                                 <CardHeader>
                                     <CardTitle>Quiz Controls</CardTitle>
@@ -151,7 +127,7 @@ const HostQuizContainer = () => {
                                 <CardContent className="space-y-4">
                                     <Button
                                         size="lg"
-                                        className="w-full"
+                                        className="w-full text-md py-6 bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
                                         onClick={startSession}
                                         disabled={isLoading}
                                     >
@@ -162,10 +138,10 @@ const HostQuizContainer = () => {
                                     <Button
                                         size="lg"
                                         variant="outline"
-                                        className="w-full"
+                                        className="w-full text-md py-6 cursor-pointer border border-gray-200 hover:shadow transition-colors"
                                         onClick={handleEndSession}
                                     >
-                                        <Square className="mr-2 h-5 w-5" />
+                                        <Pause className="mr-2 h-5 w-5" />
                                         End Session
                                     </Button>
                                 </CardContent>
@@ -214,54 +190,13 @@ const HostQuizContainer = () => {
                                             {quiz.appUser?.displayName || "You"}
                                         </p>
                                     </div>
-                                    <Button
-                                        variant="link"
-                                        className="p-0 h-auto"
-                                        onClick={() =>
-                                            navigate(`/quizzes/${quiz.slug}`)
-                                        }
+                                    <Link
+                                        to={`/quizzes/${quiz.slug}`}
+                                        className="cursor-pointer text-sm hover:underline text-blue-500 hover:text-blue-600 flex items-center"
                                     >
-                                        View Quiz Details{" "}
+                                        View Quiz Details
                                         <ExternalLink className="ml-1 h-3 w-3" />
-                                    </Button>
-                                </CardContent>
-                            </Card>
-
-                            {/* Session Stats */}
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Session Stats</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <div className="grid grid-cols-2 gap-4">
-                                        <div className="bg-blue-50 p-4 rounded-lg">
-                                            <p className="text-xs uppercase text-blue-700">
-                                                PARTICIPANTS
-                                            </p>
-                                            <p className="text-3xl font-bold text-blue-700">
-                                                {participants.length}
-                                            </p>
-                                        </div>
-                                        <div className="bg-green-50 p-4 rounded-lg">
-                                            <p className="text-xs uppercase text-green-700">
-                                                COMPLETED
-                                            </p>
-                                            <p className="text-3xl font-bold text-green-700">
-                                                {isSessionStarted
-                                                    ? currentQuestion?.questionIndex ||
-                                                      0
-                                                    : 0}
-                                            </p>
-                                        </div>
-                                        <div className="bg-purple-50 p-4 rounded-lg col-span-2">
-                                            <p className="text-xs uppercase text-purple-700">
-                                                AVG. SCORE
-                                            </p>
-                                            <p className="text-3xl font-bold text-purple-700">
-                                                --
-                                            </p>
-                                        </div>
-                                    </div>
+                                    </Link>
                                 </CardContent>
                             </Card>
                         </div>
@@ -278,14 +213,17 @@ const HostQuizContainer = () => {
                                     currentQuestion?.questionIndex ?? 0
                                 }
                                 totalQuestions={quiz.questions?.length ?? 0}
+                                participants={participants}
                             />
                         </div>
                         <div>
                             <Card>
-                                <CardContent className="p-6">
+                                <CardContent>
                                     <ParticipantsList
                                         participants={participants}
                                         onRefresh={handleRefresh}
+                                        showScores={true}
+                                        hostId={hostId}
                                     />
                                 </CardContent>
                             </Card>

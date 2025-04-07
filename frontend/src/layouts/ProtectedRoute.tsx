@@ -1,5 +1,5 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import Loader from "@/components/shared/components/Loader";
+import Loader from "@/components/shared/components/loaders/Loader";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 
 export const ProtectedRoute = () => {
