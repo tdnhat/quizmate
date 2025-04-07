@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { QuestionData } from "@/services/signalr/hubs/quizSessionHub";
-import { ChevronRight } from "lucide-react";
+import { ChevronRight, Play } from "lucide-react";
 
 interface QuestionDisplayProps {
     currentQuestion: QuestionData | null;
@@ -23,13 +23,21 @@ const QuestionDisplay = ({
 
     if (!currentQuestion) {
         return (
-            <div className="bg-white rounded-lg shadow p-6 flex flex-col items-center justify-center min-h-[400px] space-y-4">
-                <h2 className="text-xl font-bold">
-                    Click 'Next Question' to start
-                </h2>
-                <Button size="lg" onClick={onNextQuestion} disabled={isLoading}>
-                    Start First Question{" "}
-                    <ChevronRight className="ml-2 h-5 w-5" />
+            <div className="bg-white rounded-lg shadow p-8 flex flex-col items-center justify-center min-h-[400px] space-y-6">
+                <div className="text-center">
+                    <h2 className="text-2xl font-bold mb-3">Ready to Begin</h2>
+                    <p className="text-gray-500 mb-6">
+                        Click the button below to start the quiz session and reveal the first question.
+                    </p>
+                </div>
+                <Button 
+                    size="lg" 
+                    onClick={onNextQuestion} 
+                    disabled={isLoading}
+                    className="text-md py-6 bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
+                >
+                    <Play className="mr-2 h-5 w-5" />
+                    Start First Question
                 </Button>
             </div>
         );
@@ -46,7 +54,7 @@ const QuestionDisplay = ({
             <h2 className="text-xl font-bold">{currentQuestion.text}</h2>
 
             {currentQuestion.imageUrl && (
-                <div className="my-4">
+                <div className="my-4 flex justify-center">
                     <img
                         src={currentQuestion.imageUrl}
                         alt="Question"
@@ -57,7 +65,7 @@ const QuestionDisplay = ({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
                 {currentQuestion.answers.map((answer) => (
-                    <div key={answer.id} className="p-4 border rounded-lg">
+                    <div key={answer.id} className="p-4 border rounded-lg hover:border-cyan-500 hover:shadow-sm transition-all">
                         {answer.text}
                     </div>
                 ))}
@@ -65,11 +73,19 @@ const QuestionDisplay = ({
 
             <div className="flex justify-end space-x-3 mt-6">
                 {isLastQuestion ? (
-                    <Button onClick={onEndSession} disabled={isLoading}>
+                    <Button 
+                        onClick={onEndSession} 
+                        disabled={isLoading}
+                        className="bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
+                    >
                         End Quiz
                     </Button>
                 ) : (
-                    <Button onClick={onNextQuestion} disabled={isLoading}>
+                    <Button 
+                        onClick={onNextQuestion} 
+                        disabled={isLoading}
+                        className="bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
+                    >
                         Next Question <ChevronRight className="ml-2 h-5 w-5" />
                     </Button>
                 )}

@@ -1,5 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { RefreshCcw, Play, ExternalLink, Pause } from "lucide-react";
+import {
+    RefreshCcw,
+    Play,
+    ExternalLink,
+    Pause,
+    Award,
+    Dot,
+} from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import ParticipantsList from "./ParticipantList";
@@ -33,7 +40,11 @@ const HostQuizContainer = () => {
     }
 
     if (isLoading) {
-        return <DotLoader />;
+        return (
+            <div className="flex justify-center items-center mt-16">
+                <DotLoader />
+            </div>
+        );
     }
 
     const handleEndSession = async () => {
