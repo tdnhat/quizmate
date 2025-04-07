@@ -214,6 +214,8 @@ const HostQuizContainer = () => {
                                 }
                                 totalQuestions={quiz.questions?.length ?? 0}
                                 participants={participants}
+                                autoTransitionDuration={30}
+                                betweenQuestionsDuration={10}
                             />
                         </div>
                         <div>

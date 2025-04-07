@@ -6,7 +6,9 @@ import { QuestionOptions } from "./QuestionOptions";
 
 interface Question {
     text: string;
+    imageUrl?: string;
     options: { id: string; text: string }[];
+    timeLimit?: number;
 }
 
 interface Feedback {
@@ -40,7 +42,9 @@ export const BetweenQuestionsState = ({
                 headerChildren={<ScoreBadge score={score} />}
             >
                 <div className="text-center">
-                    <p className="text-lg font-medium mb-2">Get ready for the next question</p>
+                    <p className="text-lg font-medium mb-2">
+                        Get ready for the next question
+                    </p>
                     <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
                 </div>
             </QuizCard>
@@ -53,41 +57,48 @@ export const BetweenQuestionsState = ({
             headerChildren={<ScoreBadge score={score} />}
         >
             <div className="space-y-6">
-                <div className="text-center">
-                    <p className="text-lg font-medium mb-2">Get ready for the next question</p>
-                    <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
-                </div>
-                
+
                 {currentQuestion && feedback && (
-                    <div className="space-y-6 border p-4 rounded-lg shadow-sm">
-                        <div className="flex items-center mb-2">
-                            <div className="mr-2">
-                                {feedback.isCorrect ? (
-                                    <CheckCircle className="h-5 w-5 text-green-600" />
-                                ) : (
-                                    <XCircle className="h-5 w-5 text-red-600" />
-                                )}
+                    <div className="space-y-6 p-4 rounded-lg">
+                        <div>
+                            <div className="flex items-center">
+                                <div className="mr-2">
+                                    {feedback.isCorrect ? (
+                                        <CheckCircle className="h-5 w-5 text-green-600" />
+                                    ) : (
+                                        <XCircle className="h-5 w-5 text-red-600" />
+                                    )}
+                                </div>
+                                <h3 className="text-xl font-medium">
+                                    {currentQuestion.text}
+                                </h3>
                             </div>
-                            <h3 className="text-lg font-medium">{currentQuestion.text}</h3>
+                            {currentQuestion.imageUrl && (
+                                <img
+                                    className="max-w-full h-auto rounded-md object-contain mx-auto my-4"
+                                    src={currentQuestion.imageUrl}
+                                    alt={quizTitle}
+                                />
+                            )}
                         </div>
-                        
-                        <QuestionOptions 
+
+                        <QuestionOptions
                             options={currentQuestion.options}
                             selectedOption={selectedOption || undefined}
                             showFeedback={true}
                             isCorrect={!!feedback.isCorrect}
                             onSelectOption={() => {}}
                         />
-                        
-                        <FeedbackDisplay 
+
+                        <FeedbackDisplay
                             feedback={feedback}
                             selectedOption={selectedOption || undefined}
                         />
                     </div>
                 )}
-                
+
                 {feedback && !currentQuestion && (
-                    <FeedbackDisplay 
+                    <FeedbackDisplay
                         feedback={feedback}
                         selectedOption={selectedOption || undefined}
                     />
@@ -95,4 +106,4 @@ export const BetweenQuestionsState = ({
             </div>
         </QuizCard>
     );
-}; 
+};

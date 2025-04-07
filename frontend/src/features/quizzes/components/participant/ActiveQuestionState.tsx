@@ -5,9 +5,11 @@ import { Clock } from "lucide-react";
 import { QuizCard } from "./QuizCard";
 import { ScoreBadge } from "./ScoreBadge";
 import { QuestionOptions } from "./QuestionOptions";
+import DotLoader from "@/components/shared/components/loaders/DotLoader";
 
 interface Question {
     text: string;
+    imageUrl?: string;
     options: { id: string; text: string }[];
     timeLimit?: number;
 }
@@ -40,11 +42,14 @@ export const ActiveQuestionState = ({
                 headerChildren={<ScoreBadge score={score} />}
             >
                 <div className="text-center space-y-4">
+                    <DotLoader />
                     <p>Waiting for a question to be displayed...</p>
                 </div>
             </QuizCard>
         );
     }
+
+    console.log(currentQuestion);
 
     return (
         <QuizCard
@@ -102,6 +107,15 @@ export const ActiveQuestionState = ({
                         <h3 className="text-xl font-medium mb-4">
                             {currentQuestion.text}
                         </h3>
+                        {currentQuestion.imageUrl && (
+                            <div className="my-4 flex justify-center">
+                                <img 
+                                    src={currentQuestion.imageUrl} 
+                                    alt={quizTitle}
+                                    className="max-w-full h-auto rounded-md object-contain" 
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <QuestionOptions 

@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Participant } from "../../types/session";
 import { BarChart3 } from "lucide-react";
 import { useState } from "react";
@@ -34,6 +34,7 @@ const SessionSummarize = ({ participants, onEndSession, isLoading }: SessionSumm
             <DialogContent className="max-w-3xl">
                 <DialogHeader>
                     <DialogTitle className="text-2xl">Quiz Session Summary</DialogTitle>
+                    <DialogDescription></DialogDescription>
                 </DialogHeader>
                 
                 <div className="mt-6 space-y-6">
@@ -51,7 +52,7 @@ const SessionSummarize = ({ participants, onEndSession, isLoading }: SessionSumm
                     <Button 
                         onClick={handleEndSession} 
                         disabled={isLoading}
-                        className="bg-red-500 hover:bg-red-600 text-white"
+                        className="bg-red-500 hover:bg-red-600 text-white cursor-pointer"
                     >
                         End Quiz Session
                     </Button>

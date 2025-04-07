@@ -23,11 +23,19 @@ export const JoinQuizPage = () => {
     };
 
     if (isLoading) {
-        return <LoadingState />;
+        return (
+            <JoinQuizLayout>
+                <LoadingState />
+            </JoinQuizLayout>
+        );
     }
 
     if (error && isAuthenticated) {
-        return <ErrorState error={error} />;
+        return (
+            <JoinQuizLayout>
+                <ErrorState error={error} />
+            </JoinQuizLayout>
+        );
     }
 
     return (
@@ -47,8 +55,7 @@ export const JoinQuizPage = () => {
                 ) : (
                     <div className="text-center">
                         <p>
-                            Quiz information will appear here once you sign
-                            in.
+                            Quiz information will appear here once you sign in.
                         </p>
                     </div>
                 )}
