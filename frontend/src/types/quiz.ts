@@ -47,6 +47,7 @@ export interface Question {
     answers: Answer[];
     explanation?: string;
     imageUrl?: string;
+    timeLimit?: number;
 }
 
 export interface Quiz {

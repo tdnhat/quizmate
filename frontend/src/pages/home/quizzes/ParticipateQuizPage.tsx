@@ -7,11 +7,11 @@ import {
     LoadingState,
     ErrorState,
     WaitingToStartState,
-    BetweenQuestionsState,
     EndedState,
     ShowingResultsState,
     ActiveQuestionState,
 } from "@/features/quizzes/components/participant";
+import { ParticipantQuestionTransition } from "@/features/quizzes/components/participant/ParticipantQuestionTransition";
 
 export const ParticipateQuizPage = () => {
     const { sessionId } = useParams<{ sessionId: string }>();
@@ -29,6 +29,7 @@ export const ParticipateQuizPage = () => {
         selectOption,
         submitAnswer,
         score,
+        participants,
     } = useParticipateQuiz({ sessionId });
 
     const showWaitingToStart = sessionState === QuizSessionState.WaitingToStart;
@@ -64,12 +65,13 @@ export const ParticipateQuizPage = () => {
 
             {/* Between questions */}
             {showBetweenQuestions && (
-                <BetweenQuestionsState 
+                <ParticipantQuestionTransition
                     quizTitle={quizTitle}
                     score={score}
                     currentQuestion={currentQuestion}
                     selectedOption={selectedOption}
                     feedback={feedback}
+                    participants={participants || []}
                 />
             )}
 

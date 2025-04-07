@@ -1,21 +1,19 @@
-import { Loader2 } from "lucide-react";
 import { QuizCard } from "./QuizCard";
-import { ScoreBadge } from "./ScoreBadge";
+import DotLoader from "@/components/shared/components/loaders/DotLoader";
 
 interface WaitingToStartStateProps {
     quizTitle: string;
     score: number;
 }
 
-export const WaitingToStartState = ({ quizTitle, score }: WaitingToStartStateProps) => {
+export const WaitingToStartState = ({
+    quizTitle,
+}: WaitingToStartStateProps) => {
     return (
-        <QuizCard
-            title={quizTitle}
-            headerChildren={<ScoreBadge score={score} />}
-        >
+        <QuizCard title={quizTitle}>
             <div className="text-center space-y-4">
+                <DotLoader />
                 <p>Waiting for the host to start the quiz...</p>
-                <Loader2 className="h-8 w-8 animate-spin mx-auto text-primary" />
             </div>
         </QuizCard>
     );

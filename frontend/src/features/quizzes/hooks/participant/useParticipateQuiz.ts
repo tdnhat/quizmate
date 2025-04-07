@@ -3,6 +3,7 @@ import { useAuth } from "@/features/auth/hooks/useAuth";
 import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 import { QuizSessionState } from "../../types/quizSession";
 import { useQuizSessionHub } from "../core";
+import { ParticipantJoinedEvent } from "@/services/signalr/hubs/quizSessionHub";
 
 interface UseParticipateQuizParams {
     sessionId: string | undefined;
@@ -10,6 +11,7 @@ interface UseParticipateQuizParams {
 
 interface ParticipantState {
     quizTitle: string;
+    quizImageUrl: string;
     currentQuestion: {
         id: string;
         text: string;
@@ -34,6 +36,7 @@ interface ParticipantState {
     error: string | null;
     score: number;
     questionStartTime: number | null;
+    participants: ParticipantJoinedEvent[];
 }
 
 export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
@@ -41,6 +44,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
     const userId = user?.id;
     const [participantState, setParticipantState] = useState<ParticipantState>({
         quizTitle: "",
+        quizImageUrl: "",
         currentQuestion: null,
         selectedOption: null,
         sessionState: QuizSessionState.WaitingToStart,
@@ -50,6 +54,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         error: null,
         score: 0,
         questionStartTime: null,
+        participants: [],
     });
     const [isLoading, setIsLoading] = useState(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -162,6 +167,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                 clearInterval(timerRef.current);
             }
         };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
         participantState.sessionState,
         participantState.hasSubmitted,
@@ -251,6 +257,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         connection.on("newQuestion", (questionData: {
             questionId: string;
             text: string;
+            imageUrl: string;
             answers: { id: string; text: string }[];
             timeLimit?: number;
         }) => {
@@ -261,6 +268,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                 currentQuestion: {
                     id: questionData.questionId,
                     text: questionData.text,
+                    imageUrl: questionData.imageUrl,
                     options: questionData.answers,
                     timeLimit: questionData.timeLimit || 30,
                 },
@@ -277,6 +285,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             questionData: {
                 questionId: string;
                 text: string;
+                imageUrl: string;
                 answers: { id: string; text: string }[];
                 timeLimit?: number;
             } | null
@@ -289,6 +298,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                     currentQuestion: {
                         id: questionData.questionId,
                         text: questionData.text,
+                        imageUrl: questionData.imageUrl,
                         options: questionData.answers,
                         timeLimit: questionData.timeLimit || 30,
                     },
@@ -403,6 +413,32 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
+        // Add participant handlers
+        connection.on("participantJoined", (data: ParticipantJoinedEvent) => {
+            setParticipantState((prev) => {
+                const existingParticipants = prev.participants || [];
+                const existingIndex = existingParticipants.findIndex(
+                    (p) => p.userId === data.userId
+                );
+                if (existingIndex >= 0) {
+                    const updatedParticipants = [...existingParticipants];
+                    updatedParticipants[existingIndex] = data;
+                    return { ...prev, participants: updatedParticipants };
+                }
+                return {
+                    ...prev,
+                    participants: [...existingParticipants, data],
+                };
+            });
+        });
+
+        connection.on("participantLeft", (data: { userId: string }) => {
+            setParticipantState((prev) => ({
+                ...prev,
+                participants: prev.participants.filter((p) => p.userId !== data.userId),
+            }));
+        });
+
         return () => {
             connection.off("sessionStateChanged");
             connection.off("sessionStarted");
@@ -415,6 +451,8 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             connection.off("quizEnded");
             connection.off("scoreUpdate");
             connection.off("error");
+            connection.off("participantJoined");
+            connection.off("participantLeft");
         };
     }, []);
 
@@ -558,6 +596,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
 
     return {
         quizTitle: participantState.quizTitle,
+        quizImageUrl: participantState.quizImageUrl,
         currentQuestion: participantState.currentQuestion,
         selectedOption: participantState.selectedOption,
         sessionState: participantState.sessionState,
@@ -570,5 +609,6 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         selectOption,
         submitAnswer,
         score: participantState.score,
+        participants: participantState.participants,
     };
 }; 

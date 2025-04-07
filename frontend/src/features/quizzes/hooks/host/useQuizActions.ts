@@ -68,6 +68,11 @@ export const useQuizActions = ({
 
       setIsLoading(true);
       await hubConnection.nextQuestion(sessionId);
+      
+      // Add a small delay before setting loading to false
+      // This ensures the loading state persists long enough for transition detection
+      await new Promise(resolve => setTimeout(resolve, 100));
+      
     } catch (err) {
       setError('Failed to advance to next question');
       console.error(err);

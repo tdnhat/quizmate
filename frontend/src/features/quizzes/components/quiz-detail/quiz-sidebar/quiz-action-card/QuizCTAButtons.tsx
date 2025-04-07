@@ -33,7 +33,7 @@ const QuizCTAButtons = () => {
             <Button
                 className="w-full text-lg py-6 cursor-pointer border border-gray-200 hover:shadow transition-colors"
                 size="lg"
-                variant="secondary"
+                variant="outline"
                 onClick={handleTakeQuiz}
             >
                 Exam Mode

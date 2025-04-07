@@ -6,7 +6,7 @@ interface ParticipantLayoutProps {
 
 export const ParticipantLayout = ({ children }: ParticipantLayoutProps) => {
     return (
-        <div className="flex items-center justify-center min-h-screen p-4">
+        <div className="flex items-center justify-center min-h-screen p-4 bg-slate-50">
             {children}
         </div>
     );

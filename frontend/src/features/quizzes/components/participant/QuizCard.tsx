@@ -21,7 +21,7 @@ export const QuizCard = ({
     footerChildren,
 }: QuizCardProps) => {
     return (
-        <Card className="w-full max-w-md">
+        <Card className="w-full max-w-4xl">
             <CardHeader>
                 <div className="flex justify-between items-center">
                     <CardTitle>{title}</CardTitle>
