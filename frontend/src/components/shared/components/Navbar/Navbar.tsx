@@ -5,11 +5,19 @@ import NavbarSearch from "./NavbarSearch";
 import NavbarLogo from "./NavbarLogo";
 import { NavbarCreate } from "./NavbarCreate";
 import { useAuth } from "@/features/auth/hooks/useAuth";
+import { cn } from "@/lib/utils";
 
-const Navbar = () => {
+interface NavbarProps {
+    className?: string;
+}
+
+const Navbar = ({ className }: NavbarProps) => {
     const { isAuthenticated } = useAuth();
     return (
-        <div className="flex items-center justify-between px-4 md:px-8 py-3 shadow-sm border-b border-gray-100 bg-white sticky top-0 z-50 h-16">
+        <div className={cn(
+            "flex items-center justify-between px-4 md:px-8 py-3 shadow-sm border-b border-gray-100 bg-white sticky top-0 z-50 h-16",
+            className
+        )}>
             <NavbarLogo />
 
             {isAuthenticated && (

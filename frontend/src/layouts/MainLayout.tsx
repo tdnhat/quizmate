@@ -1,12 +1,19 @@
 import Navbar from "@/components/shared/components/Navbar/Navbar";
-import { Outlet } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 
 const MainLayout = () => {
+    const location = useLocation();
+    const isHomePath = location.pathname.startsWith('/home') || 
+                      location.pathname.startsWith('/categories') || 
+                      location.pathname.startsWith('/quizzes') || 
+                      location.pathname.startsWith('/reports') || 
+                      location.pathname.startsWith('/settings');
+
     return (
         <div className="flex flex-col min-h-screen">
-            <Navbar />
-            <main className="flex-grow">
+            <Navbar className="fixed top-0 left-0 right-0 z-50" />
+            <main className={`flex-grow ${isHomePath ? 'pt-16' : ''}`}>
                 <Outlet />
             </main>
             <Toaster
