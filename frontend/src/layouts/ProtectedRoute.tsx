@@ -1,6 +1,6 @@
 import { useAuth } from "@/features/auth/hooks/useAuth";
-import Loader from "@/components/shared/components/loaders/Loader";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
+import DotLoader from "@/components/shared/components/loaders/DotLoader";
 
 export const ProtectedRoute = () => {
     const { isAuthenticated, isLoading } = useAuth();
@@ -9,7 +9,7 @@ export const ProtectedRoute = () => {
     if (isLoading) {
         return (
             <div className="flex h-screen w-screen items-center justify-center">
-                <Loader />
+                <DotLoader />
             </div>
         );
     }

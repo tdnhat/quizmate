@@ -4,7 +4,6 @@ import SectionHeader from "@/features/discover/components/SectionHeader";
 import { useQuery } from "@tanstack/react-query";
 import { getFeaturedCategories } from "@/api/category";
 import { ArrowRight } from "lucide-react";
-import { CategoriesProvider } from "@/features/categories/contexts/CategoriesContext";
 
 const CategoriesSection = () => {
     const {

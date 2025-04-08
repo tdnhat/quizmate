@@ -49,7 +49,7 @@ export const NavbarCreate = () => {
                 <Button
                     size="sm"
                     disabled={isLoading || isCreatingQuiz}
-                    className="bg-cyan-600 hover:cursor-pointer hover:bg-cyan-700 transition-colors text-white hidden sm:block"
+                    className="bg-cyan-600 hover:cursor-pointer hover:bg-cyan-700 transition-colors text-white hidden md:block"
                 >
                     Create
                 </Button>
