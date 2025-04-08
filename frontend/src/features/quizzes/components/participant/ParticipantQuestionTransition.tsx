@@ -29,6 +29,7 @@ interface ParticipantQuestionTransitionProps {
     selectedOption?: string | null;
     feedback?: Feedback | null;
     participants: ParticipantJoinedEvent[];
+    hostId?: string;
 }
 
 export const ParticipantQuestionTransition = ({
@@ -38,6 +39,7 @@ export const ParticipantQuestionTransition = ({
     selectedOption,
     feedback,
     participants,
+    hostId,
 }: ParticipantQuestionTransitionProps) => {
     const [timeRemaining, setTimeRemaining] = useState(5); // Fixed 5 seconds for BetweenQuestionsState
     const [showLeaderboard, setShowLeaderboard] = useState(false);
@@ -104,6 +106,7 @@ export const ParticipantQuestionTransition = ({
                                 participants={participants}
                                 showScores={true}
                                 isSearchable={false}
+                                hostId={hostId}
                             />
                         </div>
                     </Card>

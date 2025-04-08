@@ -4,6 +4,7 @@ import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 import { QuizSessionState } from "../../types/quizSession";
 import { useQuizSessionHub } from "../core";
 import { ParticipantJoinedEvent } from "@/services/signalr/hubs/quizSessionHub";
+import { api } from "@/api"; // Import API utility
 
 interface QuizResults {
     topParticipants: {
@@ -23,6 +24,7 @@ interface UseParticipateQuizParams {
 interface ParticipantState {
     quizTitle: string;
     quizImageUrl: string;
+    hostId: string;
     currentQuestion: {
         id: string;
         text: string;
@@ -51,12 +53,24 @@ interface ParticipantState {
     quizResults: QuizResults | null;
 }
 
+// Define interface for API response participant
+interface ParticipantApiResponse {
+    userId: string;
+    userName?: string;
+    username?: string;
+    score: number;
+    isActive: boolean;
+    joinedAt: Date | string;
+    leftAt: Date | string | null;
+}
+
 export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
     const { token, user } = useAuth();
     const userId = user?.id;
     const [participantState, setParticipantState] = useState<ParticipantState>({
         quizTitle: "",
         quizImageUrl: "",
+        hostId: "",
         currentQuestion: null,
         selectedOption: null,
         sessionState: QuizSessionState.WaitingToStart,
@@ -457,6 +471,15 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
+        // Add participants list handler
+        connection.on("currentParticipants", (participants: ParticipantJoinedEvent[]) => {
+            console.log("currentParticipants event received", participants);
+            setParticipantState((prev) => ({
+                ...prev,
+                participants: participants,
+            }));
+        });
+
         // Add participant handlers
         connection.on("participantJoined", (data: ParticipantJoinedEvent) => {
             setParticipantState((prev) => {
@@ -483,6 +506,15 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
+        // Add participants list handling in JoinSession method
+        connection.on("allParticipants", (participants: ParticipantJoinedEvent[]) => {
+            console.log("allParticipants event received", participants);
+            setParticipantState((prev) => ({
+                ...prev,
+                participants: participants,
+            }));
+        });
+
         return () => {
             connection.off("sessionStateChanged");
             connection.off("sessionStarted");
@@ -497,6 +529,8 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             connection.off("error");
             connection.off("participantJoined");
             connection.off("participantLeft");
+            connection.off("currentParticipants");
+            connection.off("allParticipants");
         };
     }, []);
 
@@ -508,13 +542,65 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             );
             const cleanup = setupHubHandlers(connection);
 
+            // Instead of waiting for individual participantJoined events, fetch all participants 
+            // using a REST API call after connection is established
+            const fetchParticipants = async (sessId: string) => {
+                try {
+                    console.log("Fetching existing participants for session:", sessId);
+                    const response = await api.get(`/quiz-sessions/${sessId}`);
+                    
+                    if (response.data) {
+                        // Store the host ID
+                        const hostId = response.data.hostId || "";
+                        
+                        // Process participants if available
+                        let participants: ParticipantJoinedEvent[] = [];
+                        if (response.data.participants) {
+                            participants = response.data.participants.map((p: ParticipantApiResponse) => ({
+                                userId: p.userId,
+                                username: p.username || p.userName || "",
+                                score: p.score || 0,
+                                isActive: p.isActive !== undefined ? p.isActive : true,
+                                joinedAt: p.joinedAt,
+                                leftAt: p.leftAt || null
+                            }));
+                        }
+
+                        console.log("Fetched participants:", participants);
+                        
+                        setParticipantState(prev => ({
+                            ...prev,
+                            hostId: hostId,
+                            participants: participants
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch participants:", error);
+                }
+            };
+
             // Join the session
             if (userId && sessionId) {
                 console.log(`Joining session ${sessionId} as user ${userId}`);
+                
+                // Set a flag for if this is the first join (to avoid duplicate participant lists)
+                let initialJoin = true;
+                
                 connection
                     .invoke("joinSession", sessionId)
                     .then(() => {
                         console.log("Successfully joined session");
+                        
+                        // Only fetch participants after the initial join
+                        if (initialJoin) {
+                            // Add a small delay to ensure all participantJoined events from the join 
+                            // have been processed before fetching the full participant list
+                            setTimeout(() => {
+                                fetchParticipants(sessionId);
+                                initialJoin = false;
+                            }, 500);
+                        }
+                            
                         setIsLoading(false);
                     })
                     .catch((err: Error) => {
@@ -691,5 +777,6 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         score: participantState.score,
         participants: participantState.participants,
         quizResults: participantState.quizResults,
+        hostId: participantState.hostId,
     };
 }; 

@@ -29,6 +29,7 @@ export const ParticipateQuizPage = () => {
         submitAnswer,
         score,
         participants,
+        hostId,
     } = useParticipateQuiz({ sessionId });
 
     const showWaitingToStart = sessionState === QuizSessionState.WaitingToStart;
@@ -56,7 +57,11 @@ export const ParticipateQuizPage = () => {
         <ParticipantLayout>
             {/* Waiting to start */}
             {showWaitingToStart && (
-                <WaitingToStartState quizTitle={quizTitle} score={score} />
+                <WaitingToStartState
+                    quizTitle={quizTitle}
+                    participants={participants || []}
+                    hostId={hostId}
+                />
             )}
 
             {/* Between questions */}
@@ -68,15 +73,17 @@ export const ParticipateQuizPage = () => {
                     selectedOption={selectedOption}
                     feedback={feedback}
                     participants={participants || []}
+                    hostId={hostId}
                 />
             )}
 
             {/* Session ended */}
             {showEnded && (
-                <EndedState 
+                <EndedState
                     quizTitle={quizTitle}
                     score={score}
                     participants={participants || []}
+                    hostId={hostId}
                 />
             )}
 

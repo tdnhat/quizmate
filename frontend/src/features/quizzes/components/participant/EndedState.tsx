@@ -8,12 +8,14 @@ interface EndedStateProps {
     quizTitle: string;
     participants: ParticipantJoinedEvent[];
     score?: number;
+    hostId?: string;
 }
 
 export const EndedState = ({
     quizTitle,
     participants,
     score = 0,
+    hostId,
 }: EndedStateProps) => {
     // Sort participants by score in descending order
     const sortedParticipants = [...participants].sort(
@@ -71,6 +73,7 @@ export const EndedState = ({
                     participants={sortedParticipants}
                     showScores={true}
                     isSearchable={false}
+                    hostId={hostId}
                 />
             </div>
 
