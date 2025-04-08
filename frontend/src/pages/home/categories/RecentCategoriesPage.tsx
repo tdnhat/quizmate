@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { getRecentlyAddedCategories } from "@/api/category";
 import CategoryGrid from "@/features/categories/components/CategoryGrid";
-import BackButton from "@/components/shared/components/BackButton";
+import CategoryDetailBreadcrumb from "@/features/categories/components/category-detail/CategoryDetailBreadcrumb";
 
 const RecentCategoriesPage = () => {
     const { data: categories = [], isLoading } = useQuery({
@@ -10,8 +10,8 @@ const RecentCategoriesPage = () => {
     });
 
     return (
-        <div className="container mx-auto py-8 px-4 md:px-8">
-            <BackButton route="/categories" label="Back to Categories" />
+        <div className="container mx-auto p-4">
+            <CategoryDetailBreadcrumb categoryName="Recently Added Categories" />
             <h1 className="text-2xl font-bold mb-6">
                 Recently Added Categories
             </h1>

@@ -43,7 +43,7 @@ const CategoryDetailContainer = () => {
     };
 
     return (
-        <div className="container mx-auto max-w-6xl py-8 px-4">
+        <div className="container mx-auto max-w-6xl p-4">
             {/* Breadcrumb navigation */}
             <CategoryDetailBreadcrumb categoryName={categoryName || undefined} />
 

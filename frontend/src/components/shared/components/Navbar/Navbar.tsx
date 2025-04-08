@@ -81,7 +81,7 @@ const Navbar = ({ className, onMobileMenuOpen }: NavbarProps) => {
                             <NavbarProfile />
 
                             {/* Hamburger toggle for small screens */}
-                            <div className="md:hidden">
+                            <div className="md:hidden flex items-center">
                                 <button
                                     onClick={handleMobileMenuOpen}
                                     className="text-slate-700"
