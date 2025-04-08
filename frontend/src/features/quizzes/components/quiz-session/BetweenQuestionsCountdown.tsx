@@ -12,8 +12,14 @@ const BetweenQuestionsCountdown = ({
     onComplete,
     className,
 }: BetweenQuestionsCountdownProps) => {
+    // Initialize timeRemaining with the seconds prop
     const [timeRemaining, setTimeRemaining] = useState(seconds);
     const [scale, setScale] = useState(1);
+
+    // Update timeRemaining when seconds prop changes
+    useEffect(() => {
+        setTimeRemaining(seconds);
+    }, [seconds]);
 
     // Reset scale when number changes for animation
     useEffect(() => {
@@ -48,7 +54,7 @@ const BetweenQuestionsCountdown = ({
         }, 100);
 
         return () => clearInterval(interval);
-    }, [onComplete]);
+    }, [onComplete, timeRemaining]); // Add timeRemaining as a dependency
 
     const displayNumber = Math.ceil(timeRemaining);
 

@@ -25,6 +25,7 @@ import {
 interface ParticipantsListProps {
     participants: Participant[];
     onRefresh?: () => void;
+    isSearchable?: boolean;
     showScores?: boolean;
     hostId?: string;
 }
@@ -33,6 +34,7 @@ interface ParticipantsListProps {
 const ParticipantsList = ({
     participants,
     onRefresh,
+    isSearchable = true,
     showScores = false,
     hostId,
 }: ParticipantsListProps) => {
@@ -58,19 +60,21 @@ const ParticipantsList = ({
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4 w-full max-w-6xl mx-auto">
             {/* Header */}
             <ListHeader participantCount={filteredParticipants.length} />
             
             {/* Search */}
-            <SearchInput 
-                value={searchQuery} 
-                onChange={(e) => setSearchQuery(e.target.value)} 
-            />
+            {isSearchable && (
+                <SearchInput 
+                    value={searchQuery} 
+                    onChange={(e) => setSearchQuery(e.target.value)} 
+                />
+            )}
             
             {/* Table */}
-            <div className="border rounded-md">
-                <Table>
+            <div className="border rounded-md w-full overflow-x-auto">
+                <Table className="w-full">
                     <TableHeader>
                         <TableRow>
                             <TableHead>NAME</TableHead>

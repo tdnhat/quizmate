@@ -4,6 +4,18 @@ import { HubConnection, HubConnectionState } from "@microsoft/signalr";
 import { QuizSessionState } from "../../types/quizSession";
 import { useQuizSessionHub } from "../core";
 import { ParticipantJoinedEvent } from "@/services/signalr/hubs/quizSessionHub";
+import { api } from "@/api"; // Import API utility
+
+interface QuizResults {
+    topParticipants: {
+        userId: string;
+        username: string;
+        score: number;
+    }[];
+    userRank?: number;
+    userScore?: number;
+    totalParticipants?: number;
+}
 
 interface UseParticipateQuizParams {
     sessionId: string | undefined;
@@ -12,6 +24,7 @@ interface UseParticipateQuizParams {
 interface ParticipantState {
     quizTitle: string;
     quizImageUrl: string;
+    hostId: string;
     currentQuestion: {
         id: string;
         text: string;
@@ -37,6 +50,18 @@ interface ParticipantState {
     score: number;
     questionStartTime: number | null;
     participants: ParticipantJoinedEvent[];
+    quizResults: QuizResults | null;
+}
+
+// Define interface for API response participant
+interface ParticipantApiResponse {
+    userId: string;
+    userName?: string;
+    username?: string;
+    score: number;
+    isActive: boolean;
+    joinedAt: Date | string;
+    leftAt: Date | string | null;
 }
 
 export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
@@ -45,6 +70,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
     const [participantState, setParticipantState] = useState<ParticipantState>({
         quizTitle: "",
         quizImageUrl: "",
+        hostId: "",
         currentQuestion: null,
         selectedOption: null,
         sessionState: QuizSessionState.WaitingToStart,
@@ -55,6 +81,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         score: 0,
         questionStartTime: null,
         participants: [],
+        quizResults: null,
     });
     const [isLoading, setIsLoading] = useState(true);
     const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -68,10 +95,24 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
     // Handle hub connection error
     useEffect(() => {
         if (connectionError) {
-            setParticipantState((prev) => ({
-                ...prev,
-                error: `Connection error: ${connectionError}`,
-            }));
+            // Check if the connection error suggests the session is no longer available
+            if (connectionError.includes("Cannot connect") || 
+                connectionError.includes("Connection closed") ||
+                connectionError.includes("session not found") ||
+                connectionError.includes("Cannot join this session")) {
+                
+                console.log("Connection error suggests session has ended:", connectionError);
+                setParticipantState((prev) => ({
+                    ...prev,
+                    error: null,
+                    sessionState: QuizSessionState.Ended
+                }));
+            } else {
+                setParticipantState((prev) => ({
+                    ...prev,
+                    error: `Connection error: ${connectionError}`,
+                }));
+            }
             setIsLoading(false);
         }
     }, [connectionError]);
@@ -245,12 +286,13 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
-        connection.on("quizEnded", () => {
-            console.log("quizEnded event received");
+        connection.on("quizEnded", (results) => {
+            console.log("quizEnded event received with results:", results);
             setParticipantState((prev) => ({
                 ...prev,
                 sessionState: QuizSessionState.Ended,
                 currentQuestion: null,
+                quizResults: results
             }));
         });
 
@@ -397,12 +439,28 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         // Handle score updates
         connection.on("scoreUpdate", (data: { userId: string; score: number }) => {
             console.log("scoreUpdate event received", data);
-            if (data.userId === userId) {
-                setParticipantState((prev) => ({
+            setParticipantState((prev) => {
+                // Update the participant's score in the participants array
+                const updatedParticipants = prev.participants.map(p => 
+                    p.userId === data.userId 
+                        ? { ...p, score: data.score }
+                        : p
+                );
+                
+                // Also update the current user's score if it's their score update
+                if (data.userId === userId) {
+                    return {
+                        ...prev,
+                        score: data.score,
+                        participants: updatedParticipants
+                    };
+                }
+                
+                return {
                     ...prev,
-                    score: data.score
-                }));
-            }
+                    participants: updatedParticipants
+                };
+            });
         });
 
         connection.on("error", (error: string) => {
@@ -410,6 +468,15 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             setParticipantState((prev) => ({
                 ...prev,
                 error,
+            }));
+        });
+
+        // Add participants list handler
+        connection.on("currentParticipants", (participants: ParticipantJoinedEvent[]) => {
+            console.log("currentParticipants event received", participants);
+            setParticipantState((prev) => ({
+                ...prev,
+                participants: participants,
             }));
         });
 
@@ -439,6 +506,15 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             }));
         });
 
+        // Add participants list handling in JoinSession method
+        connection.on("allParticipants", (participants: ParticipantJoinedEvent[]) => {
+            console.log("allParticipants event received", participants);
+            setParticipantState((prev) => ({
+                ...prev,
+                participants: participants,
+            }));
+        });
+
         return () => {
             connection.off("sessionStateChanged");
             connection.off("sessionStarted");
@@ -453,6 +529,8 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             connection.off("error");
             connection.off("participantJoined");
             connection.off("participantLeft");
+            connection.off("currentParticipants");
+            connection.off("allParticipants");
         };
     }, []);
 
@@ -464,23 +542,91 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
             );
             const cleanup = setupHubHandlers(connection);
 
+            // Instead of waiting for individual participantJoined events, fetch all participants 
+            // using a REST API call after connection is established
+            const fetchParticipants = async (sessId: string) => {
+                try {
+                    console.log("Fetching existing participants for session:", sessId);
+                    const response = await api.get(`/quiz-sessions/${sessId}`);
+                    
+                    if (response.data) {
+                        // Store the host ID
+                        const hostId = response.data.hostId || "";
+                        
+                        // Process participants if available
+                        let participants: ParticipantJoinedEvent[] = [];
+                        if (response.data.participants) {
+                            participants = response.data.participants.map((p: ParticipantApiResponse) => ({
+                                userId: p.userId,
+                                username: p.username || p.userName || "",
+                                score: p.score || 0,
+                                isActive: p.isActive !== undefined ? p.isActive : true,
+                                joinedAt: p.joinedAt,
+                                leftAt: p.leftAt || null
+                            }));
+                        }
+
+                        console.log("Fetched participants:", participants);
+                        
+                        setParticipantState(prev => ({
+                            ...prev,
+                            hostId: hostId,
+                            participants: participants
+                        }));
+                    }
+                } catch (error) {
+                    console.error("Failed to fetch participants:", error);
+                }
+            };
+
             // Join the session
             if (userId && sessionId) {
                 console.log(`Joining session ${sessionId} as user ${userId}`);
+                
+                // Set a flag for if this is the first join (to avoid duplicate participant lists)
+                let initialJoin = true;
+                
                 connection
                     .invoke("joinSession", sessionId)
                     .then(() => {
                         console.log("Successfully joined session");
+                        
+                        // Only fetch participants after the initial join
+                        if (initialJoin) {
+                            // Add a small delay to ensure all participantJoined events from the join 
+                            // have been processed before fetching the full participant list
+                            setTimeout(() => {
+                                fetchParticipants(sessionId);
+                                initialJoin = false;
+                            }, 500);
+                        }
+                            
                         setIsLoading(false);
                     })
                     .catch((err: Error) => {
                         console.error("Error joining session:", err);
-                        setParticipantState((prev) => ({
-                            ...prev,
-                            error:
-                                "Failed to join the quiz session: " +
-                                err.message,
-                        }));
+                        
+                        // Check if the error indicates the session has ended or doesn't exist
+                        const errorMessage = err.message || '';
+                        const cannotJoinError = errorMessage.includes("Cannot join this session");
+                        
+                        if (cannotJoinError) {
+                            // If we can't join, assume the session has ended
+                            console.log("Session appears to be ended or invalid, showing ended state");
+                            setParticipantState((prev) => ({
+                                ...prev,
+                                error: null, // Clear error so we don't show error screen
+                                sessionState: QuizSessionState.Ended
+                            }));
+                        } else {
+                            // For other errors, show the error message
+                            setParticipantState((prev) => ({
+                                ...prev,
+                                error:
+                                    "Failed to join the quiz session: " +
+                                    err.message,
+                            }));
+                        }
                         setIsLoading(false);
                     });
             } else {
@@ -490,6 +636,26 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
                 }));
                 setIsLoading(false);
             }
+
+            // Handle connection closure
+            connection.onclose((error) => {
+                console.log("Connection closed", error);
+                
+                // If the connection is closed with a specific error about joining or the quiz is over
+                if (error && (
+                    String(error).includes("Cannot join") || 
+                    String(error).includes("not found") ||
+                    String(error).includes("quiz has ended") ||
+                    String(error).includes("session closed")
+                )) {
+                    console.log("Connection closed with session-ended error:", error);
+                    setParticipantState(prev => ({
+                        ...prev,
+                        error: null,
+                        sessionState: QuizSessionState.Ended
+                    }));
+                }
+            });
 
             return cleanup;
         }
@@ -610,5 +776,7 @@ export const useParticipateQuiz = ({ sessionId }: UseParticipateQuizParams) => {
         submitAnswer,
         score: participantState.score,
         participants: participantState.participants,
+        quizResults: participantState.quizResults,
+        hostId: participantState.hostId,
     };
 }; 

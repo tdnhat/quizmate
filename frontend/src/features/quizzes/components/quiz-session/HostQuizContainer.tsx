@@ -215,7 +215,7 @@ const HostQuizContainer = () => {
                                 totalQuestions={quiz.questions?.length ?? 0}
                                 participants={participants}
                                 autoTransitionDuration={30}
-                                betweenQuestionsDuration={10}
+                                betweenQuestionsDuration={5}
                             />
                         </div>
                         <div>
@@ -226,6 +226,7 @@ const HostQuizContainer = () => {
                                         onRefresh={handleRefresh}
                                         showScores={true}
                                         hostId={hostId}
+                                        isSearchable={false}
                                     />
                                 </CardContent>
                             </Card>

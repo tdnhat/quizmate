@@ -7,9 +7,8 @@ import {
     LoadingState,
     ErrorState,
     WaitingToStartState,
-    EndedState,
-    ShowingResultsState,
     ActiveQuestionState,
+    EndedState,
 } from "@/features/quizzes/components/participant";
 import { ParticipantQuestionTransition } from "@/features/quizzes/components/participant/ParticipantQuestionTransition";
 
@@ -30,25 +29,26 @@ export const ParticipateQuizPage = () => {
         submitAnswer,
         score,
         participants,
+        hostId,
     } = useParticipateQuiz({ sessionId });
 
     const showWaitingToStart = sessionState === QuizSessionState.WaitingToStart;
-    const showBetweenQuestions = sessionState === QuizSessionState.BetweenQuestions;
+    const showBetweenQuestions =
+        sessionState === QuizSessionState.BetweenQuestions;
     const showEnded = sessionState === QuizSessionState.Ended;
-    const showShowingResults = sessionState === QuizSessionState.ShowingResults;
 
-    // Show loading state
-    if (isLoading) {
+    // Show loading state - but only if not ended
+    if (isLoading && !showEnded) {
         return <LoadingState />;
     }
 
-    // Show connection error
-    if (error) {
+    // Show connection error - but only if not ended
+    if (error && !showEnded) {
         return <ErrorState error={error} />;
     }
 
-    // Show reconnecting state
-    if (connectionState === HubConnectionState.Reconnecting) {
+    // Show reconnecting state - but only if not ended
+    if (connectionState === HubConnectionState.Reconnecting && !showEnded) {
         return <LoadingState message="Reconnecting to quiz session..." />;
     }
 
@@ -57,9 +57,10 @@ export const ParticipateQuizPage = () => {
         <ParticipantLayout>
             {/* Waiting to start */}
             {showWaitingToStart && (
-                <WaitingToStartState 
-                    quizTitle={quizTitle} 
-                    score={score} 
+                <WaitingToStartState
+                    quizTitle={quizTitle}
+                    participants={participants || []}
+                    hostId={hostId}
                 />
             )}
 
@@ -72,30 +73,23 @@ export const ParticipateQuizPage = () => {
                     selectedOption={selectedOption}
                     feedback={feedback}
                     participants={participants || []}
+                    hostId={hostId}
                 />
             )}
 
             {/* Session ended */}
             {showEnded && (
-                <EndedState 
+                <EndedState
                     quizTitle={quizTitle}
                     score={score}
-                    feedback={feedback}
-                    selectedOption={selectedOption}
-                />
-            )}
-
-            {/* Showing results */}
-            {showShowingResults && (
-                <ShowingResultsState 
-                    quizTitle={quizTitle}
-                    score={score}
+                    participants={participants || []}
+                    hostId={hostId}
                 />
             )}
 
             {/* Active question */}
-            {!showWaitingToStart && !showBetweenQuestions && !showEnded && !showShowingResults && (
-                <ActiveQuestionState 
+            {!showWaitingToStart && !showBetweenQuestions && !showEnded && (
+                <ActiveQuestionState
                     quizTitle={quizTitle}
                     score={score}
                     currentQuestion={currentQuestion}

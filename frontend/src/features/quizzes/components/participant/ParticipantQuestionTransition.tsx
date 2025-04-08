@@ -3,7 +3,8 @@ import { BetweenQuestionsState } from "./BetweenQuestionsState";
 import ParticipantList from "../quiz-session/ParticipantList";
 import { Card } from "@/components/ui/card";
 import { motion, AnimatePresence } from "framer-motion";
-import { Participant } from "../../types/session";
+import { ParticipantJoinedEvent } from "@/services/signalr/hubs/quizSessionHub";
+import { Clock } from "lucide-react";
 
 interface Question {
     text: string;
@@ -27,7 +28,8 @@ interface ParticipantQuestionTransitionProps {
     currentQuestion?: Question | null;
     selectedOption?: string | null;
     feedback?: Feedback | null;
-    participants: Participant[];
+    participants: ParticipantJoinedEvent[];
+    hostId?: string;
 }
 
 export const ParticipantQuestionTransition = ({
@@ -37,11 +39,10 @@ export const ParticipantQuestionTransition = ({
     selectedOption,
     feedback,
     participants,
+    hostId,
 }: ParticipantQuestionTransitionProps) => {
     const [timeRemaining, setTimeRemaining] = useState(5); // Fixed 5 seconds for BetweenQuestionsState
     const [showLeaderboard, setShowLeaderboard] = useState(false);
-
-    console.log(participants);
 
     // Timer effect
     useEffect(() => {
@@ -85,12 +86,18 @@ export const ParticipantQuestionTransition = ({
                     exit={{ opacity: 0, y: -20 }}
                     transition={{ duration: 0.3 }}
                 >
-                    <Card className="w-full max-w-4xl mx-auto p-0">
-                        <div className="p-6 bg-gradient-to-r from-cyan-600 to-cyan-700 text-white rounded-t-md">
-                            <div className="flex justify-between items-center">
+                    <Card className="w-full max-w-6xl mx-auto py-0">
+                        <div className="p-6 bg-gradient-to-r from-cyan-600 to-cyan-700 text-white px-4 md:px-20 lg:px-40 rounded-t-md">
+                            <div className="flex flex-col gap-2 justify-between items-center">
                                 <h2 className="text-xl font-bold">
                                     Current Standings
                                 </h2>
+                                <div className="flex items-center gap-2">
+                                    <Clock className="h-4 w-4" />
+                                    <p className="text-sm">
+                                        Waiting for host to display new question...
+                                    </p>
+                                </div>
                             </div>
                         </div>
 
@@ -98,6 +105,8 @@ export const ParticipantQuestionTransition = ({
                             <ParticipantList
                                 participants={participants}
                                 showScores={true}
+                                isSearchable={false}
+                                hostId={hostId}
                             />
                         </div>
                     </Card>

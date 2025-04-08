@@ -27,7 +27,7 @@ const QuestionDisplay = ({
     questionNumber,
     totalQuestions,
     participants = [],
-    autoTransitionDuration = 10, // Default to 10 seconds
+    autoTransitionDuration = 30, // Default to 30 seconds
     betweenQuestionsDuration = 5, // Default to 5 seconds
 }: QuestionDisplayProps) => {
     const isLastQuestion = questionNumber === totalQuestions - 1;

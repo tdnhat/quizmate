@@ -10,7 +10,7 @@ interface AutoTransitionTimerProps {
 }
 
 const AutoTransitionTimer = ({
-    defaultDuration = 10, // Default 10 seconds
+    defaultDuration = 5, // Default 5 seconds
     onTimeEnd,
     isLastQuestion = false,
 }: AutoTransitionTimerProps) => {
