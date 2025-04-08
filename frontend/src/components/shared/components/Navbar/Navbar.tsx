@@ -10,13 +10,13 @@ import {
     LogOut,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import NavbarSearch from "./NavbarSearch";
 import NavbarLogo from "./NavbarLogo";
 import { NavbarCreate } from "./NavbarCreate";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
+import NavbarJoinCode from "./NavbarJoinCode";
 
 interface NavbarProps {
     className?: string;
@@ -65,7 +65,7 @@ const Navbar = ({ className, onMobileMenuOpen }: NavbarProps) => {
 
                 {isAuthenticated && (
                     <>
-                        <NavbarSearch />
+                        <NavbarJoinCode />
 
                         <div className="flex items-center gap-2 md:gap-4">
                             <Button
