@@ -34,7 +34,7 @@ const QuizDetailPage = () => {
     }
 
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto p-4 max-w-6xl">
             <TakeQuizProvider quiz={quiz}>
                 <QuizDetailContainer />
             </TakeQuizProvider>

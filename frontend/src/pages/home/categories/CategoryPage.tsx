@@ -24,9 +24,13 @@ const CategoryPage = () => {
     }
 
     return (
-        <div className="container mx-auto max-w-6xl py-8 px-4 md:px-8">
+        <div className="container mx-auto max-w-6xl p-4">
             <CategoryDetailBreadcrumb />
-            <h1 className="text-2xl font-bold mb-6">All Categories</h1>
+            <h1 className="text-2xl font-bold">All Categories</h1>
+            <p className="text-gray-600 mb-6">
+                Explore a wide range of categories to find the perfect quiz for
+                you.
+            </p>
 
             {/* Featured Categories Section */}
             <section className="mb-12">

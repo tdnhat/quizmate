@@ -3,11 +3,11 @@ import { Skeleton } from "@/components/ui/skeleton";
 
 const QuizDetailSkeleton = () => {
     return (
-        <div className="container mx-auto px-4 py-8 max-w-6xl">
+        <div className="container mx-auto p-4 max-w-6xl">
             {/* Breadcrumb */}
             <Skeleton className="h-6 w-64 mb-4" />
             {/* Main content and sidebar layout */}
-            <div className="flex flex-col md:flex-row gap-8">
+            <div className="flex flex-col lg:flex-row gap-8">
                 {/* Main content area */}
                 <div className="flex-1 space-y-6">
                     {/* Thumbnail */}
@@ -33,7 +33,7 @@ const QuizDetailSkeleton = () => {
                 </div>
 
                 {/* Sidebar */}
-                <aside className="w-full md:w-[350px] flex-shrink-0 space-y-4">
+                <aside className="w-full lg:w-[350px] flex-shrink-0 space-y-4">
                     {/* Action card skeleton */}
                     <div className="rounded-lg border p-4 space-y-4">
                         {/* CTA button */}

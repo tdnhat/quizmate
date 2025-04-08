@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import ResultStatistics from "./ResultsStatistics";
 import { useQuizResults } from "@/features/quizzes/hooks/useQuizResults";
+import { Link } from "react-router-dom";
 
 const ResultsSummary = () => {
     const { quizResult } = useQuizResults();
@@ -29,19 +30,23 @@ const ResultsSummary = () => {
 
                 {/* Buttons */}
                 <div className="flex items-center gap-4">
-                    <Button
-                        variant="outline"
-                        size="lg"
-                        className="w-48 cursor-pointer"
-                    >
-                        Try Again
-                    </Button>
-                    <Button
-                        size="lg"
-                        className="w-48 cursor-pointer bg-cyan-600 hover:bg-cyan-700 text-white transition-all duration-300"
-                    >
-                        Back to Home
-                    </Button>
+                    <Link to="/quizzes">
+                        <Button
+                            variant="outline"
+                            size="lg"
+                            className="w-52 cursor-pointer transition-all duration-300"
+                        >
+                            Explore More Quizzes
+                        </Button>
+                    </Link>
+                    <Link to="/home">
+                        <Button
+                            size="lg"
+                            className="w-52 cursor-pointer bg-cyan-600 hover:bg-cyan-700 text-white transition-all duration-300"
+                        >
+                            Back to Home
+                        </Button>
+                    </Link>
                 </div>
             </div>
         </div>

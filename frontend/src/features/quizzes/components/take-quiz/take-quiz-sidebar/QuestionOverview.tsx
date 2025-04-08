@@ -44,7 +44,7 @@ const QuestionOverview = () => {
                 <Button
                     onClick={handleSubmitQuiz}
                     disabled={isSubmitting}
-                    className="bg-cyan-500 w-full hover:bg-cyan-600 text-white hover:cursor-pointer transition-colors"
+                    className="bg-cyan-600 w-full hover:bg-cyan-700 text-white hover:cursor-pointer transition-colors"
                 >
                     {isSubmitting ? (
                         <>

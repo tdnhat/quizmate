@@ -28,7 +28,7 @@ const NavigationButtons = () => {
 
             <Button
                 onClick={goToNextQuestion}
-                className="bg-cyan-500 hover:bg-cyan-600 text-white hover:cursor-pointer transition-colors"
+                className="bg-cyan-600 hover:bg-cyan-700 text-white hover:cursor-pointer transition-colors"
                 disabled={isLastQuestion}
             >
                 Next

@@ -1,3 +1,57 @@
+import { Question } from "@/types/quiz";
+import { HelpCircle, CheckCircle, XCircle } from "lucide-react";
+import { JSX, createElement } from "react";
+import { ResultAnswer } from "./contexts/QuizResultsContext";
+
+interface QuestionReviewData {
+    question: Question;
+    resultAnswer?: ResultAnswer;
+    answerId: string | null;
+    isCorrect: boolean;
+    earnedPoints: number;
+    correctAnswerId: string | undefined;
+    statusIcon: JSX.Element;
+}
+
+export const getQuestionReviewData = (
+    question: Question,
+    resultAnswers: ResultAnswer[]
+): QuestionReviewData => {
+    const resultAnswer = resultAnswers.find(
+        (ra) => ra.questionId === question.id
+    );
+
+    const answerId = resultAnswer?.answerId ?? null;
+    const isCorrect = resultAnswer?.isCorrect ?? false;
+    const earnedPoints = resultAnswer?.earnedPoints ?? 0;
+    const correctAnswerId = question.answers.find((a) => a.isCorrect)?.id;
+
+    let statusIcon: JSX.Element;
+    if (!answerId) {
+        statusIcon = createElement(HelpCircle, {
+            className: "h-5 w-5 text-amber-500",
+        });
+    } else if (isCorrect) {
+        statusIcon = createElement(CheckCircle, {
+            className: "h-5 w-5 text-green-600",
+        });
+    } else {
+        statusIcon = createElement(XCircle, {
+            className: "h-5 w-5 text-red-600",
+        });
+    }
+
+    return {
+        question,
+        resultAnswer,
+        answerId,
+        isCorrect,
+        earnedPoints,
+        correctAnswerId,
+        statusIcon,
+    };
+};
+
 // Helper functions
 export const getPositionColor = (position: number): string => {
     switch (position) {

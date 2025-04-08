@@ -9,6 +9,7 @@ import { TagsField } from "./TagsField";
 import { TitleField } from "./TitleField";
 import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { useQuizForm } from "../../../hooks/useQuizForm";
+import { PassingScoreField } from "./PassingScoreField";
 interface QuizBasicDetailsProps {
     form: UseFormReturn<QuizFormValues>;
     isLoading?: boolean;
@@ -54,11 +55,12 @@ export const QuizBasicDetails = ({
                             isLoading={isLoading}
                         />
                         <DescriptionField control={form.control} />
-                        <div className="flex flex-col sm:flex-row gap-4">
-                            <CategoryField
-                                control={form.control}
-                                isLoading={isLoading}
-                            />
+                        <CategoryField
+                            control={form.control}
+                            isLoading={isLoading}
+                        />
+                        <div className="flex gap-4">
+                            <PassingScoreField control={form.control} />
                             <TimeField
                                 control={form.control}
                                 isLoading={isLoading}
@@ -93,11 +95,9 @@ export const QuizBasicDetails = ({
             <TitleField control={form.control} isLoading={isLoading} />
             <DescriptionField control={form.control} />
             <div className="flex items-center gap-4 justify-start">
-                <CategoryField
-                    control={form.control}
-                    isLoading={isLoading}
-                />
+                <CategoryField control={form.control} isLoading={isLoading} />
                 <TimeField control={form.control} isLoading={isLoading} />
+                <PassingScoreField control={form.control} />
             </div>
             <ThumbnailField control={form.control} isLoading={isLoading} />
             <DifficultyField control={form.control} isLoading={isLoading} />

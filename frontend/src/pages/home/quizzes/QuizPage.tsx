@@ -24,7 +24,7 @@ const QuizPage = () => {
     }
 
     return (
-        <div className="container mx-auto max-w-6xl py-8 px-4 md:px-8">
+        <div className="container mx-auto max-w-6xl p-4">
             <QuizzesBreadcrumb />
             <h1 className="text-2xl font-bold">Explore Quizzes</h1>
             <p className="text-gray-600 mb-6">

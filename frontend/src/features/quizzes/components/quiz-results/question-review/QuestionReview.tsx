@@ -4,33 +4,23 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CheckCircle, XCircle, HelpCircle, ChevronDown, ChevronUp } from "lucide-react";
+import { CheckCircle, XCircle, ChevronDown, ChevronUp } from "lucide-react";
 import { useQuizResults } from "@/features/quizzes/hooks/useQuizResults";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
+import { getQuestionReviewData } from "@/features/quizzes/utils";
 
 const QuestionReview = () => {
     const { quizResult } = useQuizResults();
     const [expandedItems, setExpandedItems] = useState<string[]>([]);
-    
+
     if (!quizResult) {
         return <div>No results available</div>;
     }
 
     // Find matching questions from the quiz
-    const findQuestion = (questionId: string) => {
-        return quizResult.quiz.questions.find(q => q.id === questionId);
-    };
+    const allQuestionIds = quizResult.resultAnswers.map((ra) => ra.questionId);
 
-    // Find the correct answer for a question
-    const findCorrectAnswer = (questionId: string) => {
-        const question = findQuestion(questionId);
-        return question?.answers.find(a => a.isCorrect)?.id;
-    };
-    
-    // Get all question IDs
-    const allQuestionIds = quizResult.resultAnswers.map(ra => ra.questionId);
-    
     // Toggle all questions expand/collapse
     const toggleAllQuestions = () => {
         if (expandedItems.length === allQuestionIds.length) {
@@ -41,26 +31,30 @@ const QuestionReview = () => {
             setExpandedItems([...allQuestionIds]);
         }
     };
-    
+
     // Handle individual item change
     const handleItemToggle = (itemValue: string) => {
-        setExpandedItems(prev => {
+        setExpandedItems((prev) => {
             if (prev.includes(itemValue)) {
-                return prev.filter(item => item !== itemValue);
+                return prev.filter((item) => item !== itemValue);
             } else {
                 return [...prev, itemValue];
             }
         });
     };
-    
-    const areAllExpanded = expandedItems.length === allQuestionIds.length && allQuestionIds.length > 0;
+
+    console.log(quizResult);
+
+    const areAllExpanded =
+        expandedItems.length === allQuestionIds.length &&
+        allQuestionIds.length > 0;
 
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
                 <h3 className="text-xl font-semibold">Question Review</h3>
-                <Button 
-                    variant="outline" 
+                <Button
+                    variant="outline"
                     size="sm"
                     onClick={toggleAllQuestions}
                     className="flex items-center w-32 gap-2 cursor-pointer"
@@ -78,52 +72,31 @@ const QuestionReview = () => {
                     )}
                 </Button>
             </div>
-            
-            <Accordion 
-                type="multiple" 
+
+            <Accordion
+                type="multiple"
                 className="space-y-4"
                 value={expandedItems}
                 onValueChange={setExpandedItems}
             >
-                {quizResult.resultAnswers.map((resultAnswer, index) => {
-                    const {
-                        questionId,
-                        answerId,
-                        isCorrect,
-                        earnedPoints,
-                    } = resultAnswer;
-
-                    // Get the question details
-                    const question = findQuestion(questionId);
-                    if (!question) return null;
-
-                    // Find the correct answer ID
-                    const correctAnswerId = findCorrectAnswer(questionId);
-
-                    let statusIcon;
-                    if (!answerId) {
-                        statusIcon = (
-                            <HelpCircle className="h-5 w-5 text-amber-500" />
+                {quizResult.quiz.questions.map((question, index) => {
+                    const { answerId, correctAnswerId, statusIcon, earnedPoints } =
+                        getQuestionReviewData(
+                            question,
+                            quizResult.resultAnswers
                         );
-                    } else if (isCorrect) {
-                        statusIcon = (
-                            <CheckCircle className="h-5 w-5 text-green-600" />
-                        );
-                    } else {
-                        statusIcon = <XCircle className="h-5 w-5 text-red-600" />;
-                    }
 
                     return (
                         <AccordionItem
-                            key={questionId}
-                            value={questionId}
+                            key={question.id}
+                            value={question.id}
                             className="border bg-white rounded-lg"
                         >
-                            <AccordionTrigger 
+                            <AccordionTrigger
                                 className="px-4 py-3 hover:bg-gray-50 cursor-pointer rounded-t-lg"
                                 onClick={(e) => {
                                     e.preventDefault();
-                                    handleItemToggle(questionId);
+                                    handleItemToggle(question.id);
                                 }}
                             >
                                 <div className="flex items-center w-full">
@@ -144,7 +117,6 @@ const QuestionReview = () => {
 
                             <AccordionContent className="px-6 py-4">
                                 <div className="space-y-4">
-                                    {/* Question image if available */}
                                     {question.imageUrl && (
                                         <div className="mt-2 relative max-h-60 w-full overflow-hidden rounded-md">
                                             <img
@@ -152,28 +124,42 @@ const QuestionReview = () => {
                                                 alt={`Image for question ${index + 1}`}
                                                 className="object-contain max-w-full max-h-60 mx-auto"
                                                 onError={(e) => {
-                                                    const target = e.target as HTMLImageElement;
-                                                    target.style.display = "none";
+                                                    const target =
+                                                        e.target as HTMLImageElement;
+                                                    target.style.display =
+                                                        "none";
                                                 }}
                                             />
                                         </div>
                                     )}
 
-                                    {/* All answers with correct/selected indicators */}
                                     <div className="space-y-2">
                                         {question.answers.map((answer) => {
-                                            const isSelectedByUser = answer.id === answerId;
-                                            const isCorrectAnswer = answer.id === correctAnswerId;
+                                            const isSelectedByUser =
+                                                answer.id === answerId;
+                                            const isCorrectAnswer =
+                                                answer.id === correctAnswerId;
 
-                                            let answerClassName = "p-3 rounded-md border";
-                                            if (isSelectedByUser && isCorrectAnswer) {
-                                                answerClassName += " bg-green-50 border-green-300";
-                                            } else if (isSelectedByUser && !isCorrectAnswer) {
-                                                answerClassName += " bg-red-50 border-red-300";
+                                            let answerClassName =
+                                                "p-3 rounded-md border";
+                                            if (
+                                                isSelectedByUser &&
+                                                isCorrectAnswer
+                                            ) {
+                                                answerClassName +=
+                                                    " bg-green-50 border-green-300";
+                                            } else if (
+                                                isSelectedByUser &&
+                                                !isCorrectAnswer
+                                            ) {
+                                                answerClassName +=
+                                                    " bg-red-50 border-red-300";
                                             } else if (isCorrectAnswer) {
-                                                answerClassName += " bg-green-50 border-green-300";
+                                                answerClassName +=
+                                                    " bg-green-50 border-green-300";
                                             } else {
-                                                answerClassName += " border-gray-200";
+                                                answerClassName +=
+                                                    " border-gray-200";
                                             }
 
                                             return (
@@ -183,15 +169,18 @@ const QuestionReview = () => {
                                                 >
                                                     <div className="flex items-center">
                                                         <div className="flex-shrink-0 mr-2">
-                                                            {isSelectedByUser && isCorrectAnswer && (
-                                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                            )}
-                                                            {isSelectedByUser && !isCorrectAnswer && (
-                                                                <XCircle className="h-4 w-4 text-red-600" />
-                                                            )}
-                                                            {!isSelectedByUser && isCorrectAnswer && (
-                                                                <CheckCircle className="h-4 w-4 text-green-600" />
-                                                            )}
+                                                            {isSelectedByUser &&
+                                                                isCorrectAnswer && (
+                                                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                                                )}
+                                                            {isSelectedByUser &&
+                                                                !isCorrectAnswer && (
+                                                                    <XCircle className="h-4 w-4 text-red-600" />
+                                                                )}
+                                                            {!isSelectedByUser &&
+                                                                isCorrectAnswer && (
+                                                                    <CheckCircle className="h-4 w-4 text-green-600" />
+                                                                )}
                                                         </div>
                                                         <div className="flex-grow">
                                                             {answer.text}
@@ -202,7 +191,6 @@ const QuestionReview = () => {
                                         })}
                                     </div>
 
-                                    {/* Explanation */}
                                     {question.explanation && (
                                         <div className="bg-gray-50 p-4 rounded-md border border-gray-200">
                                             <h4 className="text-sm font-medium text-gray-700 mb-1">

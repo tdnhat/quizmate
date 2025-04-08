@@ -8,7 +8,6 @@ import {
     DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CreateQuizForm } from "./CreateQuizForm";
@@ -16,7 +15,6 @@ import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
 
 export const NavbarCreate = () => {
-    const { categories } = useCategories();
     const [open, setOpen] = useState(false);
     const [isLoading, setIsLoading] = useState(false);
     const navigate = useNavigate();
@@ -64,7 +62,6 @@ export const NavbarCreate = () => {
 
                 <QuizFormProvider>
                     <CreateQuizForm
-                        categories={categories}
                         onSubmit={handleSubmit}
                         isLoading={isLoading}
                     />

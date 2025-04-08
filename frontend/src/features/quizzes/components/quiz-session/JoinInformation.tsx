@@ -86,24 +86,31 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                     Share this information with participants
                 </CardDescription>
             </CardHeader>
-            <CardContent className="flex flex-col md:flex-row items-center gap-6">
-                {isLoading ? (
-                    <Skeleton className="h-[200px] w-[200px] shrink-0" />
-                ) : (
-                    <div className="bg-white p-4 rounded-md shadow-sm shrink-0">
-                        {renderQrCode()}
-                    </div>
-                )}
+            <CardContent className="flex flex-col gap-6">
+                {/* QR Code Row */}
+                <div className="flex justify-center">
+                    {isLoading ? (
+                        <Skeleton className="h-[200px] w-[200px]" />
+                    ) : (
+                        <div className="bg-white p-4 rounded-md shadow-sm">
+                            {renderQrCode()}
+                        </div>
+                    )}
+                </div>
 
-                <div className="flex flex-col gap-4 w-full">
-                    <div className="flex flex-col h-[100px] justify-between p-4">
-                        <span className="text-sm font-medium">Join Code:</span>
+                {/* Join Code and URL Row */}
+                <div className="grid grid-cols-1 gap-4">
+                    {/* Join Code Section */}
+                    <div className="flex flex-col rounded-lg">
+                        <span className="text-sm font-medium mb-2">
+                            Join Code:
+                        </span>
                         {isLoading ? (
                             <Skeleton className="h-10 w-full" />
                         ) : (
-                            <div className="flex flex-col sm:flex-row items-center mt-1">
+                            <div className="flex flex-col sm:flex-row items-center">
                                 <div className="flex-1 w-full">
-                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md rounded-r-none font-mono text-xl tracking-widest justify-center">
+                                    <div className="bg-slate-50 border border-slate-200 border-r-0 h-10 flex items-center px-3 rounded-md rounded-r-none font-mono text-xl tracking-widest justify-center">
                                         {joinCode || "-"}
                                     </div>
                                 </div>
@@ -112,7 +119,7 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                                     size="default"
                                     onClick={handleCopyCode}
                                     disabled={!joinCode}
-                                    className="shrink-0 h-10 w-24 rounded-l-none"
+                                    className="shrink-0 h-10 w-24 rounded-l-none border-slate-200"
                                 >
                                     {codeCopied ? (
                                         <Check className="h-4 w-4 text-green-500" />
@@ -125,14 +132,17 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                         )}
                     </div>
 
-                    <div className="flex flex-col h-[100px] justify-between p-4">
-                        <span className="text-sm font-medium">Join URL:</span>
+                    {/* Join URL Section */}
+                    <div className="flex flex-col rounded-lg">
+                        <span className="text-sm font-medium mb-2">
+                            Join URL:
+                        </span>
                         {isLoading ? (
                             <Skeleton className="h-10 w-full" />
                         ) : (
-                            <div className="flex flex-col sm:flex-row items-center mt-1">
+                            <div className="flex flex-col sm:flex-row items-center">
                                 <div className="flex-1 w-full">
-                                    <div className="bg-muted h-10 flex items-center px-3 rounded-md rounded-r-none text-sm truncate">
+                                    <div className="bg-slate-50 border border-slate-200 border-r-0 h-10 flex items-center px-3 rounded-md rounded-r-none text-sm truncate">
                                         {joinUrl || "-"}
                                     </div>
                                 </div>
@@ -141,7 +151,7 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
                                     size="default"
                                     onClick={handleCopyLink}
                                     disabled={!joinUrl}
-                                    className="shrink-0 h-10 w-24 rounded-l-none"
+                                    className="shrink-0 h-10 w-24 rounded-l-none border-slate-200"
                                 >
                                     {linkCopied ? (
                                         <Check className="h-4 w-4 text-green-500" />

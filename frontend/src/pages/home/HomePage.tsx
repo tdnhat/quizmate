@@ -3,7 +3,7 @@ import RecommendedSection from "@/features/discover/components/RecommendedSectio
 
 const HomePage = () => {
     return (
-        <div className="flex flex-col max-w-6xl mx-auto gap-4 px-4 py-8">
+        <div className="flex flex-col max-w-6xl mx-auto gap-4 p-4">
             <CategoriesSection />
             <RecommendedSection />
         </div>

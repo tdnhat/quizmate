@@ -1,4 +1,3 @@
-import { Category } from "@/types/category";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Form } from "@/components/ui/form";
@@ -10,15 +9,12 @@ import {
     quizFormSchema,
     QuizFormValues,
 } from "@/features/quizzes/schemas/quizFormSchema";
-
 interface CreateQuizFormProps {
-    categories: Category[];
     onSubmit: (values: QuizFormValues) => Promise<void>;
     isLoading: boolean;
 }
 
 export const CreateQuizForm = ({
-    categories,
     onSubmit,
     isLoading,
 }: CreateQuizFormProps) => {
@@ -27,8 +23,8 @@ export const CreateQuizForm = ({
         defaultValues: {
             title: "",
             description: "",
-            category: "",
             thumbnail: undefined,
+            categoryId: "",
             timeMinutes: 5,
             difficulty: "Beginner",
             tags: [],
@@ -56,7 +52,6 @@ export const CreateQuizForm = ({
 
                     <QuizBasicDetails
                         form={form}
-                        categories={categories}
                         isLoading={isLoading}
                         layout="compact"
                     />

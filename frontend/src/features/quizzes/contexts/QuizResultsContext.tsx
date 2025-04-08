@@ -5,7 +5,7 @@ import { createContext, ReactNode } from "react";
 import { User } from "@/types/user";
 
 // Result Answer type from backend
-interface ResultAnswer {
+export interface ResultAnswer {
     id: string;
     resultId: string;
     questionId: string;
@@ -15,7 +15,7 @@ interface ResultAnswer {
 }
 
 // Quiz with additional fields from backend
-interface QuizWithDetails extends Quiz {
+export interface QuizWithDetails extends Quiz {
     appUser: User;
     tags: string[];
     questions: Question[];
@@ -48,9 +48,9 @@ type QuizResultsContextType = {
     quizResult: QuizResult | null;
 };
 
-export const QuizResultsContext = createContext<QuizResultsContextType | undefined>(
-    undefined
-);
+export const QuizResultsContext = createContext<
+    QuizResultsContextType | undefined
+>(undefined);
 
 interface QuizResultsProviderProps {
     children: ReactNode;

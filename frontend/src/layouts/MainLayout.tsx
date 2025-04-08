@@ -42,7 +42,7 @@ const MainLayout = () => {
                 <Outlet />
             </main>
             <Toaster
-                position="bottom-right"
+                position="top-center"
                 toastOptions={{
                     duration: 2000,
                     style: {
