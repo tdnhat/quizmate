@@ -1,13 +1,14 @@
-import { api } from "@/api";
 import { User } from "@/types/user";
 import {
     getLocalStorageItem,
     removeLocalStorageItem,
     setLocalStorageItem,
 } from "@/utils/local-storage";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthQuery } from "../hooks/useAuthQuery";
+import { useAuthMutations } from "../hooks/useAuthMutations";
 
 interface AuthContextType {
     user: User | null;
@@ -47,133 +48,46 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [returnUrl, setReturnUrl] = useState<string | null>(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { isLoading } = useQuery({
-        queryKey: ["auth"],
-        queryFn: async () => {
-            const token = getLocalStorageItem("token");
+    const { isLoading, data: currentUser } = useAuthQuery();
+    const { loginMutation, registerMutation } = useAuthMutations();
 
-            if (!token) {
-                return null;
-            }
-
-            const response = await api.get("/auth/me");
-            setUser(response.data);
-            setToken(token);
-            return response.data;
-        },
-        retry: false,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-    });
-
-    const loginMutation = useMutation({
-        mutationFn: async ({
-            email,
-            password,
-            redirectUrl,
-        }: {
-            email: string;
-            password: string;
-            redirectUrl?: string;
-        }) => {
-            const response = await api.post(
-                "/auth/login",
-                {
-                    email,
-                    password,
-                },
-                {
-                    timeout: 10000, // 10 seconds
-                }
-            );
-            return { ...response.data, redirectUrl };
-        },
-        onSuccess: (data) => {
-            const { token, user, redirectUrl } = data;
-            setLocalStorageItem("token", token);
-            setUser(user);
-            queryClient.setQueryData(["currentUser"], user);
-            // Use the redirectUrl if provided, otherwise default to "/home"
-            setReturnUrl(redirectUrl || "/home");
-            navigate(redirectUrl || "/home");
-        },
-        onError: (error: unknown) => {
-            if (error instanceof Error) {
-                console.log(
-                    (error as { response?: { data?: unknown } }).response?.data
-                );
-                throw new Error("Invalid credentials");
-            }
-            throw error;
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["auth"] });
-        },
-    });
-
-    const registerMutation = useMutation({
-        mutationFn: async ({
-            username,
-            email,
-            password,
-            confirmPassword,
-            redirectUrl,
-        }: {
-            username: string;
-            email: string;
-            password: string;
-            confirmPassword: string;
-            redirectUrl?: string;
-        }) => {
-            const response = await api.post(
-                "/auth/register",
-                {
-                    username,
-                    email,
-                    password,
-                    confirmPassword,
-                },
-                {
-                    timeout: 10000, // 10 seconds
-                }
-            );
-            return { ...response.data, redirectUrl };
-        },
-        onSuccess: (data) => {
-            const { token, user, redirectUrl } = data;
-            console.log(`[AuthContext.tsx] Registration successful, redirectUrl: ${redirectUrl}`);
-            setLocalStorageItem("token", token);
-            setUser(user);
-            queryClient.setQueryData(["currentUser"], user);
-            // Use the redirectUrl if provided, otherwise default to "/home"
-            setReturnUrl(redirectUrl || "/home");
-            console.log(`[AuthContext.tsx] Navigating to: ${redirectUrl || "/home"}`);
-            navigate(redirectUrl || "/home", { replace: true });
-        },
-        onError: (error: unknown) => {
-            if (error instanceof Error) {
-                const axiosError = error as { response?: { data?: unknown } };
-                if (axiosError.response?.data) {
-                    throw axiosError;
-                }
-            }
-            throw error;
-        },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["auth"] });
-        },
-    });
+    // Update user when currentUser changes
+    useEffect(() => {
+        if (currentUser) {
+            setUser(currentUser);
+        }
+    }, [currentUser]);
 
     const login = async (
         email: string,
         password: string,
         redirectUrl?: string
     ) => {
-        await loginMutation.mutateAsync({ email, password, redirectUrl });
+        try {
+            const result = await loginMutation.mutateAsync({
+                email,
+                password,
+                redirectUrl,
+            });
+            
+            // Update state
+            setLocalStorageItem("token", result.token);
+            setUser(result.user);
+            queryClient.setQueryData(["currentUser"], result.user);
+            await queryClient.invalidateQueries({ queryKey: ["auth"] });
+            
+            // Set return URL and navigate
+            const targetUrl = redirectUrl || "/home";
+            setReturnUrl(targetUrl);
+            navigate(targetUrl, { replace: true });
+        } catch (error) {
+            console.error("[AuthContext] Login error:", error);
+            throw error;
+        }
     };
 
     const register = async (
@@ -183,21 +97,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         confirmPassword: string,
         redirectUrl?: string
     ) => {
-        await registerMutation.mutateAsync({
-            username,
-            email,
-            password,
-            confirmPassword,
-            redirectUrl,
-        });
+        try {
+            const result = await registerMutation.mutateAsync({
+                username,
+                email,
+                password,
+                confirmPassword,
+                redirectUrl,
+            });
+            
+            // Update state
+            setLocalStorageItem("token", result.token);
+            setUser(result.user);
+            queryClient.setQueryData(["currentUser"], result.user);
+            await queryClient.invalidateQueries({ queryKey: ["auth"] });
+            
+            // Set return URL and navigate
+            const targetUrl = redirectUrl || "/home";
+            setReturnUrl(targetUrl);
+            navigate(targetUrl, { replace: true });
+        } catch (error) {
+            console.error("[AuthContext] Registration error:", error);
+            throw error;
+        }
     };
 
     const logout = () => {
         removeLocalStorageItem("token");
         setUser(null);
         queryClient.setQueryData(["currentUser"], null);
-        navigate("/login");
+        navigate("/login", { replace: true });
     };
+
+    const token = getLocalStorageItem("token");
 
     return (
         <AuthContext.Provider

@@ -28,6 +28,7 @@ export const EmailField = <T extends FieldValues>({
                         <Input
                             placeholder="example@email.com"
                             type="email"
+                            autoComplete="email"
                             disabled={isLoading}
                             {...field}
                         />

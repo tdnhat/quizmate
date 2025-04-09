@@ -6,7 +6,7 @@ import {
     FormLabel,
     FormMessage,
 } from "@/components/ui/form";
-import { PasswordInput } from "@/features/auth/components/PasswordInput";
+import { PasswordInput } from "@/features/auth/components/shared/PasswordInput";
 import { Link } from "react-router-dom";
 import PasswordRequirements from "../../register/PasswordRequirements";
 
