@@ -80,7 +80,7 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
     return (
         <Card className="mx-auto max-w-sm">
             <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-center">
+                <CardTitle className="text-2xl text-cyan-600 font-bold text-center">
                     Log in
                 </CardTitle>
             </CardHeader>
@@ -105,7 +105,7 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
                                     <FormLabel>Email</FormLabel>
                                     <FormControl>
                                         <Input
-                                            placeholder="Email"
+                                            placeholder="example@email.com"
                                             type="email"
                                             disabled={isSubmitting}
                                             autoComplete="email"
@@ -126,7 +126,7 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
                                     <FormLabel>Password</FormLabel>
                                     <FormControl>
                                         <PasswordInput
-                                            placeholder="Password"
+                                            placeholder="********"
                                             disabled={isSubmitting}
                                             autoComplete="current-password"
                                             {...field}
@@ -149,7 +149,7 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
                         <LoadingButton
                             isLoading={isSubmitting}
                             loadingText="Logging in..."
-                            className="bg-cyan-500 hover:bg-cyan-600 text-white"
+                            className="bg-cyan-600 hover:bg-cyan-700 text-white"
                         >
                             Log in
                         </LoadingButton>

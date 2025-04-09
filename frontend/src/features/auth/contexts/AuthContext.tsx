@@ -156,10 +156,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         },
         onError: (error: unknown) => {
             if (error instanceof Error) {
-                console.log(
-                    (error as { response?: { data?: unknown } }).response?.data
-                );
-                throw new Error("Registration failed");
+                const axiosError = error as { response?: { data?: unknown } };
+                if (axiosError.response?.data) {
+                    throw axiosError;
+                }
             }
             throw error;
         },
