@@ -1,28 +1,22 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import {
-    Form,
-    FormControl,
-    FormField,
-    FormItem,
-    FormLabel,
-    FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Form } from "@/components/ui/form";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import { PasswordInput } from "@/features/auth/components/PasswordInput";
-import { LoadingButton } from "@/features/auth/components/LoadingButton";
-import { FormFooter } from "@/features/auth/components/FormFooter";
-import {
-    LoginFormValues,
-    LoginFormSchema,
-} from "@/features/auth/schemas/loginFormSchema";
+import { LoadingButton } from "@/features/auth/components/shared/LoadingButton";
+import { FormFooter } from "@/features/auth/components/shared/FormFooter";
+import { LoginFormSchema } from "@/features/auth/schemas/loginFormSchema";
+import { EmailField, PasswordField } from "../shared/fields";
+import { FormError } from "../shared/FormError";
+import { useNavigate } from "react-router-dom";
 
 interface LoginFormProps {
     returnUrl?: string | null;
+}
+
+interface LoginFormValues {
+    email: string;
+    password: string;
 }
 
 const LoginForm = ({ returnUrl }: LoginFormProps) => {
@@ -50,7 +44,7 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
         },
     });
 
-    const onSubmit = async (values: LoginFormValues) => {
+    const handleSubmit = async (values: LoginFormValues) => {
         try {
             setIsSubmitting(true);
             await login(values.email, values.password, returnUrl || undefined);
@@ -76,98 +70,46 @@ const LoginForm = ({ returnUrl }: LoginFormProps) => {
             setIsSubmitting(false);
         }
     };
-
     return (
-        <Card className="mx-auto max-w-sm">
-            <CardHeader className="space-y-1">
-                <CardTitle className="text-2xl font-bold text-center">
+        <Form {...form}>
+            <form
+                onSubmit={form.handleSubmit(handleSubmit)}
+                noValidate
+                className="space-y-4"
+            >
+                <FormError message={form.formState.errors.root?.message} />
+
+                <EmailField form={form} isLoading={isSubmitting} />
+
+                <PasswordField
+                    form={form}
+                    isLoading={isSubmitting}
+                    showForgotPassword={true}
+                />
+
+                {/* Submit Button */}
+                <LoadingButton
+                    isLoading={isSubmitting}
+                    loadingText="Logging in..."
+                    className="bg-cyan-600 hover:bg-cyan-700 text-white"
+                >
                     Log in
-                </CardTitle>
-            </CardHeader>
-            <CardContent>
-                <Form {...form}>
-                    <form
-                        onSubmit={form.handleSubmit(onSubmit)}
-                        noValidate
-                        className="space-y-4"
-                    >
-                        {form.formState.errors.root && (
-                            <div className="bg-red-50 text-red-500 px-3 py-2 rounded-md text-sm">
-                                {form.formState.errors.root.message}
-                            </div>
-                        )}
-                        {/* Email Field */}
-                        <FormField
-                            control={form.control}
-                            name="email"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Email</FormLabel>
-                                    <FormControl>
-                                        <Input
-                                            placeholder="Email"
-                                            type="email"
-                                            disabled={isSubmitting}
-                                            autoComplete="email"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                </FormItem>
-                            )}
-                        />
+                </LoadingButton>
 
-                        {/* Password Field */}
-                        <FormField
-                            control={form.control}
-                            name="password"
-                            render={({ field }) => (
-                                <FormItem>
-                                    <FormLabel>Password</FormLabel>
-                                    <FormControl>
-                                        <PasswordInput
-                                            placeholder="Password"
-                                            disabled={isSubmitting}
-                                            autoComplete="current-password"
-                                            {...field}
-                                        />
-                                    </FormControl>
-                                    <FormMessage />
-                                    <div className="text-sm text-right">
-                                        <Link
-                                            to="/forgot-password"
-                                            className="font-medium text-indigo-600 hover:text-indigo-500 hover:underline"
-                                        >
-                                            Forgot password?
-                                        </Link>
-                                    </div>
-                                </FormItem>
-                            )}
-                        />
-
-                        {/* Submit Button */}
-                        <LoadingButton
-                            isLoading={isSubmitting}
-                            loadingText="Logging in..."
-                            className="bg-cyan-500 hover:bg-cyan-600 text-white"
-                        >
-                            Log in
-                        </LoadingButton>
-
-                        {/* Registration link */}
-                        <FormFooter
-                            text="Don't have an account?"
-                            linkText="Register"
-                            linkTo={
-                                joinCode
-                                    ? `/register?returnUrl=${encodeURIComponent(`/join/${joinCode}`)}`
-                                    : "/register"
-                            }
-                        />
-                    </form>
-                </Form>
-            </CardContent>
-        </Card>
+                {/* Registration link */}
+                <FormFooter
+                    text="Don't have an account?"
+                    linkText="Register"
+                    linkTo={
+                        joinCode
+                            ? `/register?returnUrl=${encodeURIComponent(
+                                  `/join/${joinCode}`
+                              )}`
+                            : "/register"
+                    }
+                />
+            </form>
+        </Form>
     );
 };
 

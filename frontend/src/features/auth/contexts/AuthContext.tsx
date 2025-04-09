@@ -1,13 +1,14 @@
-import { api } from "@/api";
 import { User } from "@/types/user";
 import {
     getLocalStorageItem,
     removeLocalStorageItem,
     setLocalStorageItem,
 } from "@/utils/local-storage";
-import { createContext, ReactNode, useState } from "react";
+import { createContext, ReactNode, useState, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient } from "@tanstack/react-query";
+import { useAuthQuery } from "../hooks/useAuthQuery";
+import { useAuthMutations } from "../hooks/useAuthMutations";
 
 interface AuthContextType {
     user: User | null;
@@ -47,171 +48,93 @@ interface AuthProviderProps {
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
-    const [token, setToken] = useState<string | null>(null);
     const [returnUrl, setReturnUrl] = useState<string | null>(null);
     const navigate = useNavigate();
     const queryClient = useQueryClient();
 
-    const { isLoading } = useQuery({
-        queryKey: ["auth"],
-        queryFn: async () => {
-            const token = getLocalStorageItem("token");
+    const { isLoading, data: currentUser, isFetching } = useAuthQuery();
+    const { loginMutation, registerMutation } = useAuthMutations();
 
-            if (!token) {
-                return null;
-            }
+    // Update user when currentUser changes
+    useEffect(() => {
+        if (currentUser) {
+            setUser(currentUser);
+        } else if (currentUser === null && !isLoading && !isFetching) {
+            // Only clear user if we're sure they're not authenticated
+            setUser(null);
+        }
+    }, [currentUser, isLoading, isFetching]);
 
-            const response = await api.get("/auth/me");
-            setUser(response.data);
-            setToken(token);
-            return response.data;
-        },
-        retry: false,
-        staleTime: 5 * 60 * 1000, // 5 minutes
-    });
-
-    const loginMutation = useMutation({
-        mutationFn: async ({
-            email,
-            password,
-            redirectUrl,
-        }: {
-            email: string;
-            password: string;
-            redirectUrl?: string;
-        }) => {
-            const response = await api.post(
-                "/auth/login",
-                {
+    const token = getLocalStorageItem("token");
+    
+    // Memoize the context value to prevent unnecessary re-renders
+    const contextValue = useMemo(() => ({
+        user,
+        isAuthenticated: !!user,
+        isLoading: isLoading || isFetching,
+        token: token ?? undefined,
+        returnUrl: returnUrl ?? undefined,
+        login: async (email: string, password: string, redirectUrl?: string) => {
+            try {
+                const result = await loginMutation.mutateAsync({
                     email,
                     password,
-                },
-                {
-                    timeout: 10000, // 10 seconds
-                }
-            );
-            return { ...response.data, redirectUrl };
-        },
-        onSuccess: (data) => {
-            const { token, user, redirectUrl } = data;
-            setLocalStorageItem("token", token);
-            setUser(user);
-            queryClient.setQueryData(["currentUser"], user);
-            // Use the redirectUrl if provided, otherwise default to "/home"
-            setReturnUrl(redirectUrl || "/home");
-            navigate(redirectUrl || "/home");
-        },
-        onError: (error: unknown) => {
-            if (error instanceof Error) {
-                console.log(
-                    (error as { response?: { data?: unknown } }).response?.data
-                );
-                throw new Error("Invalid credentials");
+                    redirectUrl,
+                });
+                
+                setLocalStorageItem("token", result.token);
+                setUser(result.user);
+                queryClient.setQueryData(["currentUser"], result.user);
+                await queryClient.invalidateQueries({ queryKey: ["auth"] });
+                
+                const targetUrl = redirectUrl || "/home";
+                setReturnUrl(targetUrl);
+                navigate(targetUrl, { replace: true });
+            } catch (error) {
+                console.error("[AuthContext] Login error:", error);
+                throw error;
             }
-            throw error;
         },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["auth"] });
-        },
-    });
-
-    const registerMutation = useMutation({
-        mutationFn: async ({
-            username,
-            email,
-            password,
-            confirmPassword,
-            redirectUrl,
-        }: {
-            username: string;
-            email: string;
-            password: string;
-            confirmPassword: string;
-            redirectUrl?: string;
-        }) => {
-            const response = await api.post(
-                "/auth/register",
-                {
+        register: async (
+            username: string,
+            email: string,
+            password: string,
+            confirmPassword: string,
+            redirectUrl?: string
+        ) => {
+            try {
+                const result = await registerMutation.mutateAsync({
                     username,
                     email,
                     password,
                     confirmPassword,
-                },
-                {
-                    timeout: 10000, // 10 seconds
-                }
-            );
-            return { ...response.data, redirectUrl };
-        },
-        onSuccess: (data) => {
-            const { token, user, redirectUrl } = data;
-            console.log(`[AuthContext.tsx] Registration successful, redirectUrl: ${redirectUrl}`);
-            setLocalStorageItem("token", token);
-            setUser(user);
-            queryClient.setQueryData(["currentUser"], user);
-            // Use the redirectUrl if provided, otherwise default to "/home"
-            setReturnUrl(redirectUrl || "/home");
-            console.log(`[AuthContext.tsx] Navigating to: ${redirectUrl || "/home"}`);
-            navigate(redirectUrl || "/home", { replace: true });
-        },
-        onError: (error: unknown) => {
-            if (error instanceof Error) {
-                console.log(
-                    (error as { response?: { data?: unknown } }).response?.data
-                );
-                throw new Error("Registration failed");
+                    redirectUrl,
+                });
+                
+                setLocalStorageItem("token", result.token);
+                setUser(result.user);
+                queryClient.setQueryData(["currentUser"], result.user);
+                await queryClient.invalidateQueries({ queryKey: ["auth"] });
+                
+                const targetUrl = redirectUrl || "/home";
+                setReturnUrl(targetUrl);
+                navigate(targetUrl, { replace: true });
+            } catch (error) {
+                console.error("[AuthContext] Registration error:", error);
+                throw error;
             }
-            throw error;
         },
-        onSettled: () => {
-            queryClient.invalidateQueries({ queryKey: ["auth"] });
+        logout: () => {
+            removeLocalStorageItem("token");
+            setUser(null);
+            queryClient.setQueryData(["currentUser"], null);
+            queryClient.removeQueries({ queryKey: ["auth"] });
+            navigate("/login", { replace: true });
         },
-    });
-
-    const login = async (
-        email: string,
-        password: string,
-        redirectUrl?: string
-    ) => {
-        await loginMutation.mutateAsync({ email, password, redirectUrl });
-    };
-
-    const register = async (
-        username: string,
-        email: string,
-        password: string,
-        confirmPassword: string,
-        redirectUrl?: string
-    ) => {
-        await registerMutation.mutateAsync({
-            username,
-            email,
-            password,
-            confirmPassword,
-            redirectUrl,
-        });
-    };
-
-    const logout = () => {
-        removeLocalStorageItem("token");
-        setUser(null);
-        queryClient.setQueryData(["currentUser"], null);
-        navigate("/login");
-    };
+    }), [user, isLoading, isFetching, token, returnUrl, loginMutation, registerMutation, queryClient, navigate]);
 
     return (
-        <AuthContext.Provider
-            value={{
-                user,
-                isAuthenticated: !!user,
-                isLoading,
-                token: token ?? undefined,
-                returnUrl: returnUrl ?? undefined,
-                login,
-                register,
-                logout,
-            }}
-        >
+        <AuthContext.Provider value={contextValue}>
             {children}
         </AuthContext.Provider>
     );

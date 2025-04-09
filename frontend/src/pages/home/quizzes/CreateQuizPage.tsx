@@ -1,11 +1,10 @@
-import { useCategories } from "@/features/categories/hooks/useCategories";
 import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 
 import { MultiStepQuizForm } from "@/features/quizzes/components/quiz-form/MultiStepQuizForm";
 import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
+
 const CreateQuizPage = () => {
-    const { categories } = useCategories();
     const location = useLocation();
     const navigate = useNavigate();
 
@@ -24,15 +23,12 @@ const CreateQuizPage = () => {
         }
     }, [location, navigate]);
 
-    
     return (
         <div className="container mx-auto max-w-6xl py-8">
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
                 <QuizFormProvider initialValues={initialState.initialValues}>
-                    <MultiStepQuizForm
-                        categories={categories}
-                    />
+                    <MultiStepQuizForm />
                 </QuizFormProvider>
             </div>
         </div>

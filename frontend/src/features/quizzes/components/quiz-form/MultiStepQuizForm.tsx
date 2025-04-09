@@ -14,7 +14,6 @@ export const MultiStepQuizForm = () => {
         submitQuiz,
         isSubmitting,
         submissionError,
-        resetForm,
     } = useQuizForm();
     
     const location = useLocation();
