@@ -58,6 +58,13 @@ namespace QuizMate.Api.Controllers
                 return BadRequest(ModelState);
             }
 
+            // Check if email already exists
+            var existingUser = await _userManager.FindByEmailAsync(registerDto.Email);
+            if (existingUser != null)
+            {
+                return BadRequest(new { error = "Email is already registered" });
+            }
+
             var appUser = new AppUser
             {
                 UserName = registerDto.Username,
