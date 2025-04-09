@@ -16,5 +16,11 @@ export const useAuthQuery = () => {
         },
         retry: false,
         staleTime: 5 * 60 * 1000, // 5 minutes
+        refetchOnWindowFocus: false, // Prevent unnecessary refetches
+        refetchOnMount: false, // Only fetch on initial mount
+        initialData: () => {
+            const token = getLocalStorageItem("token");
+            return token ? undefined : null; // undefined triggers loading, null means not authenticated
+        }
     });
 }; 

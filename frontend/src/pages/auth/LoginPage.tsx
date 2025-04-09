@@ -7,9 +7,14 @@ const LoginPage = () => {
     const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
     useEffect(() => {
-        const searchParams = new URLSearchParams(location.search);
+        // First check location state (used by ProtectedRoute)
+        if (location.state?.from) {
+            setReturnUrl(location.state.from);
+            return;
+        }
 
-        // Try to get returnUrl first, then joinCode as fallback
+        // Then check URL parameters
+        const searchParams = new URLSearchParams(location.search);
         const returnUrlParam = searchParams.get("returnUrl");
 
         if (returnUrlParam) {
@@ -17,13 +22,12 @@ const LoginPage = () => {
             setReturnUrl(decodedUrl);
         } else {
             const joinCode = searchParams.get("joinCode");
-
             if (joinCode) {
                 const joinPath = `/join/${joinCode}`;
                 setReturnUrl(joinPath);
             }
         }
-    }, [location.search]);
+    }, [location]);
 
     return <LoginCard returnUrl={returnUrl} />;
 };
