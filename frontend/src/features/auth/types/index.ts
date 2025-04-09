@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { UseFormReturn, FieldValues } from "react-hook-form";
 
 export interface ErrorResponse {
     code: string;
@@ -17,10 +17,8 @@ export interface PasswordRequirement {
     check: (pass: string) => boolean;
 }
 
-// Form Props
-export interface RegisterFormProps {
-    returnUrl?: string | null;
-}
-
 // Form Error Handler
-export type FormErrorHandler = (error: ApiError, form: UseFormReturn<any>) => void;
+export type FormErrorHandler = (
+    error: ApiError,
+    form: UseFormReturn<FieldValues>
+) => void;

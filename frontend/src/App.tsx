@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import Login from "./pages/auth/Login";
-import Register from "./pages/auth/Register";
+import LoginPage from "./pages/auth/LoginPage";
+import RegisterPage from "./pages/auth/RegisterPage";
 import AuthLayout from "./layouts/AuthLayout";
 import MainLayout from "./layouts/MainLayout";
 import { ProtectedRoute } from "./layouts/ProtectedRoute";
@@ -33,8 +33,8 @@ function App() {
             <Route path="/" element={<LandingPage />} />
             <Route element={<MainLayout />}>
                 <Route element={<AuthLayout />}>
-                    <Route path="/login" element={<Login />} />
-                    <Route path="/register" element={<Register />} />
+                    <Route path="/login" element={<LoginPage />} />
+                    <Route path="/register" element={<RegisterPage />} />
                 </Route>
 
                 <Route path="/join/:joinCode" element={<JoinQuizPage />} />

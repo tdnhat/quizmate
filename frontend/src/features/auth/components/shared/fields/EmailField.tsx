@@ -1,4 +1,4 @@
-import { UseFormReturn } from "react-hook-form";
+import { FieldValues, Path, UseFormReturn } from "react-hook-form";
 import {
     FormControl,
     FormField,
@@ -7,18 +7,20 @@ import {
     FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { RegisterFormValues } from "@/features/auth/schemas/registerFormSchema";
 
-interface EmailFieldProps {
-    form: UseFormReturn<RegisterFormValues>;
+interface EmailFieldProps<T extends FieldValues> {
+    form: UseFormReturn<T>;
     isLoading: boolean;
 }
 
-export const EmailField = ({ form, isLoading }: EmailFieldProps) => {
+export const EmailField = <T extends FieldValues>({ 
+    form, 
+    isLoading 
+}: EmailFieldProps<T>) => {
     return (
         <FormField
             control={form.control}
-            name="email"
+            name={"email" as Path<T>}
             render={({ field }) => (
                 <FormItem>
                     <FormLabel>Email</FormLabel>
@@ -35,4 +37,4 @@ export const EmailField = ({ form, isLoading }: EmailFieldProps) => {
             )}
         />
     );
-}; 
+};

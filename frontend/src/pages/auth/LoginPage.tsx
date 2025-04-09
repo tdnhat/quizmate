@@ -1,8 +1,8 @@
-import RegisterForm from "@/features/auth/components/register/RegisterForm";
 import { useLocation } from "react-router-dom";
 import { useEffect, useState } from "react";
+import LoginCard from "@/features/auth/components/login/LoginCard";
 
-const Register = () => {
+const LoginPage = () => {
     const location = useLocation();
     const [returnUrl, setReturnUrl] = useState<string | null>(null);
 
@@ -25,7 +25,7 @@ const Register = () => {
         }
     }, [location.search]);
 
-    return <RegisterForm returnUrl={returnUrl} />;
+    return <LoginCard returnUrl={returnUrl} />;
 };
 
-export default Register;
+export default LoginPage;
