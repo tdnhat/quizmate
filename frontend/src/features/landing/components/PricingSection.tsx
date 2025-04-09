@@ -1,7 +1,36 @@
-import { Link } from "react-router-dom";
+import { Button } from "@/components/ui/button";
+import { motion } from "framer-motion";
 import { Check } from "lucide-react";
 
 const PricingSection = () => {
+    const containerVariants = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2,
+                delayChildren: 0.1,
+            },
+        },
+    };
+
+    const cardVariants = {
+        hidden: {
+            opacity: 0,
+            y: 30,
+            scale: 0.95,
+        },
+        visible: {
+            opacity: 1,
+            y: 0,
+            scale: 1,
+            transition: {
+                duration: 0.6,
+                ease: "easeOut",
+            },
+        },
+    };
+
     const plans = [
         {
             name: "Basic",
@@ -46,71 +75,90 @@ const PricingSection = () => {
     ];
 
     return (
-        <section className="py-20">
-            <div className="container mx-auto px-4">
-                <h2 className="text-3xl font-bold text-center mb-4">
-                    Pricing Plans
-                </h2>
-                <p className="text-center text-gray-600 mb-12 max-w-2xl mx-auto">
-                    Choose the plan that works best for you and your team.
-                </p>
+        <section id="pricing" className="py-20 bg-slate-50">
+            <motion.div
+                className="max-w-7xl mx-auto px-8 sm:px-6 lg:px-8"
+                initial="hidden"
+                whileInView="visible"
+                viewport={{ once: true, margin: "-100px" }}
+                variants={containerVariants}
+            >
+                <motion.div
+                    className="text-center mb-16"
+                    variants={cardVariants}
+                >
+                    <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                        Simple, Transparent Pricing
+                    </h2>
+                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                        Choose the plan that best fits your needs
+                    </p>
+                </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                     {plans.map((plan, index) => (
-                        <div
+                        <motion.div
                             key={index}
                             className={`
-                border rounded-xl p-8 flex flex-col h-full 
-                ${plan.popular ? "border-cyan-500 shadow-lg relative" : "border-gray-200"}
-            `}
+                                bg-white p-8 rounded-xl shadow-md flex flex-col h-full
+                                ${plan.popular ? "border-cyan-500 border-2 shadow-lg relative" : "border-gray-200 border-2"}
+                            `}
+                            variants={cardVariants}
                         >
                             {plan.popular && (
-                                <div className="absolute top-0 right-0 bg-cyan-500 text-white text-sm font-bold py-1 px-3 rounded-bl-lg rounded-tr-lg">
+                                <div className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-cyan-500 text-white text-xs md:text-sm font-bold py-1 px-3 rounded-full">
                                     MOST POPULAR
                                 </div>
                             )}
 
-                            <h3 className="text-xl font-bold mb-2">
-                                {plan.name}
-                            </h3>
+                            <div className="flex-grow">
+                                <h3 className="text-2xl font-bold mb-4">
+                                    {plan.name}
+                                </h3>
 
-                            <div className="mb-6">
-                                <span className="text-4xl font-bold">
-                                    {plan.price}
-                                </span>
-                                {plan.period && (
-                                    <span className="text-gray-600">
-                                        /{plan.period}
+                                <div className="mb-6">
+                                    <span className="text-4xl font-bold">
+                                        {plan.price}
                                     </span>
-                                )}
+                                    {plan.period && (
+                                        <span className="text-gray-600 text-base md:text-lg">
+                                            /{plan.period}
+                                        </span>
+                                    )}
+                                </div>
+
+                                <ul className="space-y-4 mb-8">
+                                    {plan.features.map((feature, i) => (
+                                        <li
+                                            key={i}
+                                            className="flex items-center"
+                                        >
+                                            <Check
+                                                className="text-green-500 mr-2"
+                                                size={20}
+                                            />
+                                            {feature}
+                                        </li>
+                                    ))}
+                                </ul>
                             </div>
 
-                            <ul className="mb-8 space-y-3 flex-grow">
-                                {plan.features.map((feature, i) => (
-                                    <li key={i} className="flex items-center">
-                                        <Check size={20} className="mr-2" color="green" />
-                                        {feature}
-                                    </li>
-                                ))}
-                            </ul>
-                            <Link to="/">
-                                <button
-                                    className={`
-                                    w-full py-3 px-4 rounded-lg font-bold mt-auto hover:cursor-pointer
+                            <Button
+                                className={`
+                                    w-full mt-auto cursor-pointer border border-cyan-500 py-2 rounded-lg font-medium
                                     ${
                                         plan.popular
                                             ? "bg-cyan-600 text-white hover:bg-cyan-700"
-                                            : "bg-gray-100 text-gray-800 hover:bg-gray-200"
+                                            : "bg-white text-cyan-500 hover:bg-cyan-50"
                                     } transition
-                                    `}
-                                >
-                                    {plan.cta}
-                                </button>
-                            </Link>
-                        </div>
+                                `}
+                            >
+                                {plan.cta}
+                            </Button>
+                        </motion.div>
                     ))}
                 </div>
-            </div>
+            </motion.div>
         </section>
     );
 };

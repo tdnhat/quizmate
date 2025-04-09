@@ -128,11 +128,21 @@ body, html {
 }
 
 .embla {
-  max-width: 48rem;
   margin: auto;
-  --slide-height: 19rem;
   --slide-spacing: 1rem;
-  --slide-size: 55%;
+  --slide-size: 90%;
+}
+
+@media (min-width: 640px) {
+  .embla {
+    --slide-size: 65%;
+  }
+}
+
+@media (min-width: 1024px) {
+  .embla {
+    --slide-size: 40%;
+  }
 }
 
 .embla__viewport {
@@ -147,7 +157,6 @@ body, html {
 }
 
 .embla__slide {
-  transform: translate3d(0, 0, 0);
   flex: 0 0 var(--slide-size);
   min-width: 0;
   padding-left: var(--slide-spacing);
