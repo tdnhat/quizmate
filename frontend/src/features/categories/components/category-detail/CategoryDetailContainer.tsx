@@ -5,11 +5,11 @@ import { FileSearch } from "lucide-react";
 import CategoryDetailBreadcrumb from "./CategoryDetailBreadcrumb";
 
 const CategoryDetailContainer = () => {
-    const { quizzes, isLoading, categoryName } = useCategoryDetail();
+    const { quizzes, isLoading, categoryName, filters } = useCategoryDetail();
 
     const renderContent = () => {
         if (isLoading) {
-            return <QuizGrid quizzes={[]} isLoading={true} />;
+            return <QuizGrid quizzes={[]} isLoading={true} categorySlug={filters.categorySlug} />;
         }
 
         if (!quizzes || quizzes.length === 0) {
@@ -27,7 +27,7 @@ const CategoryDetailContainer = () => {
             );
         }
 
-        return <QuizGrid quizzes={quizzes} isLoading={isLoading} />;
+        return <QuizGrid quizzes={quizzes} isLoading={isLoading} categorySlug={filters.categorySlug} />;
     };
 
     return (

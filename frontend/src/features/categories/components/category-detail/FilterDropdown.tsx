@@ -1,4 +1,3 @@
-import { useCategoryDetail } from "../../hooks/useCategoryDetail";
 import { ChevronDown, Filter } from "lucide-react";
 import {
     Popover,
@@ -7,6 +6,7 @@ import {
 } from "@/components/ui/popover";
 import { Separator } from "@/components/ui/separator";
 import { Badge } from "@/components/ui/badge";
+import { useFilter } from "@/features/filters/hooks/useFilter";
 
 const FilterDropdown = () => {
     const {
@@ -16,7 +16,7 @@ const FilterDropdown = () => {
         getDurationInMinutes,
         clearAllFilters,
         applyFilters,
-    } = useCategoryDetail();
+    } = useFilter();
 
     const activeFilterCount = [
         filters.difficulty ? 1 : 0,

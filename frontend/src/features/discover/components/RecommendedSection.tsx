@@ -4,8 +4,6 @@ import { useQuizzes } from "@/features/quizzes/hooks/useQuizzes";
 import QuizGrid from "../../quizzes/components/quiz-card/QuizGrid";
 import ErrorMessage from "@/components/shared/components/ErrorMessage";
 
-const RECOMMENDED_QUIZ_COUNT = 16;
-
 const RecommendedSection = () => {
     // Mock data for recommended quizzes
     const { quizzes, isLoading, error } = useQuizzes();
@@ -36,7 +34,10 @@ const RecommendedSection = () => {
             <QuizGrid
                 quizzes={quizzes}
                 isLoading={isLoading}
-                count={RECOMMENDED_QUIZ_COUNT}
+                showFilters={false}
+                showSearch={false}
+                showSort={false}
+                showViewToggle={false}
             />
         </div>
     );
