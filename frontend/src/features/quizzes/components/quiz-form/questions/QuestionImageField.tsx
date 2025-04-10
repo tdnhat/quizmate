@@ -1,52 +1,54 @@
 import { Control, useWatch } from "react-hook-form";
-import { QuizFormValues } from "@/features/quizzes/schemas/quizFormSchema";
+import { QuestionFormValues } from "@/features/quizzes/schemas/quizFormSchema";
 import { useQuizForm } from "../../../hooks/useQuizForm";
 import { useState, useEffect } from "react";
 import { FormControl, FormField, FormItem, FormLabel, FormMessage, FormDescription } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
 import { X, Upload } from "lucide-react";
 
-interface ThumbnailFieldProps {
-    control: Control<QuizFormValues>;
-    isLoading?: boolean;
+interface QuestionImageFieldProps {
+    control: Control<QuestionFormValues>;
+    questionIndex?: number;
 }
 
-const ThumbnailField = ({ control, isLoading: propIsLoading = false }: ThumbnailFieldProps) => {
+const QuestionImageField = ({ control, questionIndex }: QuestionImageFieldProps) => {
     const { 
         isSubmitting,
-        isUploadingThumbnail 
+        isUploadingQuestionImage, 
+        uploadingQuestionIndex,
     } = useQuizForm();
     
-    // Watch both thumbnailFile and thumbnailUrl
-    const thumbnailFile = useWatch({ control, name: "thumbnailFile" });
-    const thumbnailUrl = useWatch({ control, name: "thumbnailUrl" });
+    // Watch both imageFile and imageUrl
+    const imageFile = useWatch({ control, name: "imageFile" });
+    const imageUrl = useWatch({ control, name: "imageUrl" });
     
     const [preview, setPreview] = useState<string | null>(null);
     const [isDragging, setIsDragging] = useState(false);
-    const inputId = "quiz-thumbnail-upload";
+    const inputId = `question-image-${questionIndex}`;
     
     // Only show loading during actual upload (when form is being submitted)
-    const isLoading = propIsLoading || 
-                     (isSubmitting && isUploadingThumbnail);
+    const isLoading = isSubmitting && 
+                    isUploadingQuestionImage && 
+                    uploadingQuestionIndex === questionIndex;
     
     // Set preview from either file or URL
     useEffect(() => {
-        if (thumbnailFile instanceof File) {
-            const url = URL.createObjectURL(thumbnailFile);
+        if (imageFile instanceof File) {
+            const url = URL.createObjectURL(imageFile);
             setPreview(url);
             return () => URL.revokeObjectURL(url);
-        } else if (thumbnailUrl) {
-            setPreview(thumbnailUrl);
+        } else if (imageUrl) {
+            setPreview(imageUrl);
         } else {
             setPreview(null);
         }
-    }, [thumbnailFile, thumbnailUrl]);
+    }, [imageFile, imageUrl]);
     
     const helperText = isLoading 
-        ? "Uploading thumbnail..." 
-        : thumbnailFile instanceof File
-            ? "Thumbnail ready to be uploaded when form is submitted"
-            : "Upload a thumbnail for your quiz (optional)";
+        ? "Uploading image..." 
+        : imageFile instanceof File
+            ? "Image ready to be uploaded when form is submitted"
+            : "Upload an image for this question (optional)";
     
     // Handlers for image upload field
     const handleImageChange = (
@@ -98,22 +100,22 @@ const ThumbnailField = ({ control, isLoading: propIsLoading = false }: Thumbnail
     
     const handleRemoveImage = (onChange: (value: File | undefined) => void) => {
         onChange(undefined);
-        // Also need to clear thumbnailUrl if it exists
-        const thumbnailUrlControl = control._fields.thumbnailUrl;
-        if (thumbnailUrlControl) {
-            // @ts-expect-error - accessing private field which is necessary to reset the thumbnailUrl
-            const thumbnailUrlOnChange = thumbnailUrlControl._f.onChange;
-            thumbnailUrlOnChange(undefined);
+        // Also need to clear imageUrl if it exists
+        const imageUrlControl = control._fields.imageUrl;
+        if (imageUrlControl) {
+            // @ts-expect-error - accessing private field which is necessary to reset the imageUrl
+            const imageUrlOnChange = imageUrlControl._f.onChange;
+            imageUrlOnChange(undefined);
         }
     };
     
     return (
         <FormField
             control={control}
-            name="thumbnailFile"
+            name="imageFile"
             render={({ field: { onChange } }) => (
                 <FormItem>
-                    <FormLabel>Thumbnail</FormLabel>
+                    <FormLabel>Question Image</FormLabel>
                     {helperText && <FormDescription>{helperText}</FormDescription>}
                     <div className="space-y-4">
                         {isLoading ? (
@@ -127,7 +129,7 @@ const ThumbnailField = ({ control, isLoading: propIsLoading = false }: Thumbnail
                                 <div className="aspect-video w-full max-w-md mx-auto overflow-hidden flex items-center justify-center">
                                     <img
                                         src={preview}
-                                        alt="Thumbnail preview"
+                                        alt="Image preview"
                                         className="object-contain max-h-full max-w-full"
                                     />
                                 </div>
@@ -159,7 +161,7 @@ const ThumbnailField = ({ control, isLoading: propIsLoading = false }: Thumbnail
                                 <div className="flex flex-col items-center justify-center pt-5 pb-6">
                                     <Upload className="w-10 h-10 mb-3 text-muted-foreground" />
                                     <div className="text-sm text-center text-muted-foreground">
-                                        Upload thumbnail
+                                        Upload image
                                     </div>
                                 </div>
                             </label>
@@ -182,4 +184,4 @@ const ThumbnailField = ({ control, isLoading: propIsLoading = false }: Thumbnail
     );
 };
 
-export default ThumbnailField;
+export default QuestionImageField; 

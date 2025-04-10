@@ -60,21 +60,48 @@ class QuizSessionHubConnection {
     async start() {
         try {
             console.log("Building SignalR connection...");
-            const apiUrl = process.env.API_URL || "http://localhost:5118";
+            const apiUrl =
+                import.meta.env.VITE_API_URL || "http://localhost:5118";
             console.log("API URL used:", apiUrl);
 
             this.connection = new HubConnectionBuilder()
                 .withUrl(`${apiUrl}/hubs/quiz-session`, {
                     accessTokenFactory: () => this.token,
+                    withCredentials: true,
                 })
-                .configureLogging(LogLevel.Information)
-                .withAutomaticReconnect()
+                .configureLogging(LogLevel.Debug)
+                .withAutomaticReconnect({
+                    nextRetryDelayInMilliseconds: (retryContext) => {
+                        const maxRetries = 5;
+                        if (retryContext.previousRetryCount >= maxRetries) {
+                            console.error("Max reconnection attempts reached");
+                            return null;
+                        }
+                        const delayMs = Math.min(
+                            1000 * Math.pow(2, retryContext.previousRetryCount),
+                            30000
+                        );
+                        console.log(`Reconnecting in ${delayMs}ms...`);
+                        return delayMs;
+                    },
+                })
                 .build();
+
+            this.connection.onreconnecting((error) => {
+                console.log("Reconnecting to SignalR hub...", error);
+            });
+
+            this.connection.onreconnected((connectionId) => {
+                console.log("Reconnected to SignalR hub.", connectionId);
+            });
+
+            this.connection.onclose((error) => {
+                console.log("Connection closed.", error);
+            });
 
             console.log("Attempting to start connection...");
             await this.connection.start();
 
-            // Verify connection is established
             if (this.connection.state === "Connected") {
                 console.log(
                     "SignalR connection started successfully and is connected"
@@ -89,8 +116,14 @@ class QuizSessionHubConnection {
             }
         } catch (error) {
             console.error("Error starting SignalR connection:", error);
-            this.connection = null; // Reset connection if it failed
-            return false;
+            if (error instanceof Error) {
+                console.error("Error details:", {
+                    message: error.message,
+                    stack: error.stack,
+                });
+            }
+            this.connection = null;
+            throw error;
         }
     }
 
@@ -127,27 +160,24 @@ class QuizSessionHubConnection {
         this.connection?.on("quizEnded", callback);
     }
 
-    // For session state changes
-    onSessionStateChanged(callback: (state: string, quizTitle: string) => void) {
+    onSessionStateChanged(
+        callback: (state: string, quizTitle: string) => void
+    ) {
         this.connection?.on("sessionStateChanged", callback);
     }
 
-    // For showing results phase
     onShowingResults(callback: () => void) {
         this.connection?.on("showingResults", callback);
     }
 
-    // For question completed event
     onQuestionCompleted(callback: () => void) {
         this.connection?.on("questionCompleted", callback);
     }
 
-    // For participants who join mid-quiz - gets current question
     onCurrentQuestion(callback: (data: QuestionData | null) => void) {
         this.connection?.on("currentQuestion", callback);
     }
 
-    // For participants to receive answer results
     onAnswerResult(callback: (result: AnswerResult) => void) {
         this.connection?.on("answerResult", callback);
     }
@@ -189,7 +219,6 @@ class QuizSessionHubConnection {
         await this.connection.invoke("endSession", sessionId);
     }
 
-    // For participants to submit answers
     async submitAnswer(
         sessionId: string,
         questionId: string,

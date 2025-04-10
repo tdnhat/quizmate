@@ -101,18 +101,29 @@ const HostQuizContainer = () => {
                                 <Card className="border-red-200 bg-red-50 mt-6">
                                     <CardContent className="p-4">
                                         <p className="mb-2 font-semibold text-red-700">
-                                            Error: {error}
+                                            Connection Error: {error}
                                         </p>
-                                        <Button
-                                            variant="outline"
-                                            onClick={() =>
-                                                window.location.reload()
-                                            }
-                                            size="sm"
-                                        >
-                                            <RefreshCcw className="h-4 w-4 mr-2" />
-                                            Refresh Connection
-                                        </Button>
+                                        <p className="text-sm text-red-600 mb-4">
+                                            Please check your connection and try again. If the problem persists, 
+                                            you may need to refresh the page.
+                                        </p>
+                                        <div className="flex gap-2">
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => window.location.reload()}
+                                                size="sm"
+                                            >
+                                                <RefreshCcw className="h-4 w-4 mr-2" />
+                                                Refresh Page
+                                            </Button>
+                                            <Button
+                                                variant="outline"
+                                                onClick={() => navigate("/quizzes")}
+                                                size="sm"
+                                            >
+                                                Return to Quizzes
+                                            </Button>
+                                        </div>
                                     </CardContent>
                                 </Card>
                             )}

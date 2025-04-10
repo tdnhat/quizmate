@@ -1,12 +1,15 @@
 import { createContext, ReactNode, useEffect, useState } from "react";
 import { QuestionFormValues, QuizFormValues } from "../schemas/quizFormSchema";
 import { Quiz } from "@/types/quiz";
-import { useMutation } from "@tanstack/react-query";
-import { submitCreateQuizForm } from "@/api/quiz";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { submitCreateQuizForm, uploadQuizThumbnail, uploadQuestionImage } from "@/api/quiz";
 
 type QuizFormStep = "basic-details" | "questions" | "review";
 
-export type SubmitQuizPayload = Partial<QuizFormValues> & { isDraft: boolean };
+export type SubmitQuizPayload = Partial<QuizFormValues> & { 
+    isDraft: boolean;
+    thumbnailUrl?: string;
+};
 
 export type SubmitQuizResponse = Quiz;
 
@@ -16,6 +19,9 @@ interface QuizFormContextType {
     currentStep: QuizFormStep;
     isLoading: boolean;
     isSubmitting: boolean;
+    isUploadingThumbnail: boolean;
+    isUploadingQuestionImage: boolean;
+    uploadingQuestionIndex: number | null;
     submissionError: string | null;
     submittedQuizId: string | null;
     setFormValues: (values: Partial<QuizFormValues>) => void;
@@ -26,6 +32,7 @@ interface QuizFormContextType {
     goToNextStep: () => void;
     goToPreviousStep: () => void;
     resetForm: () => void;
+    refetchQuizzes: () => void;
     submitQuiz: (isDraft: boolean) => Promise<SubmitQuizResponse | undefined>;
 }
 
@@ -42,6 +49,7 @@ export const QuizFormProvider = ({
     children,
     initialValues,
 }: QuizFormProviderProps) => {
+    const queryClient = useQueryClient();
     const [formValues, setFormValues] = useState<Partial<QuizFormValues>>(
         initialValues || {}
     );
@@ -49,11 +57,14 @@ export const QuizFormProvider = ({
         initialValues?.questions || []
     );
     const [isLoading, setIsLoading] = useState(false);
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [isUploadingThumbnail, setIsUploadingThumbnail] = useState(false);
+    const [isUploadingQuestionImage, setIsUploadingQuestionImage] = useState(false);
+    const [uploadingQuestionIndex, setUploadingQuestionIndex] = useState<number | null>(null);
     const [submittedQuizId, setSubmittedQuizId] = useState<string | null>(null);
 
     const {
         mutateAsync,
-        isPending: isSubmitting,
         error: submissionError,
         reset: resetMutation,
     } = useMutation<SubmitQuizResponse, Error, SubmitQuizPayload>({
@@ -65,6 +76,28 @@ export const QuizFormProvider = ({
         onError: (error) => {
             console.error("Error submitting quiz:", error);
             setSubmittedQuizId(null);
+        },
+    });
+
+    // Add a separate mutation for thumbnail upload
+    const thumbnailMutation = useMutation({
+        mutationFn: uploadQuizThumbnail,
+        onSuccess: (data) => {
+            console.log("Thumbnail uploaded successfully:", data);
+        },
+        onError: (error) => {
+            console.error("Error uploading thumbnail:", error);
+        },
+    });
+
+    // Add a separate mutation for question image upload
+    const questionImageMutation = useMutation({
+        mutationFn: uploadQuestionImage,
+        onSuccess: (data) => {
+            console.log("Question image uploaded successfully:", data);
+        },
+        onError: (error) => {
+            console.error("Error uploading question image:", error);
         },
     });
 
@@ -151,9 +184,52 @@ export const QuizFormProvider = ({
         isDraft: boolean
     ): Promise<SubmitQuizResponse | undefined> => {
         try {
+            setIsSubmitting(true);
+            // Handle thumbnail upload if exists
+            let thumbnailUrl = formValues.thumbnailUrl;
+            if (formValues.thumbnailFile) {
+                try {
+                    setIsUploadingThumbnail(true);
+                    const uploadResponse = await thumbnailMutation.mutateAsync(formValues.thumbnailFile);
+                    thumbnailUrl = uploadResponse.thumbnailUrl;
+                } catch (error) {
+                    console.error("Error uploading thumbnail:", error);
+                } finally {
+                    setIsUploadingThumbnail(false);
+                }
+            }
+
+            // Handle question image uploads
+            const processedQuestions = [...questions];
+            for (let i = 0; i < processedQuestions.length; i++) {
+                const question = processedQuestions[i];
+                if (question.imageFile) {
+                    try {
+                        setIsUploadingQuestionImage(true);
+                        setUploadingQuestionIndex(i);
+                        const uploadResponse = await questionImageMutation.mutateAsync(question.imageFile);
+                        if (uploadResponse && uploadResponse.thumbnailUrl) {
+                            processedQuestions[i] = {
+                                ...question,
+                                imageUrl: uploadResponse.thumbnailUrl,
+                                imageFile: undefined
+                            };
+                        }
+                    } catch (error) {
+                        console.error(`Error uploading image for question ${i}:`, error);
+                    }
+                }
+            }
+            setIsUploadingQuestionImage(false);
+            setUploadingQuestionIndex(null);
+
+            // Update questions with the processed ones
+            setQuestions(processedQuestions);
+
             const payload: SubmitQuizPayload = {
                 ...formValues,
-                questions,
+                thumbnailUrl,
+                questions: processedQuestions,
                 isDraft,
             };
             
@@ -162,7 +238,14 @@ export const QuizFormProvider = ({
         } catch (error) {
             console.error("Error submitting quiz:", error);
             return undefined;
+        } finally {
+            setIsSubmitting(false);
         }
+    };
+
+    const refetchQuizzes = () => {
+        queryClient.invalidateQueries({ queryKey: ["quizzes"] });
+        queryClient.refetchQueries({ queryKey: ["quizzes"] });
     };
 
     return (
@@ -173,6 +256,9 @@ export const QuizFormProvider = ({
                 currentStep,
                 isLoading,
                 isSubmitting,
+                isUploadingThumbnail,
+                isUploadingQuestionImage,
+                uploadingQuestionIndex,
                 submissionError: submissionError?.message || null,
                 submittedQuizId,
                 setFormValues: handleSetFormValues,
@@ -183,6 +269,7 @@ export const QuizFormProvider = ({
                 goToNextStep,
                 goToPreviousStep,
                 resetForm,
+                refetchQuizzes,
                 submitQuiz,
             }}
         >
