@@ -17,12 +17,14 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
         <Link
             to={`/quizzes/${quiz.slug}`}
             className={`bg-white rounded-xl overflow-hidden shadow-md hover:shadow-lg transition-all border border-gray-100 hover:border-gray-200 group ${
-                isListView ? "flex" : ""
+                isListView ? "flex items-stretch" : ""
             }`}
         >
             {/* Thumbnail with overlay */}
-            <div className={isListView ? "flex-shrink-0 w-48" : ""}>
-                <QuizThumbnail quiz={quiz} />
+            <div className={isListView ? "flex-shrink-0 w-48 self-stretch" : ""}>
+                <div className={isListView ? "h-full" : ""}>
+                    <QuizThumbnail quiz={quiz} />
+                </div>
             </div>
 
             {/* Quiz info */}

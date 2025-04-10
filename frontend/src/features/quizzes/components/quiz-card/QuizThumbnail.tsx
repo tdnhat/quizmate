@@ -6,8 +6,9 @@ interface QuizThumbnailProps {
 }
 
 const QuizThumbnail = ({ quiz }: QuizThumbnailProps) => {
+    console.log(quiz);
     return (
-        <div className="relative h-36 overflow-hidden">
+        <div className="relative h-full min-h-[9rem] overflow-hidden">
             <img
                 src={quiz.thumbnail}
                 alt={quiz.title}
