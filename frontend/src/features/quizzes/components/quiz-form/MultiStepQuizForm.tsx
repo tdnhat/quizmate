@@ -55,9 +55,12 @@ export const MultiStepQuizForm = () => {
                 // Navigate to the appropriate page after successful submission
                 navigate("/quizzes");
             }
+            
+            return result;
         } catch (error) {
             // Error is already handled by the context and the effect above
             console.error("Error in handleSubmit:", error);
+            return undefined;
         }
     };
 

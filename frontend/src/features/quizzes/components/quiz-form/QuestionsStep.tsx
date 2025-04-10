@@ -54,7 +54,7 @@ export const QuestionsStep = () => {
                         <Button
                             type="button"
                             onClick={handleAddQuestion}
-                            className="flex items-center gap-1 bg-cyan-500 hover:bg-cyan-600 text-white transition-colors"
+                            className="flex items-center gap-1 bg-cyan-600 hover:bg-cyan-700 text-white transition-colors"
                         >
                             <PlusCircleIcon size={16} />
                             Add Question
@@ -141,13 +141,13 @@ export const QuestionsStep = () => {
                             className="flex items-center cursor-pointer"
                         >
                             <ChevronLeftIcon className="h-4 w-4" />
-                            Back to Details
+                            Back
                         </Button>
 
                         <Button
                             type="button"
                             onClick={goToNextStep}
-                            className="bg-cyan-500 hover:bg-cyan-600 text-white cursor-pointer transition-colors flex items-center"
+                            className="bg-cyan-600 hover:bg-cyan-700 text-white cursor-pointer transition-colors flex items-center"
                             disabled={questions.length === 0}
                         >
                             Review

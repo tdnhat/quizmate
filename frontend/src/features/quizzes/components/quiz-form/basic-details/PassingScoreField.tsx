@@ -17,6 +17,7 @@ export function PassingScoreField({ control }: PassingScoreFieldProps) {
         <FormField
             control={control}
             name="passingScore"
+            defaultValue={0}
             render={({ field }) => (
                 <FormItem className="space-y-2">
                     <FormLabel>

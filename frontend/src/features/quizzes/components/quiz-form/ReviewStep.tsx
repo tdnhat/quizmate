@@ -1,13 +1,20 @@
 import { Button } from "@/components/ui/button";
 import LoadingIndicator from "@/components/shared/components/LoadingIndicator";
 import { useQuizForm } from "../../hooks/useQuizForm";
-import { ChevronLeftIcon, Tag } from "lucide-react";
+import { ChevronDownIcon, ChevronLeftIcon, Tag } from "lucide-react";
 import { useCategories } from "@/features/categories/hooks/useCategories";
 import { Badge } from "@/components/ui/badge";
 import { useEffect, useState } from "react";
+import {
+    DropdownMenu,
+    DropdownMenuContent,
+    DropdownMenuItem,
+    DropdownMenuTrigger
+} from "@/components/ui/dropdown-menu";
+import { Quiz } from "@/types/quiz";
 
 interface ReviewStepProps {
-    onSubmit: (isDraft: boolean) => Promise<any>;
+    onSubmit: (isDraft: boolean) => Promise<Quiz | undefined>;
     isLoading: boolean;
 }
 
@@ -148,11 +155,11 @@ export const ReviewStep = ({
                     disabled={isLoading}
                 >
                     <ChevronLeftIcon className="mr-2 h-4 w-4" />
-                    Back to Questions
+                    Back
                 </Button>
 
-                <div className="flex gap-2">
-                    {" "}
+                {/* Desktop view: separate buttons */}
+                <div className="hidden sm:flex gap-2">
                     <Button
                         type="button"
                         onClick={() => handleSubmit(true)}
@@ -173,7 +180,7 @@ export const ReviewStep = ({
                         type="button"
                         onClick={() => handleSubmit(false)}
                         disabled={isLoading}
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors cursor-pointer"
+                        className="bg-cyan-600 hover:bg-cyan-700 text-white transition-colors cursor-pointer"
                     >
                         {isLoading && submissionType === "publish" ? (
                             <>
@@ -183,6 +190,37 @@ export const ReviewStep = ({
                             "Create Quiz"
                         )}
                     </Button>
+                </div>
+
+                {/* Mobile view: dropdown menu */}
+                <div className="sm:hidden">
+                    {isLoading ? (
+                        <Button 
+                            disabled 
+                            className="bg-cyan-600 hover:bg-cyan-700 text-white transition-colors cursor-pointer"
+                        >
+                            <LoadingIndicator />
+                            <span className="ml-2">
+                                {submissionType === "draft" ? "Saving Draft..." : "Creating..."}
+                            </span>
+                        </Button>
+                    ) : (
+                        <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                                <button className="flex items-center bg-cyan-600 hover:bg-cyan-700 h-9 px-3 py-2 rounded-md text-white">
+                                    Save <ChevronDownIcon className="h-4 w-4 ml-2" />
+                                </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end">
+                                <DropdownMenuItem onClick={() => handleSubmit(true)}>
+                                    Save as Draft
+                                </DropdownMenuItem>
+                                <DropdownMenuItem onClick={() => handleSubmit(false)}>
+                                    Publish Quiz
+                                </DropdownMenuItem>
+                            </DropdownMenuContent>
+                        </DropdownMenu>
+                    )}
                 </div>
             </div>
         </div>
