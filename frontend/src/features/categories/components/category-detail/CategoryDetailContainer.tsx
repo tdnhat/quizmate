@@ -1,21 +1,15 @@
 import QuizGrid from "@/features/quizzes/components/quiz-card/QuizGrid";
-import FilterDropdown from "./FilterDropdown";
 import CategoryHeader from "./CategoryHeader";
 import { useCategoryDetail } from "../../hooks/useCategoryDetail";
-import SortCombobox from "./SortCombobox";
-import ViewMode from "./ViewMode";
-import SearchBar from "./SearchBar";
 import { FileSearch } from "lucide-react";
 import CategoryDetailBreadcrumb from "./CategoryDetailBreadcrumb";
 
 const CategoryDetailContainer = () => {
-    const { viewMode, quizzes, isLoading, categoryName } = useCategoryDetail();
+    const { quizzes, isLoading, categoryName } = useCategoryDetail();
 
     const renderContent = () => {
         if (isLoading) {
-            return (
-                <QuizGrid quizzes={[]} isLoading={true} viewMode={viewMode} />
-            );
+            return <QuizGrid quizzes={[]} isLoading={true} />;
         }
 
         if (!quizzes || quizzes.length === 0) {
@@ -33,34 +27,18 @@ const CategoryDetailContainer = () => {
             );
         }
 
-        return (
-            <QuizGrid
-                quizzes={quizzes}
-                isLoading={isLoading}
-                viewMode={viewMode}
-            />
-        );
+        return <QuizGrid quizzes={quizzes} isLoading={isLoading} />;
     };
 
     return (
         <div className="container mx-auto max-w-6xl p-4">
             {/* Breadcrumb navigation */}
-            <CategoryDetailBreadcrumb categoryName={categoryName || undefined} />
+            <CategoryDetailBreadcrumb
+                categoryName={categoryName || undefined}
+            />
 
             {/* Header */}
             <CategoryHeader categoryName={categoryName || undefined} />
-
-            {/* Filters and view options */}
-            <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-x-2">
-                    <SearchBar />
-                    <FilterDropdown />
-                </div>
-                <div className="flex items-center gap-x-2">
-                    <SortCombobox />
-                    <ViewMode />
-                </div>
-            </div>
 
             {renderContent()}
         </div>

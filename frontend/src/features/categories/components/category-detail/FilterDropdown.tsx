@@ -29,7 +29,7 @@ const FilterDropdown = () => {
         <div className="relative">
             <Popover>
                 <PopoverTrigger asChild>
-                    <button className="inline-flex items-center justify-center cursor-pointer gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200">
+                    <button className="inline-flex w-full items-center justify-center cursor-pointer gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-700 shadow-sm hover:bg-gray-50 border border-gray-200">
                         <Filter className="h-4 w-4 mr-1" />
                         Filters
                         {activeFilterCount > 0 && (
