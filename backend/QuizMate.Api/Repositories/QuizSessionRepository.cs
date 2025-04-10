@@ -97,6 +97,7 @@ namespace QuizMate.Api.Repositories
                 .Include(s => s.Quiz)
                     .ThenInclude(q => q.Questions)
                         .ThenInclude(q => q.Answers)
+                .Include(s => s.Host)
                 .Include(s => s.Participants)
                     .ThenInclude(p => p.User)
                 .FirstOrDefaultAsync(s => s.Id == sessionId);

@@ -10,7 +10,7 @@ namespace QuizMate.Api.DTOs.Quiz
         public string? Description { get; set; } = string.Empty;
         [Required]
         public string CategoryId { get; set; } = string.Empty;
-        public string? Thumbnail { get; set; } = string.Empty;
+        public string? ThumbnailUrl { get; set; } = string.Empty;
         public int? TimeMinutes { get; set; } = 0;
         [Required]
         public string Difficulty { get; set; } = "Beginner";

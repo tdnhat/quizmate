@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using QuizMate.Api.DTOs.Quiz;
@@ -16,10 +17,12 @@ namespace QuizMate.Api.Controllers
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
-        public QuizController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager)
+        private readonly ICloudinaryService _cloudinaryService;
+        public QuizController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICloudinaryService cloudinaryService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet]
@@ -79,6 +82,60 @@ namespace QuizMate.Api.Controllers
             return Ok(quizzes.Select(quiz => quiz.ToSummaryDto()));
         }
 
+        [HttpPost("upload-thumbnail")]
+        [Authorize]
+        public async Task<IActionResult> UploadQuizThumbnail(IFormFile file)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            var thumbnailUrl = await _cloudinaryService.UploadQuizThumbnailAsync(file);
+
+            return Ok(new ThumbnailResponseDto { ThumbnailUrl = thumbnailUrl });
+        }
+
+        [HttpPost("upload-question-image")]
+        [Authorize]
+        public async Task<IActionResult> UploadQuestionImage(IFormFile file)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            var imageUrl = await _cloudinaryService.UploadQuizThumbnailAsync(file);
+
+            return Ok(new ThumbnailResponseDto { ThumbnailUrl = imageUrl });
+        }
+
+        [HttpDelete("destroy-thumbnail/{publicId}")]
+        [Authorize]
+        public async Task<IActionResult> DestroyQuizThumbnail([FromRoute] string publicId)
+        {
+            await _cloudinaryService.DestroyThumbnailAsync(publicId);
+            return Ok();
+        }
+
+        [HttpDelete("destroy-question-image/{publicId}")]
+        [Authorize]
+        public async Task<IActionResult> DestroyQuestionImage([FromRoute] string publicId)
+        {
+            await _cloudinaryService.DestroyThumbnailAsync(publicId);
+            return Ok();
+        }
+
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreateQuiz([FromBody] CreateQuizRequestDto createQuizRequestDto)
@@ -127,8 +184,8 @@ namespace QuizMate.Api.Controllers
             if (user == null)
             {
                 return BadRequest("User not found");
-
             }
+
             var updatedQuiz = updateQuizRequestDto.ToModelFromUpdateDto(user.Id, quiz.Id);
             await _unitOfWork.QuizRepository.UpdateQuizAsync(quiz.Id, updatedQuiz);
             await _unitOfWork.SaveAsync();
@@ -151,6 +208,12 @@ namespace QuizMate.Api.Controllers
             if (user == null)
             {
                 return BadRequest("User not found");
+            }
+
+            if (!string.IsNullOrEmpty(quiz.Thumbnail))
+            {
+                var publicId = quiz.Thumbnail.Split('/').Last().Split('.')[0];
+                await _cloudinaryService.DestroyThumbnailAsync(publicId);
             }
 
             await _unitOfWork.QuizRepository.DeleteQuizAsync(id);
