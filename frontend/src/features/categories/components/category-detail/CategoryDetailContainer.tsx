@@ -1,33 +1,43 @@
 import QuizGrid from "@/features/quizzes/components/quiz-card/QuizGrid";
 import CategoryHeader from "./CategoryHeader";
 import { useCategoryDetail } from "../../hooks/useCategoryDetail";
-import { FileSearch } from "lucide-react";
 import CategoryDetailBreadcrumb from "./CategoryDetailBreadcrumb";
+import NoQuizzesFound from "@/components/shared/components/NoQuizzesFound";
 
 const CategoryDetailContainer = () => {
     const { quizzes, isLoading, categoryName, filters } = useCategoryDetail();
 
     const renderContent = () => {
         if (isLoading) {
-            return <QuizGrid quizzes={[]} isLoading={true} categorySlug={filters.categorySlug} />;
+            return (
+                <QuizGrid
+                    quizzes={[]}
+                    isLoading={true}
+                    categorySlug={filters.categorySlug}
+                />
+            );
         }
 
         if (!quizzes || quizzes.length === 0) {
             return (
-                <div className="flex flex-col items-center justify-center py-16 text-center">
-                    <FileSearch className="h-16 w-16 text-gray-300 mb-4" />
-                    <h3 className="text-xl font-medium text-gray-600 mb-2">
-                        No quizzes found
-                    </h3>
-                    <p className="text-gray-500 max-w-md">
-                        No quizzes are available for this category. Try
-                        adjusting your filters or check back later.
-                    </p>
+                <div>
+                    <QuizGrid
+                        quizzes={[]}
+                        isLoading={false}
+                        categorySlug={filters.categorySlug}
+                    />
+                    <NoQuizzesFound />
                 </div>
             );
         }
 
-        return <QuizGrid quizzes={quizzes} isLoading={isLoading} categorySlug={filters.categorySlug} />;
+        return (
+            <QuizGrid
+                quizzes={quizzes}
+                isLoading={isLoading}
+                categorySlug={filters.categorySlug}
+            />
+        );
     };
 
     return (
@@ -37,7 +47,7 @@ const CategoryDetailContainer = () => {
                 categoryName={categoryName || undefined}
             />
 
-            {/* Header */}
+            {/* Header with filters */}
             <CategoryHeader categoryName={categoryName || undefined} />
 
             {renderContent()}
