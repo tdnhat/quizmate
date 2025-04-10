@@ -29,12 +29,20 @@ export const QuestionsForm = ({ initialValues, editIndex, onComplete }: Question
             questionType: "SingleChoice",
             points: 1,
             answers: [],
+            imageFile: undefined,
             imageUrl: undefined,
             explanation: ""
         },
     });
 
     const questionType = form.watch("questionType");
+    
+    // Set proper default values when editing an existing question with an image
+    useEffect(() => {
+        if (initialValues?.imageUrl && !initialValues.imageFile) {
+            form.setValue("imageUrl", initialValues.imageUrl);
+        }
+    }, [initialValues, form]);
 
     // When type changes to true-false, reset answers
     useEffect(() => {
@@ -61,7 +69,15 @@ export const QuestionsForm = ({ initialValues, editIndex, onComplete }: Question
         }
     }, [questionType, form]);
 
-    const handleSubmit = (values: QuestionFormValues) => {
+    const handleSubmit = async (values: QuestionFormValues) => {
+        // Keep both the imageFile and imageUrl for later processing during quiz submission
+        // This way we don't upload until the user actually submits the quiz
+        
+        // Make sure to preserve imageUrl if no new file was uploaded
+        if (!values.imageFile && initialValues?.imageUrl) {
+            values.imageUrl = values.imageUrl || initialValues.imageUrl;
+        }
+        
         if (editIndex !== undefined) {
             updateQuestion(editIndex, values);
         } else {
@@ -94,7 +110,7 @@ export const QuestionsForm = ({ initialValues, editIndex, onComplete }: Question
                         </h2>
                     </div>
                     
-                    <QuestionDetails form={form} />
+                    <QuestionDetails form={form} questionIndex={editIndex} />
                     
                     <AnswersList form={form} />
                     

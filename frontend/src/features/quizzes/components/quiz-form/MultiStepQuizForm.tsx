@@ -14,6 +14,7 @@ export const MultiStepQuizForm = () => {
         submitQuiz,
         isSubmitting,
         submissionError,
+        refetchQuizzes,
     } = useQuizForm();
     
     const location = useLocation();
@@ -47,6 +48,9 @@ export const MultiStepQuizForm = () => {
                         ? "Quiz saved as draft successfully!"
                         : "Quiz published successfully!"
                 );
+
+                // Refetch the quizzes
+                refetchQuizzes();
                 
                 // Navigate to the appropriate page after successful submission
                 navigate("/quizzes");

@@ -34,21 +34,24 @@ export const useQuizSessionHub = ({
 
     useEffect(() => {
         if (!sessionId) {
+            console.error("SignalR Connection Error: No session ID provided");
             setConnectionError("No session ID provided");
             return;
         }
 
         if (!token) {
+            console.error("SignalR Connection Error: Authentication token required");
             setConnectionError("Authentication token required");
             return;
         }
 
         // Build the hub connection
         const hubUrl = import.meta.env.VITE_API_URL || "http://localhost:5118";
-        console.log(
-            "Connecting to SignalR hub at:",
-            `${hubUrl}/hubs/quiz-session`
-        );
+        console.log("SignalR Connection Info:", {
+            hubUrl: `${hubUrl}/hubs/quiz-session`,
+            sessionId,
+            hasToken: !!token
+        });
 
         const hubConnection = new HubConnectionBuilder()
             .withUrl(`${hubUrl}/hubs/quiz-session`, {
@@ -56,19 +59,16 @@ export const useQuizSessionHub = ({
             })
             .withAutomaticReconnect({
                 nextRetryDelayInMilliseconds: (retryContext) => {
-                    if (
-                        retryContext.previousRetryCount >=
-                        MAX_RECONNECT_ATTEMPTS
-                    ) {
+                    if (retryContext.previousRetryCount >= MAX_RECONNECT_ATTEMPTS) {
+                        console.error("SignalR: Max reconnection attempts reached");
                         return null; // Stop reconnecting after max attempts
                     }
-                    return Math.min(
-                        1000 * Math.pow(2, retryContext.previousRetryCount),
-                        30000
-                    );
+                    const delay = Math.min(1000 * Math.pow(2, retryContext.previousRetryCount), 30000);
+                    console.log(`SignalR: Attempting reconnect in ${delay}ms`);
+                    return delay;
                 },
             })
-            .configureLogging(LogLevel.Information)
+            .configureLogging(LogLevel.Debug) // Change to Debug for more detailed logs
             .build();
 
         // Set up connection state handlers

@@ -8,6 +8,7 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
+    FormDescription,
 } from "@/components/ui/form";
 import { Control, FieldPath, FieldValues } from "react-hook-form";
 
@@ -19,6 +20,7 @@ interface ImageUploadFieldProps<
     name: TName;
     label: string;
     isLoading?: boolean;
+    helperText?: string;
 }
 
 const ImageUploadField = <
@@ -29,6 +31,7 @@ const ImageUploadField = <
     name,
     label,
     isLoading = false,
+    helperText,
 }: ImageUploadFieldProps<TFieldValues, TName>) => {
     const [image, setImage] = useState<File | null>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -128,6 +131,7 @@ const ImageUploadField = <
                 return (
                     <FormItem>
                         <FormLabel>{label}</FormLabel>
+                        {helperText && <FormDescription>{helperText}</FormDescription>}
                         <div className="space-y-4">
                             {isLoading ? (
                                 <div className="flex items-center justify-center w-full h-64 border-2 border-dashed rounded-lg">

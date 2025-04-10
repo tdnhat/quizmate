@@ -8,7 +8,7 @@ import { QuizBasicDetails } from "./basic-details/QuizBasicDetails";
 import { ChevronRightIcon } from "lucide-react";
 
 export const BasicDetailsStep = () => {
-    const { formValues, setFormValues, goToNextStep } = useQuizForm();
+    const { formValues, setFormValues, goToNextStep, isUploadingThumbnail } = useQuizForm();
 
     const form = useForm<QuizFormValues>({
         resolver: zodResolver(quizFormSchema),
@@ -16,7 +16,7 @@ export const BasicDetailsStep = () => {
             title: formValues.title || "",
             description: formValues.description || "",
             categoryId: formValues.categoryId || "",
-            thumbnail: formValues.thumbnail || undefined,
+            thumbnailFile: formValues.thumbnailFile || undefined,
             timeMinutes: formValues.timeMinutes || 5,
             difficulty: formValues.difficulty || "Beginner",
             isPublic: formValues.isPublic ?? true,
@@ -45,13 +45,14 @@ export const BasicDetailsStep = () => {
 
                 <QuizBasicDetails
                     form={form}
-                    isLoading={false}
+                    isLoading={isUploadingThumbnail}
                 />
 
                 <div className="flex justify-end">
                     <Button
                         type="submit"
                         className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors cursor-pointer"
+                        disabled={isUploadingThumbnail}
                     >
                         Next
                         <ChevronRightIcon className="h-4 w-4" />
