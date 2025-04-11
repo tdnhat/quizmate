@@ -1,9 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getQuizzes } from "@/api/quiz";
 import { Link } from "react-router-dom";
-import { Clock, TrendingUp, Grid2X2, ArrowRight } from "lucide-react";
+import { Clock, TrendingUp, ArrowRight, List } from "lucide-react";
 import QuizGrid from "@/features/quizzes/components/quiz-card/QuizGrid";
 import QuizzesBreadcrumb from "@/features/quizzes/components/quizzes/QuizzesBreadcrumb";
+import QuizCarousel from "@/features/quizzes/components/quiz-card/QuizCarousel";
+import { Button } from "@/components/ui/button";
 
 const QuizzesPage = () => {
     const {
@@ -39,14 +41,7 @@ const QuizzesPage = () => {
                         Popular Quizzes
                     </h2>
                 </div>
-                <QuizGrid
-                    quizzes={quizzes.slice(0, 4)}
-                    isLoading={isLoading}
-                    showFilters={false}
-                    showSearch={false}
-                    showSort={false}
-                    showViewToggle={false}
-                />
+                <QuizCarousel quizzes={quizzes.slice(0, 6)} />
             </section>
 
             {/* Recently Added Section */}
@@ -57,21 +52,14 @@ const QuizzesPage = () => {
                         Recently Added
                     </h2>
                 </div>
-                <QuizGrid
-                    quizzes={quizzes.slice(0, 4)}
-                    isLoading={isLoading}
-                    showFilters={false}
-                    showSearch={false}
-                    showSort={false}
-                    showViewToggle={false}
-                />
+                <QuizCarousel quizzes={quizzes.slice(0, 6)} />
             </section>
 
             {/* All Quizzes Section */}
             <section className="mb-12">
                 <div className="flex items-center justify-between mb-4">
                     <h2 className="text-xl font-bold flex items-center gap-2">
-                        <Grid2X2 size={24} className="text-green-500 mr-2" />
+                        <List size={24} className="text-green-500 mr-2" />
                         Browse All Quizzes
                     </h2>
                     <Link
@@ -90,6 +78,20 @@ const QuizzesPage = () => {
                     showSort={false}
                     showViewToggle={false}
                 />
+
+                {/* Browse All button */}
+                <Link
+                    to="/quizzes/all"
+                    className="flex items-center justify-center gap-2 mt-4"
+                >
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full md:w-auto cursor-pointer"
+                    >
+                        View all
+                    </Button>
+                </Link>
             </section>
         </div>
     );

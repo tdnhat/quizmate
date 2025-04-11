@@ -4,8 +4,10 @@ import CategoryGrid from "@/features/categories/components/CategoryGrid";
 import { Link } from "react-router-dom";
 import { Clock, List, Crown, TrendingUp } from "lucide-react";
 import CategoryDetailBreadcrumb from "@/features/categories/components/category-detail/CategoryDetailBreadcrumb";
+import { CategoryCarousel } from "@/features/categories/components/category-card";
+import { Button } from "@/components/ui/button";
 
-const CategoryPage = () => {
+const CategoriesPage = () => {
     const {
         data: categories = [],
         isLoading,
@@ -40,10 +42,7 @@ const CategoryPage = () => {
                         Featured Categories
                     </h2>
                 </div>
-                <CategoryGrid
-                    categories={categories.slice(0, 4)}
-                    isLoading={isLoading}
-                />
+                <CategoryCarousel categories={categories.slice(0, 6)} />
             </section>
 
             {/* Popular Categories Section */}
@@ -54,10 +53,7 @@ const CategoryPage = () => {
                         Popular Categories
                     </h2>
                 </div>
-                <CategoryGrid
-                    categories={categories.slice(0, 4)}
-                    isLoading={isLoading}
-                />
+                <CategoryCarousel categories={categories.slice(0, 6)} />
             </section>
 
             {/* Recently Added Section */}
@@ -68,10 +64,7 @@ const CategoryPage = () => {
                         Recently Added
                     </h2>
                 </div>
-                <CategoryGrid
-                    categories={categories.slice(0, 4)}
-                    isLoading={isLoading}
-                />
+                <CategoryCarousel categories={categories.slice(0, 6)} />
             </section>
 
             {/* All Categories Section */}
@@ -89,9 +82,23 @@ const CategoryPage = () => {
                     </Link>
                 </div>
                 <CategoryGrid categories={categories} isLoading={isLoading} />
+
+                {/* Browse All button */}
+                <Link
+                    to="/quizzes/all"
+                    className="flex items-center justify-center gap-2 mt-4"
+                >
+                    <Button
+                        variant="outline"
+                        size="sm"
+                        className="w-full md:w-auto cursor-pointer"
+                    >
+                        View all
+                    </Button>
+                </Link>
             </section>
         </div>
     );
 };
 
-export default CategoryPage;
+export default CategoriesPage;

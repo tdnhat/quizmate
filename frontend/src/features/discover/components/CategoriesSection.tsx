@@ -1,16 +1,12 @@
-import CategoryGrid from "@/features/categories/components/CategoryGrid";
 import ErrorMessage from "@/components/shared/components/ErrorMessage";
 import SectionHeader from "@/features/discover/components/SectionHeader";
 import { useQuery } from "@tanstack/react-query";
 import { getFeaturedCategories } from "@/api/category";
 import { ArrowRight } from "lucide-react";
+import { CategoryCarousel } from "@/features/categories/components/category-card";
 
 const CategoriesSection = () => {
-    const {
-        data: featuredCategories = [],
-        isLoading,
-        error,
-    } = useQuery({
+    const { data: featuredCategories = [], error } = useQuery({
         queryKey: ["categories", "featured"],
         queryFn: getFeaturedCategories,
     });
@@ -30,19 +26,16 @@ const CategoriesSection = () => {
     }
 
     return (
-            <div className="flex flex-col w-full">
-                <SectionHeader
-                    title="Featured Categories"
-                    actionLink="/categories"
-                    actionText="View all"
-                    icon={<ArrowRight size={16} />}
-                />
+        <div className="flex flex-col w-full">
+            <SectionHeader
+                title="Featured Categories"
+                actionLink="/categories"
+                actionText="View all"
+                icon={<ArrowRight size={16} />}
+            />
 
-                <CategoryGrid
-                    categories={featuredCategories}
-                    isLoading={isLoading}
-                />
-            </div>
+            <CategoryCarousel categories={featuredCategories.slice(0, 6)} />
+        </div>
     );
 };
 

@@ -8,7 +8,6 @@ import ReportsPage from "@/pages/home/ReportsPage";
 import TeamsPage from "@/pages/home/TeamsPage";
 import QuizzesPage from "@/pages/home/quizzes/QuizzesPage";
 import CreateQuizPage from "@/pages/home/quizzes/CreateQuizPage";
-import CategoryPage from "@/pages/home/categories/CategoryPage";
 import CategoryDetailPage from "@/pages/home/categories/CategoryDetailPage";
 import QuizDetailPage from "@/pages/home/quizzes/QuizDetailPage";
 import TakeQuizPage from "@/pages/home/quizzes/TakeQuizPage";
@@ -16,6 +15,7 @@ import HostQuizPage from "@/pages/home/quizzes/HostQuizPage";
 import QuizResultsPage from "@/pages/home/quizzes/QuizResultsPage";
 import AllCategoriesPage from "@/pages/home/categories/AllCategoriesPage";
 import AllQuizzesPage from "@/pages/home/quizzes/AllQuizzesPage";
+import CategoriesPage from "@/pages/home/categories/CategoriesPage";
 export const AuthenticatedApp = () => {
     const { isAuthenticated, isLoading } = useAuth();
     const location = useLocation();
@@ -44,7 +44,7 @@ export const AuthenticatedApp = () => {
                 <Route path="/quizzes" element={<QuizzesPage />} />
                 <Route path="/quizzes/all" element={<AllQuizzesPage />} />
                 <Route path="/quizzes/create" element={<CreateQuizPage />} />
-                <Route path="/categories" element={<CategoryPage />} />
+                <Route path="/categories" element={<CategoriesPage />} />
                 <Route path="/categories/all" element={<AllCategoriesPage />} />
                 <Route
                     path="/categories/:slug"
