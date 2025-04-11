@@ -53,7 +53,7 @@ const QuizGrid = ({
     }, [width]);
 
     // Force list view on smaller screens (using our custom breakpoint)
-    const effectiveViewMode = width < 970 ? "list" : viewMode;
+    const effectiveViewMode = width < 970 ? "grid" : viewMode;
 
     const gridClassName =
         effectiveViewMode === "list"

@@ -3,12 +3,14 @@ import DifficultyBadge from "./DifficultyBadge";
 
 interface QuizThumbnailProps {
     quiz: Quiz;
+    viewMode?: "grid" | "list";
 }
 
-const QuizThumbnail = ({ quiz }: QuizThumbnailProps) => {
-    console.log(quiz);
+const QuizThumbnail = ({ quiz, viewMode = "grid" }: QuizThumbnailProps) => {
+    const isListView = viewMode === "list";
+    
     return (
-        <div className="relative h-full min-h-[9rem] overflow-hidden">
+        <div className={`relative overflow-hidden ${isListView ? "h-full min-h-[9rem]" : "h-36"}`}>
             <img
                 src={quiz.thumbnail}
                 alt={quiz.title}

@@ -10,7 +10,7 @@ interface QuizzesContextType {
     viewMode: "list" | "grid";
     setViewMode: (viewMode: "list" | "grid") => void;
 
-    quizzes: Quiz[] | undefined;
+    quizzes: Quiz[];
     isLoading: boolean;
 
     handleFilterChange: (type: keyof QuizFilters, value: string | number | DifficultyLevel | undefined) => void;
@@ -171,7 +171,7 @@ export const QuizzesProvider = ({ children }: QuizzesProviderProps) => {
         setFilters,
         viewMode,
         setViewMode,
-        quizzes,
+        quizzes: quizzes || [],
         isLoading,
         handleFilterChange,
         handleSortChange,
