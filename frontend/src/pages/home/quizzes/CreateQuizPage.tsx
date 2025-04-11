@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { MultiStepQuizForm } from "@/features/quizzes/components/quiz-form/MultiStepQuizForm";
 import { QuizFormProvider } from "@/features/quizzes/contexts/QuizFormContext";
+import { AIQuizDialog } from "@/features/quizzes/components/quiz-form/AIQuizDialog";
 
 const CreateQuizPage = () => {
     const location = useLocation();
@@ -28,6 +29,7 @@ const CreateQuizPage = () => {
             <h1 className="text-2xl font-bold mb-6">Create a New Quiz</h1>
             <div className="bg-white p-6 rounded-lg shadow">
                 <QuizFormProvider initialValues={initialState.initialValues}>
+                    <AIQuizDialog />
                     <MultiStepQuizForm />
                 </QuizFormProvider>
             </div>
