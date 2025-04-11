@@ -23,8 +23,8 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
         >
             <Card 
                 className={cn(
-                    "h-full border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all overflow-hidden",
-                    isListView ? "flex items-stretch py-0" : "py-0"
+                    "h-full gap-0 border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all overflow-hidden",
+                    isListView ? "flex flex-row items-stretch py-0" : "py-0"
                 )}
             >
                 {/* Thumbnail with overlay */}
