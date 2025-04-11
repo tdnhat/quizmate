@@ -39,12 +39,6 @@ const CategoryPage = () => {
                         <Crown size={24} className="text-yellow-500 mr-2" />
                         Featured Categories
                     </h2>
-                    <Link
-                        to="/categories/featured"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                        View all →
-                    </Link>
                 </div>
                 <CategoryGrid
                     categories={categories.slice(0, 4)}
@@ -59,12 +53,6 @@ const CategoryPage = () => {
                         <TrendingUp size={24} className="text-red-500 mr-2" />
                         Popular Categories
                     </h2>
-                    <Link
-                        to="/categories/popular"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                        View all →
-                    </Link>
                 </div>
                 <CategoryGrid
                     categories={categories.slice(0, 4)}
@@ -79,12 +67,6 @@ const CategoryPage = () => {
                         <Clock size={24} className="text-blue-500 mr-2" />
                         Recently Added
                     </h2>
-                    <Link
-                        to="/categories/recently-added"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                        View all →
-                    </Link>
                 </div>
                 <CategoryGrid
                     categories={categories.slice(0, 4)}
@@ -99,6 +81,12 @@ const CategoryPage = () => {
                         <List size={24} className="text-green-500 mr-2" />
                         All Categories
                     </h2>
+                    <Link
+                        to="/categories/all"
+                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                        View all →
+                    </Link>
                 </div>
                 <CategoryGrid categories={categories} isLoading={isLoading} />
             </section>

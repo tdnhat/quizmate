@@ -1,25 +1,31 @@
 import { ArrowRight } from "lucide-react";
 import SectionHeader from "./SectionHeader";
 import { useQuizzes } from "@/features/quizzes/hooks/useQuizzes";
-import QuizGrid from "../../quizzes/components/quiz-card/QuizGrid";
-import ErrorMessage from "@/components/shared/components/ErrorMessage";
+import QuizCarousel from "@/features/quizzes/components/quiz-card/QuizCarousel";
+import { Skeleton } from "@/components/ui/skeleton";
 
-const RECOMMENDED_QUIZ_COUNT = 16;
+const RecommendedSkeleton = () => {
+    return (
+        <div className="flex w-full">
+            <Skeleton className="h-48 w-full" />
+        </div>
+    );
+};
 
 const RecommendedSection = () => {
     // Mock data for recommended quizzes
-    const { quizzes, isLoading, error } = useQuizzes();
+    const { quizzes, isLoading } = useQuizzes();
 
-    if (error) {
+    if (isLoading) {
         return (
             <div className="flex flex-col w-full">
                 <SectionHeader
                     title="Recommended for you"
-                    actionLink="/quizzes"
+                    actionLink="/quizzes/all"
                     actionText="View all"
                     icon={<ArrowRight size={16} />}
                 />
-                <ErrorMessage message={error} />
+                <RecommendedSkeleton />
             </div>
         );
     }
@@ -28,16 +34,11 @@ const RecommendedSection = () => {
         <div className="flex flex-col w-full mt-8">
             <SectionHeader
                 title="Recommended for you"
-                actionLink="/quizzes"
+                actionLink="/quizzes/all"
                 actionText="View all"
                 icon={<ArrowRight size={16} />}
             />
-
-            <QuizGrid
-                quizzes={quizzes}
-                isLoading={isLoading}
-                count={RECOMMENDED_QUIZ_COUNT}
-            />
+            <QuizCarousel quizzes={quizzes.slice(0, 6)} />
         </div>
     );
 };

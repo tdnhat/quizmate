@@ -12,7 +12,7 @@ import {
     PopoverContent,
     PopoverTrigger,
 } from "@/components/ui/popover";
-import { useCategoryDetail } from "../../hooks/useCategoryDetail";
+import { useFilter } from "@/features/filters/hooks/useFilter";
 
 const sortOptions = [
     { label: "Newest", value: "createdAt" },
@@ -21,7 +21,7 @@ const sortOptions = [
 ];
 
 const SortCombobox = () => {
-    const { filters, handleSortChange } = useCategoryDetail();
+    const { filters, handleSortChange } = useFilter();
     const [open, setOpen] = useState(false);
     const [selectedLabel, setSelectedLabel] = useState("");
 

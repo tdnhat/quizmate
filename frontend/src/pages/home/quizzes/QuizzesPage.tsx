@@ -1,11 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
 import { getQuizzes } from "@/api/quiz";
 import { Link } from "react-router-dom";
-import { Clock, TrendingUp, Grid2X2 } from "lucide-react";
+import { Clock, TrendingUp, Grid2X2, ArrowRight } from "lucide-react";
 import QuizGrid from "@/features/quizzes/components/quiz-card/QuizGrid";
 import QuizzesBreadcrumb from "@/features/quizzes/components/quizzes/QuizzesBreadcrumb";
 
-const QuizPage = () => {
+const QuizzesPage = () => {
     const {
         data: quizzes = [],
         isLoading,
@@ -38,16 +38,14 @@ const QuizPage = () => {
                         <TrendingUp size={24} className="text-red-500 mr-2" />
                         Popular Quizzes
                     </h2>
-                    <Link
-                        to="/quizzes/popular"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                        View all →
-                    </Link>
                 </div>
                 <QuizGrid
                     quizzes={quizzes.slice(0, 4)}
                     isLoading={isLoading}
+                    showFilters={false}
+                    showSearch={false}
+                    showSort={false}
+                    showViewToggle={false}
                 />
             </section>
 
@@ -58,16 +56,14 @@ const QuizPage = () => {
                         <Clock size={24} className="text-blue-500 mr-2" />
                         Recently Added
                     </h2>
-                    <Link
-                        to="/quizzes/recently-added"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
-                    >
-                        View all →
-                    </Link>
                 </div>
                 <QuizGrid
                     quizzes={quizzes.slice(0, 4)}
                     isLoading={isLoading}
+                    showFilters={false}
+                    showSearch={false}
+                    showSort={false}
+                    showViewToggle={false}
                 />
             </section>
 
@@ -78,11 +74,25 @@ const QuizPage = () => {
                         <Grid2X2 size={24} className="text-green-500 mr-2" />
                         Browse All Quizzes
                     </h2>
+                    <Link
+                        to="/quizzes/all"
+                        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
+                    >
+                        <span>View all</span>
+                        <ArrowRight size={16} />
+                    </Link>
                 </div>
-                <QuizGrid quizzes={quizzes} isLoading={isLoading} />
+                <QuizGrid
+                    quizzes={quizzes}
+                    isLoading={isLoading}
+                    showFilters={false}
+                    showSearch={false}
+                    showSort={false}
+                    showViewToggle={false}
+                />
             </section>
         </div>
     );
 };
 
-export default QuizPage;
+export default QuizzesPage;

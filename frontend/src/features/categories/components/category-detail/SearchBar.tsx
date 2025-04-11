@@ -1,10 +1,10 @@
 import { Input } from "@/components/ui/input";
-import { useCategoryDetail } from "../../hooks/useCategoryDetail";
 import { useState, KeyboardEvent } from "react";
 import { Search, X } from "lucide-react";
+import { useFilter } from "@/features/filters/hooks/useFilter";
 
 const SearchBar = () => {
-    const { filters, handleFilterChange } = useCategoryDetail();
+    const { filters, handleFilterChange } = useFilter();
     const [searchValue, setSearchValue] = useState(filters.search || "");
 
     const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {

@@ -8,13 +8,14 @@ import {
 import { Link } from "react-router-dom";
 
 type QuizzesBreadcrumbProps = {
-    currentPage?: 'popular' | 'recent' | null;
+    currentPage?: 'popular' | 'recent' | 'all' | null;
 };
 
 const QuizzesBreadcrumb = ({ currentPage }: QuizzesBreadcrumbProps = {}) => {
     const pageTitles = {
         'popular': 'Popular Quizzes',
-        'recent': 'Recently Added Quizzes'
+        'recent': 'Recently Added Quizzes',
+        'all': 'All'
     };
 
     return (

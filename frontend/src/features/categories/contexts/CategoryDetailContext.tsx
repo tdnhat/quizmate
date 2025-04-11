@@ -1,6 +1,6 @@
 import { getCategoryBySlug } from "@/api/category";
 import { getQuizzes } from "@/api/quiz";
-import { Quiz, QuizFilters } from "@/types/quiz";
+import { Quiz, QuizFilters, DifficultyLevel } from "@/types/quiz";
 import { useQuery } from "@tanstack/react-query";
 import { createContext, useEffect, useState } from "react";
 
@@ -15,7 +15,10 @@ interface CategoryDetailContextType {
     quizzes: Quiz[] | undefined;
     isLoading: boolean;
 
-    handleFilterChange: (type: keyof QuizFilters, value: any) => void;
+    handleFilterChange: (
+        type: keyof QuizFilters,
+        value: string | number | DifficultyLevel | undefined
+    ) => void;
     handleSortChange: (sortOption: string) => void;
     clearAllFilters: () => void;
     applyFilters: () => void;
@@ -96,39 +99,45 @@ export const CategoryDetailProvider = ({
     };
 
     // Handle filter changes for all filter types
-    const handleFilterChange = (type: keyof QuizFilters, value: any) => {
+    const handleFilterChange = (
+        type: keyof QuizFilters,
+        value: string | number | DifficultyLevel | undefined
+    ) => {
+        // Apply all filters immediately
         if (type === "search") {
             setFilters((prev) => ({
                 ...prev,
-                search: value,
+                search: value as string,
                 page: 1,
             }));
-            return;
-        }
-
-        setTempFilters((prev) => {
-            if (!prev)
+        } else if (type === "duration") {
+            setFilters((prev) => {
+                const durationValue = getDurationInMinutes(value as string);
                 return {
-                    ...filters,
-                    [type]:
-                        type === "duration"
-                            ? getDurationInMinutes(value)
-                            : value,
+                    ...prev,
+                    duration: prev.duration === durationValue ? undefined : durationValue,
+                    page: 1,
                 };
-
-            if (type === "duration") {
-                if (prev.duration === getDurationInMinutes(value)) {
-                    return { ...prev, duration: undefined };
-                } else {
-                    return { ...prev, duration: getDurationInMinutes(value) };
-                }
-            } else if (type === "difficulty") {
-                const newValue = prev.difficulty === value ? undefined : value;
-                return { ...prev, difficulty: newValue };
-            } else {
-                return { ...prev, [type]: value };
-            }
-        });
+            });
+        } else if (type === "difficulty") {
+            setFilters((prev) => {
+                const newValue = prev.difficulty === value ? undefined : (value as DifficultyLevel);
+                return {
+                    ...prev,
+                    difficulty: newValue,
+                    page: 1,
+                };
+            });
+        } else {
+            setFilters((prev) => ({
+                ...prev,
+                [type]: value,
+                page: 1,
+            }));
+        }
+        
+        // Clear temporary filters when applying directly
+        setTempFilters(null);
     };
 
     // Handle sort changes
@@ -165,13 +174,17 @@ export const CategoryDetailProvider = ({
     };
 
     const clearAllFilters = () => {
-        setTempFilters({
-            ...filters,
+        // Apply filter reset immediately instead of setting tempFilters
+        setFilters((prev) => ({
+            ...prev,
             difficulty: undefined,
             duration: undefined,
-        });
+            page: 1,
+        }));
+        setTempFilters(null);
     };
 
+    // Keep applyFilters method for compatibility, but it's no longer needed for direct application
     const applyFilters = () => {
         if (tempFilters) {
             setFilters(tempFilters);

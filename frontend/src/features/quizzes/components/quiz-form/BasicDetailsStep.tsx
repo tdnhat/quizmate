@@ -51,7 +51,7 @@ export const BasicDetailsStep = () => {
                 <div className="flex justify-end">
                     <Button
                         type="submit"
-                        className="bg-cyan-500 hover:bg-cyan-600 text-white transition-colors cursor-pointer"
+                        className="bg-cyan-600 hover:bg-cyan-700 text-white transition-colors cursor-pointer"
                         disabled={isUploadingThumbnail}
                     >
                         Next
