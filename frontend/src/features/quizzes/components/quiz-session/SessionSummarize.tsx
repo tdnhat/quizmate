@@ -11,9 +11,13 @@ interface SessionSummarizeProps {
     isLoading: boolean;
 }
 
-const SessionSummarize = ({ participants, onEndSession, isLoading }: SessionSummarizeProps) => {
+const SessionSummarize = ({
+    participants,
+    onEndSession,
+    isLoading,
+}: SessionSummarizeProps) => {
     const [open, setOpen] = useState(false);
-    
+
     // Handle ending the session after viewing summary
     const handleEndSession = async () => {
         setOpen(false);
@@ -24,14 +28,14 @@ const SessionSummarize = ({ participants, onEndSession, isLoading }: SessionSumm
         <Dialog open={open} onOpenChange={setOpen}>
             <DialogTrigger asChild>
                 <Button 
-                    className="bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
+                    className="w-full md:w-auto bg-cyan-600 text-white cursor-pointer hover:shadow hover:bg-cyan-700 transition-colors"
                     disabled={isLoading}
                 >
                     <BarChart3 className="mr-2 h-5 w-5" />
                     View Summary & End Quiz
                 </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-3xl">
+            <DialogContent className="max-w-3xl overflow-y-auto">
                 <DialogHeader>
                     <DialogTitle className="text-2xl">Quiz Session Summary</DialogTitle>
                     <DialogDescription></DialogDescription>

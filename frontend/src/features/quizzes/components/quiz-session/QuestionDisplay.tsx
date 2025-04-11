@@ -116,7 +116,7 @@ const QuestionDisplay = ({
                 ))}
             </div>
 
-            <div className="flex justify-end items-center space-x-3 mt-6">
+            <div className="flex justify-center md:justify-end items-center space-x-3 mt-6">
                 {isLastQuestion ? (
                     <SessionSummarize
                         participants={participants}
