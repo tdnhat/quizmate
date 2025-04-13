@@ -2,7 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { getCategories } from "@/api/category";
 import CategoryGrid from "@/features/categories/components/CategoryGrid";
 import { Link } from "react-router-dom";
-import { Clock, List, Crown, TrendingUp } from "lucide-react";
+import { Clock, List, Crown, TrendingUp, ArrowRight } from "lucide-react";
 import CategoryDetailBreadcrumb from "@/features/categories/components/category-detail/CategoryDetailBreadcrumb";
 import { CategoryCarousel } from "@/features/categories/components/category-card";
 import { Button } from "@/components/ui/button";
@@ -76,12 +76,13 @@ const CategoriesPage = () => {
                     </h2>
                     <Link
                         to="/categories/all"
-                        className="text-sm text-blue-600 hover:text-blue-800 font-medium"
+                        className="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-800 font-medium"
                     >
-                        View all →
+                        View all
+                        <ArrowRight size={16} />
                     </Link>
                 </div>
-                <CategoryGrid categories={categories} isLoading={isLoading} />
+                <CategoryGrid categories={categories.slice(0, 6)} isLoading={isLoading} />
 
                 {/* Browse All button */}
                 <Link
