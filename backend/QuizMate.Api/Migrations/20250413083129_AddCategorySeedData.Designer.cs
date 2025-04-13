@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using QuizMate.Api.Data;
 
@@ -11,9 +12,11 @@ using QuizMate.Api.Data;
 namespace QuizMate.Api.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250413083129_AddCategorySeedData")]
+    partial class AddCategorySeedData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -51,13 +54,13 @@ namespace QuizMate.Api.Migrations
                     b.HasData(
                         new
                         {
-                            Id = "d07e35f5-0d8e-4846-bc1f-2e568fdaa9b2",
+                            Id = "c7a63d51-0344-4e9c-8ac2-d6054527a94e",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f5d1993a-247b-40ef-a093-c2e239ceaded",
+                            Id = "d489a400-69e4-4de5-aa01-270b590fefcd",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -311,8 +314,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "programming",
-                            ColorPreset = "blue",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8083),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6520),
                             Description = "Quizzes about programming languages, concepts, and software development.",
                             IsFeatured = false,
                             Name = "Programming",
@@ -321,9 +324,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "computer_science",
-                            ColorPreset = "indigo",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8091),
+                            Id = "computer-science",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6528),
                             Description = "Theoretical computer science, algorithms, data structures, and computing concepts.",
                             IsFeatured = false,
                             Name = "Computer Science",
@@ -333,8 +336,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "mathematics",
-                            ColorPreset = "teal",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8096),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6535),
                             Description = "Quizzes covering various mathematical concepts, from algebra to calculus.",
                             IsFeatured = false,
                             Name = "Mathematics",
@@ -344,8 +347,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "science",
-                            ColorPreset = "green",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8102),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6541),
                             Description = "General science topics including physics, chemistry, and biology.",
                             IsFeatured = false,
                             Name = "Science",
@@ -355,8 +358,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "history",
-                            ColorPreset = "orange",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8109),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6548),
                             Description = "Historical events, figures, and time periods from around the world.",
                             IsFeatured = false,
                             Name = "History",
@@ -365,9 +368,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "web_dev",
-                            ColorPreset = "sky",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8119),
+                            Id = "web-dev",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6557),
                             Description = "Frontend, backend, and full-stack web development topics.",
                             IsFeatured = false,
                             Name = "Web Development",
@@ -376,9 +379,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "data_science",
-                            ColorPreset = "purple",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8125),
+                            Id = "data-science",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6565),
                             Description = "Data analysis, machine learning, and statistical methods.",
                             IsFeatured = false,
                             Name = "Data Science",
@@ -388,8 +391,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "ai",
-                            ColorPreset = "violet",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8132),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6572),
                             Description = "AI concepts, machine learning, neural networks, and their applications.",
                             IsFeatured = false,
                             Name = "Artificial Intelligence",
@@ -398,9 +401,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "mobile_dev",
-                            ColorPreset = "emerald",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8141),
+                            Id = "mobile-dev",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6581),
                             Description = "iOS, Android, and cross-platform mobile development.",
                             IsFeatured = false,
                             Name = "Mobile Development",
@@ -410,8 +413,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "cybersecurity",
-                            ColorPreset = "red",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8149),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6590),
                             Description = "Computer security, network security, and ethical hacking.",
                             IsFeatured = false,
                             Name = "Cybersecurity",
@@ -421,8 +424,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "business",
-                            ColorPreset = "slate",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8156),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6597),
                             Description = "Business concepts, management theories, and organizational behavior.",
                             IsFeatured = false,
                             Name = "Business & Management",
@@ -432,8 +435,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "finance",
-                            ColorPreset = "green",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8163),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6603),
                             Description = "Personal finance, investing, accounting, and financial markets.",
                             IsFeatured = false,
                             Name = "Finance",
@@ -443,8 +446,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "marketing",
-                            ColorPreset = "pink",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8170),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6611),
                             Description = "Marketing strategies, consumer behavior, and advertising techniques.",
                             IsFeatured = false,
                             Name = "Marketing",
@@ -454,8 +457,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "entrepreneurship",
-                            ColorPreset = "yellow",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8178),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6617),
                             Description = "Startup concepts, business models, and entrepreneurial mindset.",
                             IsFeatured = false,
                             Name = "Entrepreneurship",
@@ -464,9 +467,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "movies_tv",
-                            ColorPreset = "red",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8185),
+                            Id = "movies",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6623),
                             Description = "Film history, TV shows, actors, directors, and cinema trivia.",
                             IsFeatured = false,
                             Name = "Movies & TV",
@@ -476,8 +479,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "music",
-                            ColorPreset = "purple",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8192),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6627),
                             Description = "Musical genres, artists, bands, instruments, and music theory.",
                             IsFeatured = false,
                             Name = "Music",
@@ -487,8 +490,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "gaming",
-                            ColorPreset = "lime",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8200),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6635),
                             Description = "Video games, gaming platforms, game development, and gaming culture.",
                             IsFeatured = false,
                             Name = "Gaming",
@@ -498,8 +501,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "sports",
-                            ColorPreset = "blue",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8211),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6643),
                             Description = "Various sports, athletes, championships, and sporting events.",
                             IsFeatured = false,
                             Name = "Sports",
@@ -508,9 +511,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "general_knowledge",
-                            ColorPreset = "teal",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8218),
+                            Id = "general-knowledge",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6680),
                             Description = "Diverse topics testing overall knowledge and trivia.",
                             IsFeatured = false,
                             Name = "General Knowledge",
@@ -519,9 +522,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "languages",
-                            ColorPreset = "indigo",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8225),
+                            Id = "language",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6687),
                             Description = "Vocabulary, grammar, and linguistic concepts from various languages.",
                             IsFeatured = false,
                             Name = "Languages",
@@ -531,8 +534,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "geography",
-                            ColorPreset = "emerald",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8232),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6693),
                             Description = "Countries, capitals, natural features, and global geography.",
                             IsFeatured = false,
                             Name = "Geography",
@@ -541,9 +544,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "food_cooking",
-                            ColorPreset = "orange",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8239),
+                            Id = "food-cooking",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6699),
                             Description = "Culinary arts, cuisine, ingredients, and cooking techniques.",
                             IsFeatured = false,
                             Name = "Food & Cooking",
@@ -552,9 +555,9 @@ namespace QuizMate.Api.Migrations
                         },
                         new
                         {
-                            Id = "art_design",
-                            ColorPreset = "violet",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8246),
+                            Id = "art-design",
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6705),
                             Description = "Fine arts, design principles, art history, and creative techniques.",
                             IsFeatured = false,
                             Name = "Art & Design",
@@ -564,8 +567,8 @@ namespace QuizMate.Api.Migrations
                         new
                         {
                             Id = "literature",
-                            ColorPreset = "yellow",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8253),
+                            ColorPreset = "",
+                            CreatedAt = new DateTime(2025, 4, 13, 8, 31, 29, 173, DateTimeKind.Utc).AddTicks(6711),
                             Description = "Books, authors, literary genres, and famous works.",
                             IsFeatured = false,
                             Name = "Literature",
