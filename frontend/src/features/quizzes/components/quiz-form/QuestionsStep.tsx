@@ -45,6 +45,8 @@ export const QuestionsStep = () => {
         return undefined;
     };
 
+    console.log(questions);
+
     return (
         <div className="space-y-6">
             {!showQuestionForm ? (

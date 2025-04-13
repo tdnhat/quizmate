@@ -25,6 +25,7 @@ interface QuizFormContextType {
     submissionError: string | null;
     submittedQuizId: string | null;
     setFormValues: (values: Partial<QuizFormValues>) => void;
+    loadGeneratedQuiz: (data: Partial<QuizFormValues>) => void;
     addQuestion: (question: QuestionFormValues) => void;
     updateQuestion: (index: number, question: QuestionFormValues) => void;
     removeQuestion: (index: number) => void;
@@ -180,6 +181,26 @@ export const QuizFormProvider = ({
         }, 300);
     };
 
+    // Special method for loading a generated quiz with all fields pre-filled
+    const loadGeneratedQuiz = (data: Partial<QuizFormValues>) => {
+        setIsLoading(true);
+        
+        // Set all form values at once
+        setFormValues(data);
+        
+        // Set questions array
+        if (data.questions) {
+            setQuestions(data.questions);
+        }
+        
+        // Move to questions step automatically
+        setCurrentStep("questions");
+        
+        setTimeout(() => {
+            setIsLoading(false);
+        }, 300);
+    };
+
     const submitQuiz = async (
         isDraft: boolean
     ): Promise<SubmitQuizResponse | undefined> => {
@@ -262,6 +283,7 @@ export const QuizFormProvider = ({
                 submissionError: submissionError?.message || null,
                 submittedQuizId,
                 setFormValues: handleSetFormValues,
+                loadGeneratedQuiz,
                 addQuestion,
                 updateQuestion,
                 removeQuestion,

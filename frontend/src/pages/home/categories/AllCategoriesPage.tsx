@@ -14,7 +14,7 @@ const AllCategoriesPage = () => {
         <div className="container mx-auto p-4">
             <CategoryDetailBreadcrumb categoryName="All Categories" />
             <h1 className="text-2xl font-bold mb-6">All Categories</h1>
-            <CategoryDetailProvider categorySlug="all-categories">
+            <CategoryDetailProvider>
                 <CategoryGrid categories={categories} isLoading={isLoading} />
             </CategoryDetailProvider>
         </div>
