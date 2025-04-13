@@ -9,6 +9,7 @@ using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
 using QuizMate.Api.Repositories;
 using QuizMate.Api.Services;
+using QuizMate.Api.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -108,6 +109,12 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddScoped<ICloudinaryService, CloudinaryService>();
 builder.Services.AddSignalR();
+
+// Register service settings for AI quiz generation
+builder.Services.Configure<QuizAiServiceSettings>(builder.Configuration.GetSection("QuizAiService"));
+
+// Register the AI service as a typed HTTP client
+builder.Services.AddHttpClient<IQuizAiService, QuizAiService>();
 
 var app = builder.Build();
 

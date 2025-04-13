@@ -18,11 +18,18 @@ namespace QuizMate.Api.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<AppUser> _userManager;
         private readonly ICloudinaryService _cloudinaryService;
-        public QuizController(IUnitOfWork unitOfWork, UserManager<AppUser> userManager, ICloudinaryService cloudinaryService)
+        private readonly IQuizAiService _quizAiService;
+        
+        public QuizController(
+            IUnitOfWork unitOfWork, 
+            UserManager<AppUser> userManager, 
+            ICloudinaryService cloudinaryService,
+            IQuizAiService quizAiService)
         {
             _unitOfWork = unitOfWork;
             _userManager = userManager;
             _cloudinaryService = cloudinaryService;
+            _quizAiService = quizAiService;
         }
 
         [HttpGet]
@@ -220,6 +227,29 @@ namespace QuizMate.Api.Controllers
             await _unitOfWork.SaveAsync();
 
             return NoContent();
+        }
+
+        [HttpPost("ai-generate")]
+        [Authorize]
+        public async Task<IActionResult> GenerateAiQuiz([FromBody] GenerateAiQuizRequestDto request)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            try
+            {
+                // Call the AI service without saving to database
+                var generatedQuiz = await _quizAiService.GenerateQuizAsync(request);
+                
+                // Return the generated quiz directly to the client
+                return Ok(generatedQuiz);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error generating quiz: {ex.Message}");
+            }
         }
     }
 }
