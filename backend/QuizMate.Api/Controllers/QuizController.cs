@@ -251,5 +251,20 @@ namespace QuizMate.Api.Controllers
                 return StatusCode(500, $"Error generating quiz: {ex.Message}");
             }
         }
+
+        [HttpGet("my-quizzes")]
+        [Authorize]
+        public async Task<IActionResult> GetMyQuizzes([FromQuery] QuizQueryObject queryObject)
+        {
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return BadRequest("User not found");
+            }
+
+            var quizzes = await _unitOfWork.QuizRepository.GetMyQuizzesAsync(user.Id, queryObject);
+            return Ok(quizzes.Select(quiz => quiz.ToSummaryDto()));
+        }
     }
 }
