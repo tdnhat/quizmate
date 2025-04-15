@@ -15,6 +15,7 @@ namespace QuizMate.Api.Repositories
         public ICategoryRepository CategoryRepository { get; private set; }
 
         public IQuizSessionRepository QuizSessionRepository { get; private set; }
+        public ISavedQuizRepository SavedQuizRepository { get; private set; }
 
         public UnitOfWork(ApplicationDbContext context)
         {
@@ -25,6 +26,7 @@ namespace QuizMate.Api.Repositories
             ResultRepository = new ResultRepository(context);
             CategoryRepository = new CategoryRepository(context);
             QuizSessionRepository = new QuizSessionRepository(context);
+            SavedQuizRepository = new SavedQuizRepository(context);
         }
         public async Task<bool> SaveAsync()
         {

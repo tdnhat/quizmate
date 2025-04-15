@@ -19,5 +19,10 @@ namespace QuizMate.Api.Extensions
         {
             return user.FindFirst(ClaimTypes.Email)?.Value ?? string.Empty;
         }
+
+        public static string GetUserId(this ClaimsPrincipal user)
+        {
+            return user.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? string.Empty;
+        }
     }
 }
