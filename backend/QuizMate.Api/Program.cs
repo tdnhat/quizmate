@@ -116,6 +116,10 @@ builder.Services.Configure<QuizAiServiceSettings>(builder.Configuration.GetSecti
 // Register the AI service as a typed HTTP client
 builder.Services.AddHttpClient<IQuizAiService, QuizAiService>();
 
+// Add repositories
+builder.Services.AddScoped<IQuizRepository, QuizRepository>();
+builder.Services.AddScoped<ISavedQuizRepository, SavedQuizRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
