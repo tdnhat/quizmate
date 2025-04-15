@@ -1,13 +1,13 @@
 import { Quiz } from "@/types/quiz";
 import { Link } from "react-router-dom";
-import QuizThumbnail from "./QuizThumbnail";
-import AuthorInfo from "./AuthorInfo";
-import RatingDisplay from "./RatingDisplay";
-import QuizStatistics from "./QuizStatistics";
+import QuizThumbnail from "@/features/quizzes/components/quiz-card/QuizThumbnail";
+import AuthorInfo from "@/features/quizzes/components/quiz-card/AuthorInfo";
+import RatingDisplay from "@/features/quizzes/components/quiz-card/RatingDisplay";
+import QuizStatistics from "@/features/quizzes/components/quiz-card/QuizStatistics";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
 import { BookmarkIcon } from "lucide-react";
-import { useSaveQuizMutation } from "../../hooks/useSaveQuizMutation";
+import { useToggleSaveQuizMutation } from '../hooks/useLibraryMutations';
 
 interface QuizCardProps {
     quiz: Quiz;
@@ -16,7 +16,7 @@ interface QuizCardProps {
 
 const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
     const isListView = viewMode === "list";
-    const { mutate: toggleSave } = useSaveQuizMutation();
+    const { mutate: toggleSave } = useToggleSaveQuizMutation();
 
     const handleToggleSave = (e: React.MouseEvent) => {
         e.preventDefault();
@@ -107,4 +107,4 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
     );
 };
 
-export default QuizCard;
+export default QuizCard; 

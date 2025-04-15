@@ -16,6 +16,7 @@ import QuizResultsPage from "@/pages/home/quizzes/QuizResultsPage";
 import AllCategoriesPage from "@/pages/home/categories/AllCategoriesPage";
 import AllQuizzesPage from "@/pages/home/quizzes/AllQuizzesPage";
 import CategoriesPage from "@/pages/home/categories/CategoriesPage";
+import SettingsPage from "@/pages/home/SettingsPage";
 export const AuthenticatedApp = () => {
     const { isAuthenticated, isLoading } = useAuth();
     const location = useLocation();
@@ -39,8 +40,9 @@ export const AuthenticatedApp = () => {
             <Route element={<HomeLayout />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/library" element={<LibraryPage />} />
-                <Route path="/reports" element={<ReportsPage />} />
-                <Route path="teams" element={<TeamsPage />} />
+                {/* <Route path="/reports" element={<ReportsPage />} /> */}
+                {/* <Route path="teams" element={<TeamsPage />} /> */}
+                <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/quizzes" element={<QuizzesPage />} />
                 <Route path="/quizzes/all" element={<AllQuizzesPage />} />
                 <Route path="/quizzes/create" element={<CreateQuizPage />} />
