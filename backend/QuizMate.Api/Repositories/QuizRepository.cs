@@ -8,6 +8,7 @@ using QuizMate.Api.Models;
 namespace QuizMate.Api.Repositories
 {
     public class QuizRepository : IQuizRepository
+
     {
         private readonly ApplicationDbContext _context;
         public QuizRepository(ApplicationDbContext context)
@@ -128,6 +129,91 @@ namespace QuizMate.Api.Repositories
             }
 
             // Pagination   
+            return await query.Skip((queryObject.Page - 1) * queryObject.PageSize).Take(queryObject.PageSize).ToListAsync();
+        }
+
+        public async Task<IEnumerable<Quiz>> GetMyQuizzesAsync(string userId, QuizQueryObject queryObject)
+        {
+            var query = _context.Quizzes
+                .Include(q => q.Category)
+                .Include(q => q.AppUser)
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .Where(q => q.AppUserId == userId)
+                .AsQueryable();
+
+            // Filter by search
+            if (!string.IsNullOrEmpty(queryObject.Search))
+            {
+                query = query.Where(q => q.Title.Contains(queryObject.Search) || q.Description.Contains(queryObject.Search));
+            }
+
+            // Filter by category
+            if (!string.IsNullOrEmpty(queryObject.CategorySlug))
+            {
+                query = query.Where(q => q.Category.Slug == queryObject.CategorySlug);
+            }
+
+            // Filter by difficulty
+            if (!string.IsNullOrEmpty(queryObject.Difficulty))
+            {
+                query = query.Where(q => q.Difficulty == queryObject.Difficulty);
+            }
+
+            // Filter by duration
+            if (queryObject.Duration != null)
+            {
+                query = query.Where(q => q.TimeMinutes <= queryObject.Duration);
+            }
+
+            // Filter by public/private
+            if (queryObject.IsPublic != null)
+            {
+                query = query.Where(q => q.IsPublic == queryObject.IsPublic);
+            }
+
+            // Sorting
+            switch (queryObject.SortBy?.ToLower())
+            {
+                case "title":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Title)
+                        : query.OrderBy(q => q.Title);
+                    break;
+                case "createdAt":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.CreatedAt)
+                        : query.OrderBy(q => q.CreatedAt);
+                    break;
+                case "rating":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Rating)
+                        : query.OrderBy(q => q.Rating);
+                    break;
+                case "completions":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Completions)
+                        : query.OrderBy(q => q.Completions);
+                    break;
+                case "questionCount":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.QuestionCount)
+                        : query.OrderBy(q => q.QuestionCount);
+                    break;
+                case "difficulty":
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.Difficulty)
+                        : query.OrderBy(q => q.Difficulty);
+                    break;
+                default:
+                    // Default ordering
+                    query = queryObject.IsDescending
+                        ? query.OrderByDescending(q => q.CreatedAt)
+                        : query.OrderBy(q => q.CreatedAt);
+                    break;
+            }
+
+            // Pagination
             return await query.Skip((queryObject.Page - 1) * queryObject.PageSize).Take(queryObject.PageSize).ToListAsync();
         }
 
