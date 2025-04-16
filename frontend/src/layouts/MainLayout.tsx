@@ -11,7 +11,7 @@ const MainLayout = () => {
         location.pathname.startsWith("/home") ||
         location.pathname.startsWith("/categories") ||
         location.pathname.startsWith("/quizzes") ||
-        location.pathname.startsWith("/reports") ||
+        location.pathname.startsWith("/library") ||
         location.pathname.startsWith("/settings");
 
     useEffect(() => {

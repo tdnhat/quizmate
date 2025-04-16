@@ -1,7 +1,6 @@
 import { NavLink, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/features/auth/hooks/useAuth";
 import {
-    BarChart2,
     Settings,
     LogOut,
     Layers,
@@ -9,6 +8,7 @@ import {
     House,
     PanelRightClose,
     PanelRightOpen,
+    BookOpen,
 } from "lucide-react";
 
 import {
@@ -46,7 +46,7 @@ export function AppSidebar({ className }: AppSidebarProps) {
         { icon: House, name: "Home", path: "/home" },
         { icon: Layers, name: "Categories", path: "/categories" },
         { icon: BookCheck, name: "Quizzes", path: "/quizzes" },
-        { icon: BarChart2, name: "Reports", path: "/reports" },
+        { icon: BookOpen, name: "Library", path: "/library" },
         { icon: Settings, name: "Settings", path: "/settings" },
     ];
 
@@ -72,7 +72,9 @@ export function AppSidebar({ className }: AppSidebarProps) {
                             <SidebarGroupContent>
                                 <SidebarMenu>
                                     {navItems.map((item) => {
-                                        const isActive = isActiveRoute(item.path);
+                                        const isActive = isActiveRoute(
+                                            item.path
+                                        );
                                         return (
                                             <SidebarMenuItem key={item.path}>
                                                 <SidebarMenuButton
