@@ -6,8 +6,10 @@ import RatingDisplay from "./RatingDisplay";
 import QuizStatistics from "./QuizStatistics";
 import { Card, CardContent, CardFooter } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { BookmarkIcon } from "lucide-react";
+import { BookmarkIcon, Bookmark } from "lucide-react";
 import { useSaveQuizMutation } from "../../hooks/useSaveQuizMutation";
+import { useIsSaved } from "@/features/library/hooks/useIsSaved";
+import { useState, useEffect } from "react";
 
 interface QuizCardProps {
     quiz: Quiz;
@@ -17,11 +19,29 @@ interface QuizCardProps {
 const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
     const isListView = viewMode === "list";
     const { mutate: toggleSave } = useSaveQuizMutation();
+    const { data: savedData } = useIsSaved(quiz.id);
+    
+    // Local state for optimistic UI updates
+    const [isSaved, setIsSaved] = useState(false);
+    
+    // Sync with server data when it changes
+    useEffect(() => {
+        if (savedData?.isSaved !== undefined) {
+            setIsSaved(savedData.isSaved);
+        }
+    }, [savedData]);
 
     const handleToggleSave = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        toggleSave(quiz.id);
+        
+        // Optimistically update UI
+        setIsSaved(!isSaved);
+        
+        toggleSave({ 
+            quizId: quiz.id, 
+            title: quiz.title 
+        });
     };
 
     return (
@@ -44,10 +64,14 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                     </div>
                     <button
                         onClick={handleToggleSave}
-                        className="absolute top-2 right-2 text-yellow-500 hover:text-yellow-600 bg-white/80 rounded-full p-1"
-                        aria-label="Toggle save"
+                        className="absolute top-2 right-2 text-yellow-500 hover:text-yellow-600 bg-white/80 rounded-full p-1 transition-all"
+                        aria-label={isSaved ? "Remove from library" : "Add to library"}
                     >
-                        <BookmarkIcon className="w-5 h-5" />
+                        {isSaved ? (
+                            <Bookmark className="w-5 h-5 fill-yellow-500" />
+                        ) : (
+                            <BookmarkIcon className="w-5 h-5" />
+                        )}
                     </button>
                 </div>
 
