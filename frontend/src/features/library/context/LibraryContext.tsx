@@ -1,11 +1,13 @@
 import { createContext, useContext, ReactNode, useState } from 'react';
-import { QuizQueryParams } from '../types';
+import { LibraryTab, QuizQueryParams } from '../types';
 
 interface LibraryContextType {
   queryParams: QuizQueryParams;
   updateQueryParams: (newParams: QuizQueryParams) => void;
   totalPages: number;
   setTotalPages: (pages: number) => void;
+  activeTab: LibraryTab;
+  setActiveTab: (tab: LibraryTab) => void;
 }
 
 const defaultContext: LibraryContextType = {
@@ -13,11 +15,14 @@ const defaultContext: LibraryContextType = {
     pageNumber: 1,
     pageSize: 9,
     sortBy: 'createdAt',
-    isAscending: false
+    isAscending: false,
+    tab: 'my-quizzes'
   },
   updateQueryParams: () => {},
   totalPages: 1,
-  setTotalPages: () => {}
+  setTotalPages: () => {},
+  activeTab: 'my-quizzes',
+  setActiveTab: () => {}
 };
 
 const LibraryContext = createContext<LibraryContextType>(defaultContext);
@@ -31,6 +36,7 @@ interface LibraryProviderProps {
 export const LibraryProvider = ({ children }: LibraryProviderProps) => {
   const [queryParams, setQueryParams] = useState<QuizQueryParams>(defaultContext.queryParams);
   const [totalPages, setTotalPages] = useState(1);
+  const [activeTab, setActiveTab] = useState<LibraryTab>('my-quizzes');
 
   const updateQueryParams = (newParams: QuizQueryParams) => {
     setQueryParams(prevParams => ({
@@ -39,13 +45,24 @@ export const LibraryProvider = ({ children }: LibraryProviderProps) => {
     }));
   };
 
+  // Update query params when tab changes
+  const handleTabChange = (tab: LibraryTab) => {
+    setActiveTab(tab);
+    updateQueryParams({ 
+      tab,
+      pageNumber: 1 // Reset to first page when changing tabs
+    });
+  };
+
   return (
     <LibraryContext.Provider
       value={{
         queryParams,
         updateQueryParams,
         totalPages,
-        setTotalPages
+        setTotalPages,
+        activeTab,
+        setActiveTab: handleTabChange
       }}
     >
       {children}

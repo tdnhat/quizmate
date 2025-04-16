@@ -96,7 +96,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                         <p
                             className={cn(
                                 "text-gray-500 text-sm mt-1",
-                                !isListView && "line-clamp-2 h-10"
+                                !isListView && "line-clamp-2"
                             )}
                         >
                             {quiz.description}
@@ -105,7 +105,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
 
                     <CardFooter
                         className={cn(
-                            "p-4 pt-0 flex-col items-start",
+                            "p-4 pt-0 flex-col items-start mt-auto",
                             isListView ? "mt-3" : ""
                         )}
                     >
@@ -114,7 +114,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                                 "flex items-center w-full",
                                 isListView
                                     ? "justify-between"
-                                    : "mt-3 justify-between"
+                                    : "justify-between"
                             )}
                         >
                             <AuthorInfo
@@ -128,7 +128,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
 
                         <QuizStatistics
                             timeMinutes={quiz.timeMinutes}
-                            questionCount={quiz.questionCount}
+                            questionCount={quiz.questionCount || 0}
                             completions={quiz.completions}
                         />
                     </CardFooter>

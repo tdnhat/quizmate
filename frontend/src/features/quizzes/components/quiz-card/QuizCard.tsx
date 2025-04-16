@@ -20,10 +20,10 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
     const isListView = viewMode === "list";
     const { mutate: toggleSave } = useSaveQuizMutation();
     const { data: savedData } = useIsSaved(quiz.id);
-    
+
     // Local state for optimistic UI updates
     const [isSaved, setIsSaved] = useState(false);
-    
+
     // Sync with server data when it changes
     useEffect(() => {
         if (savedData?.isSaved !== undefined) {
@@ -34,19 +34,19 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
     const handleToggleSave = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        
+
         // Optimistically update UI
         setIsSaved(!isSaved);
-        
-        toggleSave({ 
-            quizId: quiz.id, 
-            title: quiz.title 
+
+        toggleSave({
+            quizId: quiz.id,
+            title: quiz.title,
         });
     };
 
     return (
         <div className="h-full group">
-            <Card 
+            <Card
                 className={cn(
                     "h-full gap-0 border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all overflow-hidden",
                     isListView ? "flex flex-row items-stretch py-0" : "py-0"
@@ -65,7 +65,9 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                     <button
                         onClick={handleToggleSave}
                         className="absolute top-2 right-2 text-yellow-500 hover:text-yellow-600 bg-white/80 rounded-full p-1 transition-all"
-                        aria-label={isSaved ? "Remove from library" : "Add to library"}
+                        aria-label={
+                            isSaved ? "Remove from library" : "Add to library"
+                        }
                     >
                         {isSaved ? (
                             <Bookmark className="w-5 h-5 fill-yellow-500" />
@@ -76,14 +78,15 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                 </div>
 
                 {/* Quiz info */}
-                <div className={cn(
-                    "flex flex-col",
-                    isListView ? "flex-1 justify-between" : ""
-                )}>
-                    <CardContent className={cn(
-                        "p-4",
-                        isListView ? "mb-auto" : ""
-                    )}>
+                <div
+                    className={cn(
+                        "flex flex-col",
+                        isListView ? "flex-1 justify-between" : ""
+                    )}
+                >
+                    <CardContent
+                        className={cn("p-4", isListView ? "mb-auto" : "")}
+                    >
                         <Link to={`/quizzes/${quiz.slug}`} className="block">
                             <h3 className="font-semibold text-gray-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">
                                 {quiz.title}
@@ -93,21 +96,25 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                         <p
                             className={cn(
                                 "text-gray-500 text-sm mt-1",
-                                !isListView && "line-clamp-2 h-10"
+                                !isListView && "line-clamp-2"
                             )}
                         >
                             {quiz.description}
                         </p>
                     </CardContent>
 
-                    <CardFooter className={cn(
-                        "p-4 pt-0 flex-col items-start",
-                        isListView ? "mt-3" : ""
-                    )}>
+                    <CardFooter
+                        className={cn(
+                            "p-4 pt-0 flex-col items-start mt-auto",
+                            isListView ? "mt-3" : ""
+                        )}
+                    >
                         <div
                             className={cn(
                                 "flex items-center w-full",
-                                isListView ? "justify-between" : "mt-3 justify-between"
+                                isListView
+                                    ? "justify-between"
+                                    : "justify-between"
                             )}
                         >
                             <AuthorInfo
@@ -121,7 +128,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
 
                         <QuizStatistics
                             timeMinutes={quiz.timeMinutes}
-                            questionCount={quiz.questionCount}
+                            questionCount={quiz.questionCount || 0}
                             completions={quiz.completions}
                         />
                     </CardFooter>

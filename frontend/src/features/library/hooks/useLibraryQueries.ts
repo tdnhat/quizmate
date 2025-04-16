@@ -2,6 +2,13 @@ import { useQuery } from "@tanstack/react-query";
 import { libraryApi } from "../api";
 import { QuizQueryParams } from "../types";
 
+export const useLibraryQuizzesQuery = (params: QuizQueryParams = {}) => {
+    return useQuery({
+        queryKey: ["libraryQuizzes", params],
+        queryFn: () => libraryApi.getLibraryQuizzes(params),
+    });
+};
+
 export const useSavedQuizzesQuery = (params: QuizQueryParams = {}) => {
     return useQuery({
         queryKey: ["savedQuizzes", params],

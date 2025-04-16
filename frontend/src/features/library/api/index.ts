@@ -1,11 +1,24 @@
 import { api } from "@/api";
-import { QuizQueryParams, SavedQuizResponse } from "../types";
+import { LibraryTab, QuizQueryParams, SavedQuizResponse } from "../types";
 import { Quiz } from "@/types/quiz";
 
 export const libraryApi = {
     getSavedQuizzes: async (params: QuizQueryParams = {}): Promise<Quiz[]> => {
         const response = await api.get<Quiz[]>(`/saved-quizzes`, { params });
         return response.data;
+    },
+
+    getMyQuizzes: async (params: QuizQueryParams = {}): Promise<Quiz[]> => {
+        const response = await api.get<Quiz[]>(`/quizzes/my-quizzes`, { params });
+        return response.data;
+    },
+
+    getLibraryQuizzes: async (params: QuizQueryParams = {}): Promise<Quiz[]> => {
+        const { tab = 'saved', ...restParams } = params;
+        if (tab === 'my-quizzes') {
+            return libraryApi.getMyQuizzes(restParams);
+        }
+        return libraryApi.getSavedQuizzes(restParams);
     },
 
     toggleSaveQuiz: async (quizId: string): Promise<SavedQuizResponse> => {

@@ -4,8 +4,9 @@ import {
     useLibraryContext,
     QuizList,
     LibrarySearch,
+    LibraryTabs,
     Pagination,
-    useSavedQuizzesQuery,
+    useLibraryQuizzesQuery,
 } from "../../features/library";
 import { QuizQueryParams } from "../../features/library/types";
 
@@ -16,12 +17,12 @@ const LibraryContent = () => {
         data: quizzes,
         isLoading,
         error,
-    } = useSavedQuizzesQuery(queryParams);
+    } = useLibraryQuizzesQuery(queryParams);
     const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
         if (quizzes?.length) {
-            setTotalItems(quizzes.length * 3);
+            setTotalItems(quizzes.length);
             const calculatedPages = Math.ceil(
                 totalItems / (queryParams.pageSize || 9)
             );
@@ -40,7 +41,14 @@ const LibraryContent = () => {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold">My Saved Quizzes</h1>
+            <div className="flex flex-col">
+                <h1 className="text-2xl font-bold">My Library</h1>
+                <p className="text-gray-500">
+                    Here you can find all the quizzes you have saved.
+                </p>
+            </div>
+
+            <LibraryTabs className="mb-6" />
 
             <LibrarySearch
                 onSearch={handleSearchChange}
