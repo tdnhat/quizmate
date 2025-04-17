@@ -3,11 +3,12 @@ import {
     LibraryProvider,
     useLibraryContext,
     QuizList,
-    LibrarySearch,
+    LibraryTabs,
+    LibraryFilterBar,
     Pagination,
-    useSavedQuizzesQuery,
+    useLibraryQuizzesQuery,
 } from "../../features/library";
-import { QuizQueryParams } from "../../features/library/types";
+import LibraryBreadcrumb from "@/features/library/components/LibraryBreadcrumb";
 
 const LibraryContent = () => {
     const { queryParams, updateQueryParams, setTotalPages } =
@@ -16,22 +17,18 @@ const LibraryContent = () => {
         data: quizzes,
         isLoading,
         error,
-    } = useSavedQuizzesQuery(queryParams);
+    } = useLibraryQuizzesQuery(queryParams);
     const [totalItems, setTotalItems] = useState(0);
 
     useEffect(() => {
         if (quizzes?.length) {
-            setTotalItems(quizzes.length * 3);
+            setTotalItems(quizzes.length);
             const calculatedPages = Math.ceil(
                 totalItems / (queryParams.pageSize || 9)
             );
             setTotalPages(Math.max(1, calculatedPages));
         }
     }, [quizzes, queryParams.pageSize, setTotalPages, totalItems]);
-
-    const handleSearchChange = (newParams: QuizQueryParams) => {
-        updateQueryParams(newParams);
-    };
 
     const handlePageChange = (pageNumber: number) => {
         updateQueryParams({ pageNumber });
@@ -40,12 +37,17 @@ const LibraryContent = () => {
 
     return (
         <div className="space-y-6">
-            <h1 className="text-2xl font-bold">My Saved Quizzes</h1>
+            <LibraryBreadcrumb />
+            <div className="flex flex-col mb-6">
+                <h1 className="text-2xl font-bold">My Library</h1>
+                <p className="text-gray-500">
+                    Here you can find all the quizzes you have saved.
+                </p>
+            </div>
 
-            <LibrarySearch
-                onSearch={handleSearchChange}
-                initialParams={queryParams}
-            />
+            <LibraryTabs className="mb-6" />
+
+            <LibraryFilterBar />
 
             <QuizList
                 quizzes={quizzes || []}
@@ -64,7 +66,7 @@ const LibraryContent = () => {
 
 const LibraryPage = () => {
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
             <LibraryProvider>
                 <LibraryContent />
             </LibraryProvider>

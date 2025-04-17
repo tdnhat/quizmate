@@ -10,6 +10,7 @@ import { BookmarkIcon, Bookmark } from "lucide-react";
 import { useToggleSaveQuizMutation } from "../hooks/useLibraryMutations";
 import { useIsSaved } from "../hooks/useIsSaved";
 import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface QuizCardProps {
     quiz: Quiz;
@@ -64,16 +65,43 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                     </div>
                     <button
                         onClick={handleToggleSave}
-                        className="absolute top-2 right-2 text-yellow-500 hover:text-yellow-600 bg-white/80 rounded-full p-1 transition-all"
+                        className="absolute top-2 right-2 bg-white/80 rounded-full p-1 transition-all z-10"
                         aria-label={
                             isSaved ? "Remove from library" : "Add to library"
                         }
                     >
-                        {isSaved ? (
-                            <Bookmark className="w-5 h-5 fill-yellow-500" />
-                        ) : (
-                            <BookmarkIcon className="w-5 h-5" />
-                        )}
+                        <AnimatePresence mode="wait">
+                            {isSaved ? (
+                                <motion.div
+                                    key="saved"
+                                    initial={{ scale: 0.5, opacity: 0 }}
+                                    animate={{ 
+                                        scale: 1, 
+                                        opacity: 1,
+                                        rotate: [0, 15, -15, 0]
+                                    }}
+                                    exit={{ scale: 0.5, opacity: 0 }}
+                                    transition={{ 
+                                        duration: 0.3,
+                                        rotate: { duration: 0.4 }
+                                    }}
+                                    className="text-yellow-500 hover:text-yellow-600"
+                                >
+                                    <Bookmark className="w-5 h-5 fill-yellow-500" />
+                                </motion.div>
+                            ) : (
+                                <motion.div
+                                    key="unsaved"
+                                    initial={{ scale: 0.5, opacity: 0 }}
+                                    animate={{ scale: 1, opacity: 1 }}
+                                    exit={{ scale: 0.5, opacity: 0 }}
+                                    transition={{ duration: 0.3 }}
+                                    className="text-yellow-500 hover:text-yellow-600"
+                                >
+                                    <BookmarkIcon className="w-5 h-5" />
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </button>
                 </div>
 
@@ -96,7 +124,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                         <p
                             className={cn(
                                 "text-gray-500 text-sm mt-1",
-                                !isListView && "line-clamp-2 h-10"
+                                !isListView && "line-clamp-2"
                             )}
                         >
                             {quiz.description}
@@ -105,7 +133,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
 
                     <CardFooter
                         className={cn(
-                            "p-4 pt-0 flex-col items-start",
+                            "p-4 pt-0 flex-col items-start mt-auto",
                             isListView ? "mt-3" : ""
                         )}
                     >
@@ -114,7 +142,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
                                 "flex items-center w-full",
                                 isListView
                                     ? "justify-between"
-                                    : "mt-3 justify-between"
+                                    : "justify-between"
                             )}
                         >
                             <AuthorInfo
@@ -128,7 +156,7 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
 
                         <QuizStatistics
                             timeMinutes={quiz.timeMinutes}
-                            questionCount={quiz.questionCount}
+                            questionCount={quiz.questionCount || 0}
                             completions={quiz.completions}
                         />
                     </CardFooter>
