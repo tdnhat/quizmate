@@ -3,6 +3,11 @@ export { default as QuizCard } from './components/QuizCard';
 export { default as QuizList } from './components/QuizList';
 export { default as LibrarySearch } from './components/LibrarySearch';
 export { default as LibraryTabs } from './components/LibraryTabs';
+export { default as LibraryFilterBar } from './components/LibraryFilterBar';
+export { default as LibraryFilter } from './components/LibraryFilter';
+export { default as LibrarySort } from './components/LibrarySort';
+export { default as LibraryViewToggle } from './components/LibraryViewToggle';
+export { default as LibrarySearchInput } from './components/LibrarySearchInput';
 export { default as Pagination } from './components/Pagination';
 
 // Export context

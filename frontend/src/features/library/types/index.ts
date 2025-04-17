@@ -11,4 +11,8 @@ export interface QuizQueryParams {
   sortBy?: string;
   isAscending?: boolean;
   tab?: LibraryTab;
+  timeFrame?: string;
+  quizType?: string;
+  difficulty?: string;
+  duration?: string;
 } 

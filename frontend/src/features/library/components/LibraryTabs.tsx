@@ -9,8 +9,8 @@ const LibraryTabs = ({ className = "" }: LibraryTabsProps) => {
     const { activeTab, setActiveTab } = useLibraryContext();
 
     const tabs: { key: LibraryTab; label: string }[] = [
-        { key: "my-quizzes", label: "My Quizzes" },
-        { key: "saved", label: "Saved Quizzes" },
+        { key: "my-quizzes", label: "Created" },
+        { key: "saved", label: "Saved" },
     ];
 
     return (
@@ -20,7 +20,7 @@ const LibraryTabs = ({ className = "" }: LibraryTabsProps) => {
                     <button
                         key={tab.key}
                         onClick={() => setActiveTab(tab.key)}
-                        className={`flex-1 px-4 py-2 border-b-2 font-medium text-sm text-center ${
+                        className={`flex-1 px-4 py-2 border-b-2 font-medium text-sm text-center cursor-pointer ${
                             activeTab === tab.key
                                 ? "border-cyan-500 text-cyan-600 font-semibold"
                                 : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"

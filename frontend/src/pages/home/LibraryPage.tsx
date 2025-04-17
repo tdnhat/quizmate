@@ -3,12 +3,12 @@ import {
     LibraryProvider,
     useLibraryContext,
     QuizList,
-    LibrarySearch,
     LibraryTabs,
+    LibraryFilterBar,
     Pagination,
     useLibraryQuizzesQuery,
 } from "../../features/library";
-import { QuizQueryParams } from "../../features/library/types";
+import LibraryBreadcrumb from "@/features/library/components/LibraryBreadcrumb";
 
 const LibraryContent = () => {
     const { queryParams, updateQueryParams, setTotalPages } =
@@ -30,10 +30,6 @@ const LibraryContent = () => {
         }
     }, [quizzes, queryParams.pageSize, setTotalPages, totalItems]);
 
-    const handleSearchChange = (newParams: QuizQueryParams) => {
-        updateQueryParams(newParams);
-    };
-
     const handlePageChange = (pageNumber: number) => {
         updateQueryParams({ pageNumber });
         window.scrollTo(0, 0);
@@ -41,7 +37,8 @@ const LibraryContent = () => {
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col">
+            <LibraryBreadcrumb />
+            <div className="flex flex-col mb-6">
                 <h1 className="text-2xl font-bold">My Library</h1>
                 <p className="text-gray-500">
                     Here you can find all the quizzes you have saved.
@@ -50,10 +47,7 @@ const LibraryContent = () => {
 
             <LibraryTabs className="mb-6" />
 
-            <LibrarySearch
-                onSearch={handleSearchChange}
-                initialParams={queryParams}
-            />
+            <LibraryFilterBar />
 
             <QuizList
                 quizzes={quizzes || []}
@@ -72,7 +66,7 @@ const LibraryContent = () => {
 
 const LibraryPage = () => {
     return (
-        <div className="container mx-auto px-4 py-8">
+        <div className="container mx-auto px-4 py-6">
             <LibraryProvider>
                 <LibraryContent />
             </LibraryProvider>
