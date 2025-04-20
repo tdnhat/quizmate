@@ -7,7 +7,7 @@ import path from "path";
 export default defineConfig({
     plugins: [react(), tailwindcss()],
     build: {
-        outDir: "build", // Ensure this matches the workflow configuration
+        outDir: "dist", // Ensure this matches the workflow configuration
     },
     resolve: {
         alias: {
