@@ -54,6 +54,10 @@ builder.Services.AddControllers().AddNewtonsoftJson(options =>
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Set PostgreSQL date/time behavior
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+AppContext.SetSwitch("Npgsql.DisableDateTimeInfinityConversions", true);
+
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.Password.RequiredLength = 8;
@@ -151,19 +155,20 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
-app.UseRouting();
-
-app.MapHub<QuizSessionHub>("/hubs/quiz-session");
-
 app.UseCors(x => x
     .AllowAnyHeader()
     .AllowAnyMethod()
     .AllowCredentials()
     .WithOrigins(
         "http://localhost:3000", // Keep for local development
-        "https://thankful-glacier-086d82100.6.azurestaticapps.net" // Your production frontend URL
+        "https://thankful-glacier-086d82100.6.azurestaticapps.net", // Your production frontend URL
+        "https://quizmate-web-api.azurewebsites.net" // Backend URL (for self-referencing)
     )
 );
+
+app.UseRouting();
+
+app.MapHub<QuizSessionHub>("/hubs/quiz-session");
 
 app.UseAuthentication();
 

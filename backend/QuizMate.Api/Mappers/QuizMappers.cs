@@ -63,7 +63,7 @@ namespace QuizMate.Api.Mappers
                 Id = Guid.NewGuid().ToString(),
                 Title = createQuizRequestDto.Title,
                 Description = createQuizRequestDto.Description,
-                CreatedAt = DateTime.Now,
+                CreatedAt = DateTime.UtcNow,
                 CategoryId = createQuizRequestDto.CategoryId,
                 Thumbnail = createQuizRequestDto.ThumbnailUrl,
                 TimeMinutes = createQuizRequestDto.TimeMinutes,

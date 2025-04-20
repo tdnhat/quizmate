@@ -47,12 +47,22 @@ namespace QuizMate.Api.Services
                     Encoding.UTF8,
                     "application/json");
 
+                _logger.LogInformation("Sending request to AI service: {0}", JsonSerializer.Serialize(payload));
+                
                 // Send the request to the Python service
                 var response = await _httpClient.PostAsync("/api/quiz", content);
-                response.EnsureSuccessStatusCode();
+                
+                // Read response content regardless of status code
+                var responseString = await response.Content.ReadAsStringAsync();
+                
+                if (!response.IsSuccessStatusCode)
+                {
+                    _logger.LogError("AI service returned error: Status {0}, Content: {1}", 
+                        response.StatusCode, responseString);
+                    throw new HttpRequestException($"AI service error: {response.StatusCode}. Response: {responseString}");
+                }
 
                 // Parse the response
-                var responseString = await response.Content.ReadAsStringAsync();
                 var options = new JsonSerializerOptions
                 {
                     PropertyNameCaseInsensitive = true

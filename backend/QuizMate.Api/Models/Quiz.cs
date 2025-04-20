@@ -13,7 +13,7 @@ namespace QuizMate.Api.Models
         public string Id { get; set; } = Guid.NewGuid().ToString();
         public string Title { get; set; }
         public string? Description { get; set; }
-        public DateTime CreatedAt { get; set; } = DateTime.Now;
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public string AppUserId { get; set; } // Owner of the quiz
         public string CategoryId { get; set; }
         public string Slug { get; set; }
