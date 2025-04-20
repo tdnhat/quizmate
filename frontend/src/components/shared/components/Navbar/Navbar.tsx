@@ -5,9 +5,9 @@ import {
     House,
     Layers,
     BookCheck,
-    BarChart2,
     Settings,
     LogOut,
+    BookOpen,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import NavbarLogo from "./NavbarLogo";
@@ -44,7 +44,7 @@ const Navbar = ({ className, onMobileMenuOpen }: NavbarProps) => {
         { icon: House, name: "Home", path: "/home" },
         { icon: Layers, name: "Categories", path: "/categories" },
         { icon: BookCheck, name: "Quizzes", path: "/quizzes" },
-        { icon: BarChart2, name: "Reports", path: "/reports" },
+        { icon: BookOpen, name: "Library", path: "/library" },
         { icon: Settings, name: "Settings", path: "/settings" },
     ];
 
