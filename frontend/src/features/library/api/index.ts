@@ -1,5 +1,5 @@
 import { api } from "@/api";
-import { LibraryTab, QuizQueryParams, SavedQuizResponse } from "../types";
+import { QuizQueryParams, SavedQuizResponse } from "../types";
 import { Quiz } from "@/types/quiz";
 
 export const libraryApi = {
@@ -33,5 +33,9 @@ export const libraryApi = {
             `/saved-quizzes/is-saved/${quizId}`
         );
         return response.data;
+    },
+
+    deleteQuiz: async (quizId: string): Promise<void> => {
+        await api.delete(`/quizzes/${quizId}`);
     },
 };

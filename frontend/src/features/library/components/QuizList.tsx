@@ -3,6 +3,7 @@ import QuizCard from "./QuizCard";
 import QuizSkeleton from "@/features/quizzes/components/quiz-card/QuizSkeleton";
 import { useViewportSize } from "@/hooks/useViewportSize";
 import { useLibraryContext } from "../context/LibraryContext";
+import NoQuizzesFound from "@/components/shared/components/NoQuizzesFound";
 
 interface QuizListProps {
     quizzes: Quiz[];
@@ -33,12 +34,7 @@ const QuizList = ({ quizzes, isLoading, error }: QuizListProps) => {
 
     if (!isLoading && quizzes.length === 0) {
         return (
-            <div className="text-center py-10 text-gray-500">
-                <p className="text-lg">No quizzes found</p>
-                <p className="mt-2">
-                    Try adjusting your search or filter settings
-                </p>
-            </div>
+            <NoQuizzesFound />
         );
     }
 

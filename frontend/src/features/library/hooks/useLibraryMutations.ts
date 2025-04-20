@@ -13,6 +13,11 @@ interface SaveQuizResponse {
     quizId: string;
 }
 
+interface DeleteQuizParams {
+    quizId: string;
+    title?: string;
+}
+
 export const useToggleSaveQuizMutation = () => {
     const queryClient = useQueryClient();
 
@@ -47,6 +52,34 @@ export const useToggleSaveQuizMutation = () => {
         },
         onError: () => {
             toast.error("Failed to update library");
+        },
+    });
+};
+
+export const useDeleteQuizMutation = () => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: ({ quizId }: DeleteQuizParams) => {
+            return libraryApi.deleteQuiz(quizId);
+        },
+        onSuccess: (_, variables) => {
+            const quizTitle = variables.title ? `"${variables.title}"` : "Quiz";
+            toast.success(`${quizTitle} deleted successfully`);
+
+            // Invalidate all relevant queries
+            queryClient.invalidateQueries({
+                queryKey: ["libraryQuizzes"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["savedQuizzes"],
+            });
+            queryClient.invalidateQueries({
+                queryKey: ["my-quizzes"],
+            });
+        },
+        onError: () => {
+            toast.error("Failed to delete quiz");
         },
     });
 };

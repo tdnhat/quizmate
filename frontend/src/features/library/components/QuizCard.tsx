@@ -1,29 +1,31 @@
 import { Quiz } from "@/types/quiz";
-import { Link } from "react-router-dom";
-import QuizThumbnail from "@/features/quizzes/components/quiz-card/QuizThumbnail";
-import AuthorInfo from "@/features/quizzes/components/quiz-card/AuthorInfo";
-import RatingDisplay from "@/features/quizzes/components/quiz-card/RatingDisplay";
-import QuizStatistics from "@/features/quizzes/components/quiz-card/QuizStatistics";
-import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { cn } from "@/lib/utils";
-import { BookmarkIcon, Bookmark } from "lucide-react";
-import { useToggleSaveQuizMutation } from "../hooks/useLibraryMutations";
 import { useIsSaved } from "../hooks/useIsSaved";
-import { useState, useEffect } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useState, useEffect, useCallback } from "react";
+import { useLibraryContext } from "../context/LibraryContext";
+import { 
+    QuizCardThumbnail, 
+    QuizCardContent, 
+    QuizDeleteDialog 
+} from "./quiz-card";
 
 interface QuizCardProps {
     quiz: Quiz;
     viewMode?: "grid" | "list";
 }
 
-const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
+const QuizCard = ({
+    quiz,
+    viewMode = "grid",
+}: QuizCardProps) => {
     const isListView = viewMode === "list";
-    const { mutate: toggleSave } = useToggleSaveQuizMutation();
     const { data: savedData } = useIsSaved(quiz.id);
+    const { deleteQuiz, isDeletingQuiz, activeTab, toggleSaveQuiz } = useLibraryContext();
 
     // Local state for optimistic UI updates
     const [isSaved, setIsSaved] = useState(false);
+    const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
     // Sync with server data when it changes
     useEffect(() => {
@@ -32,137 +34,80 @@ const QuizCard = ({ quiz, viewMode = "grid" }: QuizCardProps) => {
         }
     }, [savedData]);
 
-    const handleToggleSave = (e: React.MouseEvent) => {
+    // Ensure body style is cleaned up if component unmounts with dialog open
+    useEffect(() => {
+        return () => {
+            if (showDeleteDialog) {
+                document.body.style.removeProperty('pointer-events');
+            }
+        };
+    }, [showDeleteDialog]);
+
+    const handleToggleSave = useCallback((e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
 
         // Optimistically update UI
         setIsSaved(!isSaved);
+        toggleSaveQuiz(quiz.id, quiz.title);
+    }, [isSaved, quiz.id, quiz.title, toggleSaveQuiz]);
 
-        toggleSave({
-            quizId: quiz.id,
-            title: quiz.title,
-        });
-    };
+    const handleDelete = useCallback((e: React.MouseEvent) => {
+        e.preventDefault();
+        e.stopPropagation();
+        setShowDeleteDialog(true);
+    }, []);
+
+    const confirmDelete = useCallback(() => {
+        deleteQuiz(quiz);
+        setShowDeleteDialog(false);
+    }, [deleteQuiz, quiz]);
+
+    const handleOpenChange = useCallback((open: boolean) => {
+        setShowDeleteDialog(open);
+        // Ensure pointer-events is removed when dialog closes
+        if (!open) {
+            document.body.style.removeProperty('pointer-events');
+        }
+    }, []);
+
+    // Only show delete option for quizzes that the user created (in My Quizzes tab)
+    const showDeleteOption = activeTab === 'my-quizzes';
 
     return (
-        <div className="h-full group">
-            <Card
-                className={cn(
-                    "h-full gap-0 border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all overflow-hidden",
-                    isListView ? "flex flex-row items-stretch py-0" : "py-0"
-                )}
-            >
-                {/* Thumbnail with overlay */}
-                <div
+        <>
+            <div className="h-full group">
+                <Card
                     className={cn(
-                        "overflow-hidden relative",
-                        isListView ? "flex-shrink-0 w-48 self-stretch" : ""
+                        "h-full gap-0 border-gray-100 hover:border-gray-200 hover:shadow-lg transition-all overflow-hidden",
+                        isListView ? "flex flex-row items-stretch py-0" : "py-0"
                     )}
                 >
-                    <div className={isListView ? "h-full" : ""}>
-                        <QuizThumbnail quiz={quiz} viewMode={viewMode} />
-                    </div>
-                    <button
-                        onClick={handleToggleSave}
-                        className="absolute top-2 right-2 bg-white/80 rounded-full p-1 transition-all z-10"
-                        aria-label={
-                            isSaved ? "Remove from library" : "Add to library"
-                        }
-                    >
-                        <AnimatePresence mode="wait">
-                            {isSaved ? (
-                                <motion.div
-                                    key="saved"
-                                    initial={{ scale: 0.5, opacity: 0 }}
-                                    animate={{ 
-                                        scale: 1, 
-                                        opacity: 1,
-                                        rotate: [0, 15, -15, 0]
-                                    }}
-                                    exit={{ scale: 0.5, opacity: 0 }}
-                                    transition={{ 
-                                        duration: 0.3,
-                                        rotate: { duration: 0.4 }
-                                    }}
-                                    className="text-yellow-500 hover:text-yellow-600"
-                                >
-                                    <Bookmark className="w-5 h-5 fill-yellow-500" />
-                                </motion.div>
-                            ) : (
-                                <motion.div
-                                    key="unsaved"
-                                    initial={{ scale: 0.5, opacity: 0 }}
-                                    animate={{ scale: 1, opacity: 1 }}
-                                    exit={{ scale: 0.5, opacity: 0 }}
-                                    transition={{ duration: 0.3 }}
-                                    className="text-yellow-500 hover:text-yellow-600"
-                                >
-                                    <BookmarkIcon className="w-5 h-5" />
-                                </motion.div>
-                            )}
-                        </AnimatePresence>
-                    </button>
-                </div>
+                    <QuizCardThumbnail 
+                        quiz={quiz}
+                        viewMode={viewMode}
+                        isSaved={isSaved}
+                        isDeletingQuiz={isDeletingQuiz}
+                        showDeleteOption={showDeleteOption}
+                        onToggleSave={handleToggleSave}
+                        onDelete={handleDelete}
+                    />
+                    
+                    <QuizCardContent 
+                        quiz={quiz}
+                        viewMode={viewMode}
+                    />
+                </Card>
+            </div>
 
-                {/* Quiz info */}
-                <div
-                    className={cn(
-                        "flex flex-col",
-                        isListView ? "flex-1 justify-between" : ""
-                    )}
-                >
-                    <CardContent
-                        className={cn("p-4", isListView ? "mb-auto" : "")}
-                    >
-                        <Link to={`/quizzes/${quiz.slug}`} className="block">
-                            <h3 className="font-semibold text-gray-800 line-clamp-1 group-hover:text-indigo-600 transition-colors">
-                                {quiz.title}
-                            </h3>
-                        </Link>
-
-                        <p
-                            className={cn(
-                                "text-gray-500 text-sm mt-1",
-                                !isListView && "line-clamp-2"
-                            )}
-                        >
-                            {quiz.description}
-                        </p>
-                    </CardContent>
-
-                    <CardFooter
-                        className={cn(
-                            "p-4 pt-0 flex-col items-start mt-auto",
-                            isListView ? "mt-3" : ""
-                        )}
-                    >
-                        <div
-                            className={cn(
-                                "flex items-center w-full",
-                                isListView
-                                    ? "justify-between"
-                                    : "justify-between"
-                            )}
-                        >
-                            <AuthorInfo
-                                userName={quiz.appUser.userName}
-                                displayName={quiz.appUser.displayName}
-                                avatarUrl={quiz.appUser.avatarUrl}
-                            />
-
-                            <RatingDisplay rating={quiz.rating} />
-                        </div>
-
-                        <QuizStatistics
-                            timeMinutes={quiz.timeMinutes}
-                            questionCount={quiz.questionCount || 0}
-                            completions={quiz.completions}
-                        />
-                    </CardFooter>
-                </div>
-            </Card>
-        </div>
+            <QuizDeleteDialog 
+                quiz={quiz}
+                open={showDeleteDialog}
+                onOpenChange={handleOpenChange}
+                onConfirm={confirmDelete}
+                isDeleting={isDeletingQuiz}
+            />
+        </>
     );
 };
 
