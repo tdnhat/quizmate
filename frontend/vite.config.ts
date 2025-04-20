@@ -6,6 +6,9 @@ import path from "path";
 // https://vite.dev/config/
 export default defineConfig({
     plugins: [react(), tailwindcss()],
+    build: {
+        outDir: "build", // Ensure this matches the workflow configuration
+    },
     resolve: {
         alias: {
             "@": path.resolve(__dirname, "./src"),
@@ -16,11 +19,11 @@ export default defineConfig({
         open: true,
         allowedHosts: ["localhost", ".ngrok-free.app"],
         proxy: {
-            '/api': {
-                target: 'http://localhost:5118',
+            "/api": {
+                target: "http://localhost:5118",
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api/, '')
-            }
+                rewrite: (path) => path.replace(/^\/api/, ""),
+            },
         },
         hmr: {
             overlay: false, // Disable the error overlay
