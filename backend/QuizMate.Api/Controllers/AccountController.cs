@@ -279,5 +279,49 @@ namespace QuizMate.Api.Controllers
 
             return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
         }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // Get current user
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Verify current password
+            var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, passwordDto.CurrentPassword);
+            if (!isCurrentPasswordValid)
+            {
+                ModelState.AddModelError("CurrentPassword", "Current password is incorrect");
+                return BadRequest(ModelState);
+            }
+
+            // Change password
+            var result = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "User";
+
+            // Return updated user data with a fresh token
+            return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
+        }
     }
 }
