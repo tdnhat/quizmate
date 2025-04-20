@@ -26,10 +26,57 @@ namespace QuizMate.Api.Repositories
 
         public async Task<bool> DeleteQuizAsync(string id)
         {
-            var quiz = await _context.Quizzes.FindAsync(id);
+            var quiz = await _context.Quizzes
+                .Include(q => q.Questions)
+                    .ThenInclude(q => q.Answers)
+                .FirstOrDefaultAsync(q => q.Id == id);
+
             if (quiz == null)
             {
                 return false;
+            }
+
+            // First, delete all QuizSessionAnswers that reference answers in this quiz
+            foreach (var question in quiz.Questions)
+            {
+                foreach (var answer in question.Answers)
+                {
+                    var sessionAnswers = await _context.QuizSessionAnswers
+                        .Where(sa => sa.AnswerId == answer.Id)
+                        .ToListAsync();
+
+                    _context.QuizSessionAnswers.RemoveRange(sessionAnswers);
+                }
+
+                // Also delete any QuizSessionAnswers that reference questions
+                var questionSessionAnswers = await _context.QuizSessionAnswers
+                    .Where(sa => sa.QuestionId == question.Id)
+                    .ToListAsync();
+
+                _context.QuizSessionAnswers.RemoveRange(questionSessionAnswers);
+            }
+
+            // Also remove any saved quiz references
+            var savedQuizzes = await _context.SavedQuizzes
+                .Where(sq => sq.QuizId == quiz.Id)
+                .ToListAsync();
+
+            _context.SavedQuizzes.RemoveRange(savedQuizzes);
+
+            // Delete any quiz sessions associated with this quiz
+            var quizSessions = await _context.QuizSessions
+                .Where(qs => qs.QuizId == quiz.Id)
+                .ToListAsync();
+
+            foreach (var session in quizSessions)
+            {
+                // Delete participants (will cascade to their answers due to configuration)
+                var participants = await _context.QuizSessionParticipants
+                    .Where(p => p.QuizSessionId == session.Id)
+                    .ToListAsync();
+
+                _context.QuizSessionParticipants.RemoveRange(participants);
+                _context.QuizSessions.Remove(session);
             }
             _context.Quizzes.Remove(quiz);
             await _context.SaveChangesAsync();
