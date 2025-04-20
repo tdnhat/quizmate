@@ -4,8 +4,6 @@ import DotLoader from "@/components/shared/components/loaders/DotLoader";
 import HomeLayout from "@/layouts/HomeLayout";
 import HomePage from "@/pages/home/HomePage";
 import LibraryPage from "@/pages/home/LibraryPage";
-import ReportsPage from "@/pages/home/ReportsPage";
-import TeamsPage from "@/pages/home/TeamsPage";
 import QuizzesPage from "@/pages/home/quizzes/QuizzesPage";
 import CreateQuizPage from "@/pages/home/quizzes/CreateQuizPage";
 import CategoryDetailPage from "@/pages/home/categories/CategoryDetailPage";
@@ -40,8 +38,6 @@ export const AuthenticatedApp = () => {
             <Route element={<HomeLayout />}>
                 <Route path="/home" element={<HomePage />} />
                 <Route path="/library" element={<LibraryPage />} />
-                {/* <Route path="/reports" element={<ReportsPage />} /> */}
-                {/* <Route path="teams" element={<TeamsPage />} /> */}
                 <Route path="/settings" element={<SettingsPage />} />
                 <Route path="/quizzes" element={<QuizzesPage />} />
                 <Route path="/quizzes/all" element={<AllQuizzesPage />} />

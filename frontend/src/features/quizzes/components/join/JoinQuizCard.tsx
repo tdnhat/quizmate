@@ -31,7 +31,7 @@ export const JoinQuizCard = ({
                 <div className="mx-auto bg-cyan-100 rounded-full p-4 w-16 h-16 flex items-center justify-center mb-2">
                     <BrainCircuit className="h-8 w-8 text-cyan-700" />
                 </div>
-                <CardTitle className="text-2xl font-bold">
+                <CardTitle className="text-2xl font-bold text-cyan-600">
                     {title}
                 </CardTitle>
                 {sessionInfo && (

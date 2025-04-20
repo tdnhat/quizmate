@@ -18,7 +18,7 @@ const QuizHeader = () => {
         <div className="w-full mb-6">
             <div className="flex flex-col gap-4">
                 <div className="flex items-center justify-between">
-                    <h3 className="text-xl font-bold">
+                    <h3 className="text-xl font-bold text-cyan-600">
                         {currentQuestion.text}
                     </h3>
                     <div className="flex items-center gap-4">

@@ -54,7 +54,7 @@ export const NavbarCreate = () => {
             </DialogTrigger>
             <DialogContent className="sm:max-w-[90%] md:max-w-[85%] lg:max-w-5xl max-h-[90vh] overflow-y-auto">
                 <DialogHeader className="mb-4">
-                    <DialogTitle>Create new quiz</DialogTitle>
+                    <DialogTitle className="text-cyan-600">Create new quiz</DialogTitle>
                     <DialogDescription>
                         Fill in the details below to create a new quiz
                     </DialogDescription>

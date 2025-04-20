@@ -64,7 +64,7 @@ const HostQuizContainer = () => {
             <Card className="mb-6">
                 <CardHeader className="flex flex-row items-center justify-between">
                     <div>
-                        <CardTitle className="text-2xl">
+                        <CardTitle className="text-2xl text-cyan-600">
                             Quiz Session Dashboard
                         </CardTitle>
                         <p className="text-muted-foreground mt-1">
@@ -133,7 +133,7 @@ const HostQuizContainer = () => {
                         <div className="space-y-6">
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Quiz Controls</CardTitle>
+                                    <CardTitle className="text-lg font-semibold text-cyan-600">Quiz Controls</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <Button
@@ -161,7 +161,7 @@ const HostQuizContainer = () => {
                             {/* Quiz Information */}
                             <Card>
                                 <CardHeader>
-                                    <CardTitle>Quiz Information</CardTitle>
+                                    <CardTitle className="text-lg font-semibold text-cyan-600">Quiz Information</CardTitle>
                                 </CardHeader>
                                 <CardContent className="space-y-4">
                                     <div>

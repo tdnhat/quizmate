@@ -52,7 +52,7 @@ const QuestionReview = () => {
     return (
         <div>
             <div className="flex justify-between items-center mb-4">
-                <h3 className="text-xl font-semibold">Question Review</h3>
+                <h3 className="text-xl font-semibold text-cyan-600">Question Review</h3>
                 <Button
                     variant="outline"
                     size="sm"

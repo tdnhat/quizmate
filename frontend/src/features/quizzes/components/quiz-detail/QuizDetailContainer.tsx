@@ -1,8 +1,14 @@
+import { useEffect } from "react";
 import QuizMainContent from "./quiz-main-content/QuizMainContent";
 import QuizSidebar from "./quiz-sidebar/QuizSidebar";
 import QuizDetailBreadcrumb from "./QuizDetailBreadcrumb";
 
 const QuizDetailContainer = () => {
+    // Move on top of the page
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="space-y-4">
             <QuizDetailBreadcrumb />

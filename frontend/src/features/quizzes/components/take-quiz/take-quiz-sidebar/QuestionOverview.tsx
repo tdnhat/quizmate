@@ -26,7 +26,7 @@ const QuestionOverview = () => {
     return (
         <Card className="flex flex-col">
             <CardHeader>
-                <CardTitle>Question Overview</CardTitle>
+                <CardTitle className="text-cyan-600">Question Overview</CardTitle>
             </CardHeader>
             <CardContent className="flex flex-col justify-between space-y-3 flex-1">
                 <QuestionGrid />

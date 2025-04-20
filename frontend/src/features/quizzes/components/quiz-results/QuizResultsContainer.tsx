@@ -17,7 +17,7 @@ const QuizResultsContainer = () => {
     return (
         <div className="space-y-4">
             <div className="flex flex-col items-center justify-center gap-2 mb-8">
-                <h1 className="text-2xl font-bold">Quiz Results</h1>
+                <h1 className="text-2xl font-bold text-cyan-600">Quiz Results</h1>
                 <p className="text-gray-500">{quizResult.quiz.title}</p>
             </div>
 

@@ -81,7 +81,7 @@ const JoinInformation = ({ sessionId }: JoinInformationProps) => {
     return (
         <Card className="w-full">
             <CardHeader>
-                <CardTitle>Join this Quiz</CardTitle>
+                <CardTitle className="text-lg font-semibold text-cyan-600">Join this Quiz</CardTitle>
                 <CardDescription>
                     Share this information with participants
                 </CardDescription>

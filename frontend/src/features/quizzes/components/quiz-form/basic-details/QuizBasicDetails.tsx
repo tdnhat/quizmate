@@ -59,7 +59,7 @@ export const QuizBasicDetails = ({
                             control={form.control}
                             isLoading={isLoading}
                         />
-                        <div className="flex gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             <PassingScoreField control={form.control} />
                             <TimeField
                                 control={form.control}
@@ -94,7 +94,7 @@ export const QuizBasicDetails = ({
         <>
             <TitleField control={form.control} isLoading={isLoading} />
             <DescriptionField control={form.control} />
-            <div className="flex items-center gap-4 justify-start">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <CategoryField control={form.control} isLoading={isLoading} />
                 <TimeField control={form.control} isLoading={isLoading} />
                 <PassingScoreField control={form.control} />

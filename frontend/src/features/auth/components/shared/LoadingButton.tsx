@@ -8,6 +8,7 @@ interface LoadingButtonProps {
     children: React.ReactNode;
     className?: string;
     type?: "button" | "submit" | "reset";
+    disabled?: boolean;
 }
 
 export const LoadingButton = ({
@@ -16,12 +17,13 @@ export const LoadingButton = ({
     children,
     className,
     type = "submit",
+    disabled = false,
 }: LoadingButtonProps) => {
     return (
         <Button
             type={type}
             className={cn("w-full hover:cursor-pointer", className)}
-            disabled={isLoading}
+            disabled={isLoading || disabled}
         >
             {isLoading ? (
                 <>

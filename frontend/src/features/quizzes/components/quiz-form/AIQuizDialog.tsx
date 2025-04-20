@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { Sparkles, Info } from "lucide-react";
+import { Sparkles } from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -91,7 +91,7 @@ export function AIQuizDialog() {
                         <div className="flex h-8 w-8 items-center justify-center rounded-full bg-cyan-100">
                             <Sparkles className="h-4 w-4 text-cyan-500" />
                         </div>
-                        <DialogTitle className="text-xl">
+                        <DialogTitle className="text-xl text-cyan-600">
                             AI-Powered Quiz Generation
                         </DialogTitle>
                     </div>
@@ -193,9 +193,8 @@ export function AIQuizDialog() {
                         </div>
                     </div>
 
-                    <div className="flex justify-center rounded-md bg-blue-50 p-3">
-                        <Info className="h-5 w-5 mr-2 text-blue-700" />
-                        <p className="text-sm text-blue-700">
+                    <div className="flex justify-center rounded-md bg-cyan-50 p-3">
+                        <p className="text-sm text-cyan-700">
                             The AI will generate a quiz based on your
                             selections. You can edit all content afterward.
                         </p>
