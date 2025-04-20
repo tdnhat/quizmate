@@ -39,7 +39,7 @@ jobs:
           skip_api_build: true
         env:
           # Pass production API URL to build process
-          VITE_API_URL: "https://quizmate-web-api.azurewebsites.net"
+          VITE_API_URL: "quizmate-web-api.azurewebsites.net"
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
