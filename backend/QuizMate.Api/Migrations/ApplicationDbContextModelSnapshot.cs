@@ -2,8 +2,8 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using QuizMate.Api.Data;
 
 #nullable disable
@@ -18,46 +18,45 @@ namespace QuizMate.Api.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "8.0.13")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("NormalizedName")
                         .IsUnique()
-                        .HasDatabaseName("RoleNameIndex")
-                        .HasFilter("[NormalizedName] IS NOT NULL");
+                        .HasDatabaseName("RoleNameIndex");
 
                     b.ToTable("AspNetRoles", (string)null);
 
                     b.HasData(
                         new
                         {
-                            Id = "d07e35f5-0d8e-4846-bc1f-2e568fdaa9b2",
+                            Id = "74eccc03-ef02-4605-ad85-d5c5606d05eb",
                             Name = "Admin",
                             NormalizedName = "ADMIN"
                         },
                         new
                         {
-                            Id = "f5d1993a-247b-40ef-a093-c2e239ceaded",
+                            Id = "32fd3c82-b60a-431d-9be8-34d467693e59",
                             Name = "User",
                             NormalizedName = "USER"
                         });
@@ -67,19 +66,19 @@ namespace QuizMate.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RoleId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -92,19 +91,19 @@ namespace QuizMate.Api.Migrations
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("ClaimType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ClaimValue")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -116,17 +115,17 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderKey")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ProviderDisplayName")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("LoginProvider", "ProviderKey");
 
@@ -138,10 +137,10 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserRole<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "RoleId");
 
@@ -153,16 +152,16 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
                     b.Property<string>("UserId")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("LoginProvider")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Name")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Value")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("UserId", "LoginProvider", "Name");
 
@@ -172,21 +171,21 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.Answer", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Explanation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("QuestionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -198,65 +197,65 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.AppUser", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("AvatarUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("NormalizedUserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.Property<string>("PasswordHash")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("PhoneNumber")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("SecurityStamp")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("UserName")
                         .HasMaxLength(256)
-                        .HasColumnType("nvarchar(256)");
+                        .HasColumnType("character varying(256)");
 
                     b.HasKey("Id");
 
@@ -265,8 +264,7 @@ namespace QuizMate.Api.Migrations
 
                     b.HasIndex("NormalizedUserName")
                         .IsUnique()
-                        .HasDatabaseName("UserNameIndex")
-                        .HasFilter("[NormalizedUserName] IS NOT NULL");
+                        .HasDatabaseName("UserNameIndex");
 
                     b.ToTable("AspNetUsers", (string)null);
                 });
@@ -274,34 +272,34 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.Category", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ColorPreset")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Image")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsFeatured")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("QuizCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -312,7 +310,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "programming",
                             ColorPreset = "blue",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8083),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4129),
                             Description = "Quizzes about programming languages, concepts, and software development.",
                             IsFeatured = false,
                             Name = "Programming",
@@ -323,7 +321,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "computer_science",
                             ColorPreset = "indigo",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8091),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4136),
                             Description = "Theoretical computer science, algorithms, data structures, and computing concepts.",
                             IsFeatured = false,
                             Name = "Computer Science",
@@ -334,7 +332,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "mathematics",
                             ColorPreset = "teal",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8096),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4145),
                             Description = "Quizzes covering various mathematical concepts, from algebra to calculus.",
                             IsFeatured = false,
                             Name = "Mathematics",
@@ -345,7 +343,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "science",
                             ColorPreset = "green",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8102),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4153),
                             Description = "General science topics including physics, chemistry, and biology.",
                             IsFeatured = false,
                             Name = "Science",
@@ -356,7 +354,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "history",
                             ColorPreset = "orange",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8109),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4162),
                             Description = "Historical events, figures, and time periods from around the world.",
                             IsFeatured = false,
                             Name = "History",
@@ -367,7 +365,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "web_dev",
                             ColorPreset = "sky",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8119),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4185),
                             Description = "Frontend, backend, and full-stack web development topics.",
                             IsFeatured = false,
                             Name = "Web Development",
@@ -378,7 +376,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "data_science",
                             ColorPreset = "purple",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8125),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4195),
                             Description = "Data analysis, machine learning, and statistical methods.",
                             IsFeatured = false,
                             Name = "Data Science",
@@ -389,7 +387,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "ai",
                             ColorPreset = "violet",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8132),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4264),
                             Description = "AI concepts, machine learning, neural networks, and their applications.",
                             IsFeatured = false,
                             Name = "Artificial Intelligence",
@@ -400,7 +398,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "mobile_dev",
                             ColorPreset = "emerald",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8141),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4273),
                             Description = "iOS, Android, and cross-platform mobile development.",
                             IsFeatured = false,
                             Name = "Mobile Development",
@@ -411,7 +409,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "cybersecurity",
                             ColorPreset = "red",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8149),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4283),
                             Description = "Computer security, network security, and ethical hacking.",
                             IsFeatured = false,
                             Name = "Cybersecurity",
@@ -422,7 +420,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "business",
                             ColorPreset = "slate",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8156),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4291),
                             Description = "Business concepts, management theories, and organizational behavior.",
                             IsFeatured = false,
                             Name = "Business & Management",
@@ -433,7 +431,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "finance",
                             ColorPreset = "green",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8163),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4300),
                             Description = "Personal finance, investing, accounting, and financial markets.",
                             IsFeatured = false,
                             Name = "Finance",
@@ -444,7 +442,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "marketing",
                             ColorPreset = "pink",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8170),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4308),
                             Description = "Marketing strategies, consumer behavior, and advertising techniques.",
                             IsFeatured = false,
                             Name = "Marketing",
@@ -455,7 +453,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "entrepreneurship",
                             ColorPreset = "yellow",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8178),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4320),
                             Description = "Startup concepts, business models, and entrepreneurial mindset.",
                             IsFeatured = false,
                             Name = "Entrepreneurship",
@@ -466,7 +464,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "movies_tv",
                             ColorPreset = "red",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8185),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4329),
                             Description = "Film history, TV shows, actors, directors, and cinema trivia.",
                             IsFeatured = false,
                             Name = "Movies & TV",
@@ -477,7 +475,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "music",
                             ColorPreset = "purple",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8192),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4336),
                             Description = "Musical genres, artists, bands, instruments, and music theory.",
                             IsFeatured = false,
                             Name = "Music",
@@ -488,7 +486,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "gaming",
                             ColorPreset = "lime",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8200),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4345),
                             Description = "Video games, gaming platforms, game development, and gaming culture.",
                             IsFeatured = false,
                             Name = "Gaming",
@@ -499,7 +497,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "sports",
                             ColorPreset = "blue",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8211),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4355),
                             Description = "Various sports, athletes, championships, and sporting events.",
                             IsFeatured = false,
                             Name = "Sports",
@@ -510,7 +508,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "general_knowledge",
                             ColorPreset = "teal",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8218),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4363),
                             Description = "Diverse topics testing overall knowledge and trivia.",
                             IsFeatured = false,
                             Name = "General Knowledge",
@@ -521,7 +519,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "languages",
                             ColorPreset = "indigo",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8225),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4372),
                             Description = "Vocabulary, grammar, and linguistic concepts from various languages.",
                             IsFeatured = false,
                             Name = "Languages",
@@ -532,7 +530,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "geography",
                             ColorPreset = "emerald",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8232),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4380),
                             Description = "Countries, capitals, natural features, and global geography.",
                             IsFeatured = false,
                             Name = "Geography",
@@ -543,7 +541,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "food_cooking",
                             ColorPreset = "orange",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8239),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4390),
                             Description = "Culinary arts, cuisine, ingredients, and cooking techniques.",
                             IsFeatured = false,
                             Name = "Food & Cooking",
@@ -554,7 +552,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "art_design",
                             ColorPreset = "violet",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8246),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4395),
                             Description = "Fine arts, design principles, art history, and creative techniques.",
                             IsFeatured = false,
                             Name = "Art & Design",
@@ -565,7 +563,7 @@ namespace QuizMate.Api.Migrations
                         {
                             Id = "literature",
                             ColorPreset = "yellow",
-                            CreatedAt = new DateTime(2025, 4, 13, 8, 50, 44, 670, DateTimeKind.Utc).AddTicks(8253),
+                            CreatedAt = new DateTime(2025, 4, 20, 16, 34, 22, 349, DateTimeKind.Utc).AddTicks(4403),
                             Description = "Books, authors, literary genres, and famous works.",
                             IsFeatured = false,
                             Name = "Literature",
@@ -577,28 +575,28 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.Question", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Explanation")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ImageUrl")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Points")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("QuestionType")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("QuizId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Text")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -610,58 +608,58 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.Quiz", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AppUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("CategoryId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Completions")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Difficulty")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsPublic")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("PassingScore")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("QuestionCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<double>("Rating")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("Slug")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Tags")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Thumbnail")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<int?>("TimeMinutes")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Title")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -675,35 +673,35 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.QuizSession", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CurrentQuestionIndex")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<DateTime?>("EndedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("HostId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("JoinCode")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("QuizId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("StartedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -711,7 +709,7 @@ namespace QuizMate.Api.Migrations
 
                     b.HasIndex("JoinCode")
                         .IsUnique()
-                        .HasFilter("[Status] IN ('Waiting', 'Active')");
+                        .HasFilter("\"Status\" IN ('Waiting', 'Active')");
 
                     b.HasIndex("QuizId");
 
@@ -721,35 +719,35 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.QuizSessionAnswer", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AnswerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("ParticipantId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("PointsEarned")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("QuestionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("QuizSessionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("SubmittedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<TimeSpan>("TimeTaken")
-                        .HasColumnType("time");
+                        .HasColumnType("interval");
 
                     b.HasKey("Id");
 
@@ -765,31 +763,31 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.QuizSessionParticipant", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ConnectionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsActive")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime>("JoinedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTime?>("LeftAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("QuizSessionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Score")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("UserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -806,42 +804,42 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.Result", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AppUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("AttemptedAt")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("CorrectAnswersCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("IncorrectAnswersCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsPassed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<int>("MaxScore")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<double>("PassRate")
-                        .HasColumnType("float");
+                        .HasColumnType("double precision");
 
                     b.Property<string>("QuizId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("Score")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("TimeTaken")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<int>("UnansweredCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -855,25 +853,25 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.ResultAnswer", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AnswerId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<int>("EarnedPoints")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<bool>("IsCorrect")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("QuestionId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("ResultId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
@@ -889,15 +887,15 @@ namespace QuizMate.Api.Migrations
             modelBuilder.Entity("QuizMate.Api.Models.SavedQuiz", b =>
                 {
                     b.Property<string>("Id")
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("AppUserId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.Property<string>("QuizId")
                         .IsRequired()
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 

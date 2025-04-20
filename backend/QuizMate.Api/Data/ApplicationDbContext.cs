@@ -156,7 +156,7 @@ namespace QuizMate.Api.Data
             builder.Entity<QuizSession>()
                 .HasIndex(qs => qs.JoinCode)
                 .IsUnique()
-                .HasFilter("[Status] IN ('Waiting', 'Active')");
+                .HasFilter("\"Status\" IN ('Waiting', 'Active')");
 
             // Seed categories data
             var categories = new List<Category>
