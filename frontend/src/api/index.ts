@@ -4,7 +4,7 @@ import {
 } from "@/utils/local-storage";
 import axios from "axios";
 
-const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:5118";
+const apiUrl = import.meta.env.VITE_API_URL || "https://localhost:5118";
 
 const baseURL = `${apiUrl}/api`;
 
