@@ -2,7 +2,7 @@ import QuizGrid from "@/features/quizzes/components/quiz-card/QuizGrid";
 import QuizzesBreadcrumb from "@/features/quizzes/components/quizzes/QuizzesBreadcrumb";
 import { QuizzesProvider } from "@/features/quizzes/contexts/QuizzesContext";
 import NoQuizzesFound from "@/components/shared/components/NoQuizzesFound";
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { QuizzesContext } from "@/features/quizzes/contexts/QuizzesContext";
 
 // Wrapper component to handle the conditional rendering
@@ -57,10 +57,18 @@ const QuizzesContent = () => {
 };
 
 const AllQuizzesPage = () => {
+    // Move on top of the page
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="container mx-auto p-4">
             <QuizzesBreadcrumb currentPage="all" />
-            <h1 className="text-2xl font-bold mb-6">All Quizzes</h1>
+            <h1 className="text-2xl font-bold text-cyan-600">All Quizzes</h1>
+            <p className="text-gray-600 mb-6">
+                Browse all quizzes on various topics.
+            </p>
             <QuizzesProvider>
                 <QuizzesContent />
             </QuizzesProvider>

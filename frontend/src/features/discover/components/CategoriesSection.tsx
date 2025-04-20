@@ -25,6 +25,10 @@ const CategoriesSection = () => {
         );
     }
 
+    if (featuredCategories.length === 0) {
+        return null;
+    }
+
     return (
         <div className="flex flex-col w-full">
             <SectionHeader

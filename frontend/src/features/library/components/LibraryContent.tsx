@@ -30,6 +30,11 @@ const LibraryContent = () => {
         window.scrollTo(0, 0);
     };
 
+    // Move on top of the page
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     return (
         <div className="space-y-6">
             <LibraryBreadcrumb />

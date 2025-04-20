@@ -33,6 +33,7 @@ const QuizDetailPage = () => {
         return <div>Quiz not found</div>;
     }
 
+
     return (
         <div className="container mx-auto p-4 max-w-6xl">
             <TakeQuizProvider quiz={quiz}>

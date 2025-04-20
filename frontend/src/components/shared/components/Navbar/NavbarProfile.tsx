@@ -6,14 +6,9 @@ import {
     DropdownMenuSeparator,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import {
-    BookOpen,
-    HelpCircle,
-    LogOut,
-    User,
-} from "lucide-react";
+import { BookOpen, HelpCircle, LogOut, User } from "lucide-react";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 const NavbarProfile = () => {
     const { user, logout } = useAuth();
@@ -66,20 +61,20 @@ const NavbarProfile = () => {
                             {getInitials(name)}
                         </div>
                     )}
-                    <div className="px-3 py-2 text-sm font-semibold tracking-wide text-gray-700 truncate">
+                    <div className="px-3 py-2 text-sm font-semibold tracking-wide text-cyan-700 truncate">
                         {name}
                     </div>
                 </div>
 
                 <DropdownMenuSeparator />
 
-                <DropdownMenuItem onClick={() => navigate("/profile")}>
-                    <User className="mr-2 h-4 w-4" />
+                <DropdownMenuItem onClick={() => navigate("/settings")}>
+                    <User className="mr-2 h-4 w-4 text-cyan-600" />
                     <span>Profile</span>
                 </DropdownMenuItem>
 
                 <DropdownMenuItem onClick={() => navigate("/library")}>
-                    <BookOpen className="mr-2 h-4 w-4" />
+                    <BookOpen className="mr-2 h-4 w-4 text-cyan-600" />
                     <span>My Quizzes</span>
                 </DropdownMenuItem>
 
@@ -88,7 +83,7 @@ const NavbarProfile = () => {
                         window.open("https://quizmate.com/help", "_blank")
                     }
                 >
-                    <HelpCircle className="mr-2 h-4 w-4" />
+                    <HelpCircle className="mr-2 h-4 w-4 text-cyan-600" />
                     <span>Help & Support</span>
                 </DropdownMenuItem>
 
@@ -98,7 +93,7 @@ const NavbarProfile = () => {
                     onClick={handleLogout}
                     className="text-red-600 focus:text-red-600"
                 >
-                    <LogOut className="mr-2 h-4 w-4" />
+                    <LogOut className="mr-2 h-4 w-4 text-red-500" />
                     <span>Log out</span>
                 </DropdownMenuItem>
             </DropdownMenuContent>

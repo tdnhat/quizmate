@@ -10,6 +10,10 @@ export type QuizFilters = {
     pageSize: number;
     isDescending: boolean;
     sortBy: string;
+    categoryId?: string;
+    searchText?: string;
+    limit?: number;
+    sortDirection?: 'asc' | 'desc';
 }
 
 export interface QuizResultAnswer {
