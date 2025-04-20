@@ -25,7 +25,7 @@ namespace QuizMate.Api.Mappers
                 Rating = quiz.Rating,
                 Completions = quiz.Completions,
                 CategoryName = quiz.Category?.Name ?? "Unknown Category",
-                AppUser = quiz.AppUser?.ToDto() ?? new UserDto(),
+                AppUser = quiz.AppUser?.ToUserDto(token: "", role: "") ?? new UserDto(),
                 Tags = quiz.Tags ?? new List<string>(),
             };
         }
@@ -49,7 +49,7 @@ namespace QuizMate.Api.Mappers
                 IsPublic = quiz.IsPublic,
 
                 CategoryName = quiz.Category?.Name ?? "Unknown Category",
-                AppUser = quiz.AppUser?.ToDto() ?? new UserDto(),
+                AppUser = quiz.AppUser?.ToUserDto(token: "", role: "") ?? new UserDto(),
 
                 Tags = quiz.Tags ?? new List<string>(),
                 Questions = quiz.Questions?.Select(q => q.ToDto()).ToList() ?? new List<QuestionDto>()

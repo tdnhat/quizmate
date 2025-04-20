@@ -5,6 +5,9 @@ using QuizMate.Api.DTOs.Account.Register;
 using QuizMate.Api.Extensions;
 using QuizMate.Api.Interfaces;
 using QuizMate.Api.Models;
+using Microsoft.AspNetCore.Authorization;
+using System.Linq;
+using QuizMate.Api.Mappers;
 
 namespace QuizMate.Api.Controllers
 {
@@ -15,15 +18,22 @@ namespace QuizMate.Api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ITokenService _tokenService;
         private readonly SignInManager<AppUser> _signInManger;
-        public AccountController(UserManager<AppUser> userManager, ITokenService tokenService,
-        SignInManager<AppUser> signInManager)
+        private readonly ICloudinaryService _cloudinaryService;
+
+        public AccountController(
+            UserManager<AppUser> userManager, 
+            ITokenService tokenService,
+            SignInManager<AppUser> signInManager,
+            ICloudinaryService cloudinaryService)
         {
             _userManager = userManager;
             _tokenService = tokenService;
             _signInManger = signInManager;
+            _cloudinaryService = cloudinaryService;
         }
 
         [HttpGet("me")]
+        [Authorize]
         public async Task<IActionResult> GetMe()
         {
             var userEmail = User.GetEmail();
@@ -37,17 +47,152 @@ namespace QuizMate.Api.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             var userRole = roles.FirstOrDefault() ?? "User";
 
-            return Ok(new UserDto
+            return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
+        }
+
+        [HttpPut("update-profile")]
+        [Authorize]
+        public async Task<IActionResult> UpdateProfile([FromBody] UpdateProfileDto updateDto)
+        {
+            if (!ModelState.IsValid)
             {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
-                DisplayName = user.DisplayName,
-                AvatarUrl = user.AvatarUrl,
-                Role = userRole,
-                CreatedAt = user.CreatedAt,
-                Token = _tokenService.CreateToken(user)
-            });
+                return BadRequest(ModelState);
+            }
+
+            // Get current user
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Only check for conflicts if the field is being updated
+            // Check for existing username conflicts
+            if (!string.IsNullOrWhiteSpace(updateDto.UserName) && updateDto.UserName != user.UserName)
+            {
+                var existingUserWithUsername = await _userManager.FindByNameAsync(updateDto.UserName);
+                if (existingUserWithUsername != null)
+                {
+                    ModelState.AddModelError("UserName", "Username is already taken");
+                    return BadRequest(ModelState);
+                }
+            }
+
+            // Check for existing email conflicts
+            if (!string.IsNullOrWhiteSpace(updateDto.Email) && updateDto.Email != user.Email)
+            {
+                var existingUserWithEmail = await _userManager.FindByEmailAsync(updateDto.Email);
+                if (existingUserWithEmail != null)
+                {
+                    ModelState.AddModelError("Email", "Email is already registered");
+                    return BadRequest(ModelState);
+                }
+            }
+
+            // Update user properties from DTO
+            user.UpdateFromDto(updateDto);
+
+            // If username was changed and using default avatar, update the avatar URL too
+            if (!string.IsNullOrWhiteSpace(updateDto.UserName) && 
+                updateDto.UserName != user.UserName && 
+                !string.IsNullOrEmpty(user.AvatarUrl) && 
+                user.AvatarUrl.StartsWith("https://ui-avatars.com"))
+            {
+                // Update the avatar URL with the new username
+                user.AvatarUrl = $"https://ui-avatars.com/api/?name={Uri.EscapeDataString(updateDto.UserName)}";
+            }
+
+            // Save changes
+            var result = await _userManager.UpdateAsync(user);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors);
+            }
+
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "User";
+
+            // Return updated user data
+            return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
+        }
+
+        [HttpPost("upload-avatar")]
+        [Authorize]
+        public async Task<IActionResult> UploadAvatar(IFormFile file)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (file == null || file.Length == 0)
+            {
+                return BadRequest("No file uploaded");
+            }
+
+            var avatarUrl = await _cloudinaryService.UploadUserAvatarAsync(file);
+            
+            // Update user's avatar URL in the database
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // If user already has an avatar, delete the old one
+            if (!string.IsNullOrEmpty(user.AvatarUrl) && !user.AvatarUrl.StartsWith("https://ui-avatars.com"))
+            {
+                try
+                {
+                    var publicId = user.AvatarUrl.Split('/').Last().Split('.')[0];
+                    await _cloudinaryService.DestroyAvatarAsync(publicId);
+                }
+                catch (Exception)
+                {
+                    // Ignore errors when trying to delete old avatar
+                }
+            }
+
+            user.AvatarUrl = avatarUrl;
+            await _userManager.UpdateAsync(user);
+
+            return Ok(new { AvatarUrl = avatarUrl });
+        }
+
+        [HttpDelete("destroy-avatar")]
+        [Authorize]
+        public async Task<IActionResult> DestroyAvatar()
+        {
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            if (string.IsNullOrEmpty(user.AvatarUrl) || user.AvatarUrl.StartsWith("https://ui-avatars.com"))
+            {
+                return BadRequest("No custom avatar to delete");
+            }
+
+            try
+            {
+                var publicId = user.AvatarUrl.Split('/').Last().Split('.')[0];
+                await _cloudinaryService.DestroyAvatarAsync(publicId);
+                
+                // Reset to default avatar
+                user.AvatarUrl = "https://ui-avatars.com/api/?name=" + user.UserName;
+                await _userManager.UpdateAsync(user);
+                
+                return Ok(new { AvatarUrl = user.AvatarUrl });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Error deleting avatar: {ex.Message}");
+            }
         }
 
         [HttpPost("register")]
@@ -132,17 +277,51 @@ namespace QuizMate.Api.Controllers
             var roles = await _userManager.GetRolesAsync(user);
             var userRole = roles.FirstOrDefault() ?? "User";
 
-            return Ok(new UserDto
+            return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
+        }
+
+        [HttpPost("change-password")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto passwordDto)
+        {
+            if (!ModelState.IsValid)
             {
-                Id = user.Id,
-                Email = user.Email,
-                UserName = user.UserName,
-                DisplayName = user.DisplayName,
-                AvatarUrl = user.AvatarUrl,
-                Role = userRole,
-                CreatedAt = user.CreatedAt,
-                Token = _tokenService.CreateToken(user)
-            });
+                return BadRequest(ModelState);
+            }
+
+            // Get current user
+            var userEmail = User.GetEmail();
+            var user = await _userManager.FindByEmailAsync(userEmail);
+            if (user == null)
+            {
+                return Unauthorized();
+            }
+
+            // Verify current password
+            var isCurrentPasswordValid = await _userManager.CheckPasswordAsync(user, passwordDto.CurrentPassword);
+            if (!isCurrentPasswordValid)
+            {
+                ModelState.AddModelError("CurrentPassword", "Current password is incorrect");
+                return BadRequest(ModelState);
+            }
+
+            // Change password
+            var result = await _userManager.ChangePasswordAsync(user, passwordDto.CurrentPassword, passwordDto.NewPassword);
+            if (!result.Succeeded)
+            {
+                foreach (var error in result.Errors)
+                {
+                    ModelState.AddModelError(string.Empty, error.Description);
+                }
+                return BadRequest(ModelState);
+            }
+
+            // Get user roles
+            var roles = await _userManager.GetRolesAsync(user);
+            var userRole = roles.FirstOrDefault() ?? "User";
+
+            // Return updated user data with a fresh token
+            return Ok(user.ToUserDto(_tokenService.CreateToken(user), userRole));
         }
     }
 }
