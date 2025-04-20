@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useContext } from 'react';
+import { createContext, ReactNode, useContext } from 'react';
 import { useQueryClient } from '@tanstack/react-query';
 import { User } from '@/types/user';
 import { AuthContext } from '@/features/auth/contexts/AuthContext';

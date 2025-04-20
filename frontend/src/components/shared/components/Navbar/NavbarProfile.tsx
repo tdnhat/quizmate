@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { BookOpen, HelpCircle, LogOut, User } from "lucide-react";
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 const NavbarProfile = () => {
     const { user, logout } = useAuth();

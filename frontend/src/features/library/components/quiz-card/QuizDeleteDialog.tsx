@@ -1,5 +1,5 @@
 import { Quiz } from "@/types/quiz";
-import React, { useEffect } from "react";
+import { useEffect } from "react";
 import {
     AlertDialog,
     AlertDialogAction,

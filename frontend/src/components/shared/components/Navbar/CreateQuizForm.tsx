@@ -23,7 +23,8 @@ export const CreateQuizForm = ({
         defaultValues: {
             title: "",
             description: "",
-            thumbnail: undefined,
+            thumbnailFile: undefined,
+            thumbnailUrl: undefined,
             categoryId: "",
             timeMinutes: 5,
             difficulty: "Beginner",

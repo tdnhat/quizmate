@@ -13,9 +13,9 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 
 const LibraryFilter = () => {
-    const { queryParams, handleFilterChange, clearAllFilters } =
+    const { queryParams, handleFilterChange } =
         useLibraryContext();
-    
+
     // Add state to control the popover
     const [open, setOpen] = useState(false);
 
@@ -46,7 +46,7 @@ const LibraryFilter = () => {
     const handleClearAllFilters = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
-        clearAllFilters();
+        handleFilterChange(null);
         // Optionally close popover
         setOpen(false);
     };
@@ -94,9 +94,8 @@ const LibraryFilter = () => {
                                 value={queryParams.difficulty || ""}
                                 onValueChange={(value) =>
                                     handleFilterChange(
-                                        "difficulty",
                                         value === queryParams.difficulty
-                                            ? undefined
+                                            ? null
                                             : value
                                     )
                                 }
@@ -138,10 +137,9 @@ const LibraryFilter = () => {
                                 value={queryParams.duration || ""}
                                 onValueChange={(value) =>
                                     handleFilterChange(
-                                        "duration",
                                         value === queryParams.duration
-                                            ? undefined
-                                            : value
+                                            ? null
+                                            : value 
                                     )
                                 }
                                 className="grid grid-cols-3 gap-2"

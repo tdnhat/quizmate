@@ -30,7 +30,7 @@ const LibrarySearchInput = () => {
         
         // Simulate loading time for better UX
         setTimeout(() => {
-            handleFilterChange("searchTerm", searchValue);
+            handleFilterChange(searchValue);
             setIsLoading(false);
         }, 300);
     };
@@ -41,7 +41,7 @@ const LibrarySearchInput = () => {
         
         // Simulate loading time for better UX
         setTimeout(() => {
-            handleFilterChange("searchTerm", "");
+            handleFilterChange(null);
             setIsLoading(false);
         }, 300);
     };
