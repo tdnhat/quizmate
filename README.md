@@ -65,11 +65,25 @@ QuizMate is a modern, feature-rich quiz platform that enables users to create, s
 - PostgreSQL database
 - Python 3.10+ (for AI service)
 
-### Setup Backend
+### Setup Frontend
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/quizmate.git
-cd quizmate/backend
+git clone https://github.com/tdnhat/quizmate.git
+
+# Navigate to frontend directory
+cd quizmate/frontend
+
+# Install dependencies
+npm install
+
+# Run the frontend
+npm run dev
+```
+
+### Setup Backend
+```bash
+# Navigate to backend directory
+cd quizmate/backend/QuizMate.Api
 
 # Restore dependencies
 dotnet restore
@@ -84,8 +98,9 @@ dotnet run
 
 ### Setup AI Service
 ```bash
-# Navigate to AI service directory
-cd quizmate/quizmate-ai-service
+# Clone the repository
+git clone https://github.com/tdnhat/quizmate-ai-service.git
+cd quizmate-ai-service
 
 # Create virtual environment
 python -m venv venv
@@ -99,18 +114,6 @@ pip install -r requirements.txt
 uvicorn app.main:app --reload
 ```
 
-### Setup Frontend
-```bash
-# Navigate to frontend directory
-cd quizmate/frontend
-
-# Install dependencies
-npm install
-
-# Run the frontend
-npm run dev
-```
-
 ## 📸 Screenshots
 
 *[Screenshots will be added here showcasing the key features of the application]*
@@ -118,12 +121,6 @@ npm run dev
 ## 📄 License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
-
-## 👨‍💻 Contributors
-
-- [Nhat Truong](https://github.com/tdnhat)
-- [Other Contributors]
-
 ---
 
-Made with ❤️ by the QuizMate Team 
+Made with ❤️ by [Nhat Truong](https://github.com/yourusername)
