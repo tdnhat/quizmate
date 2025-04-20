@@ -19,10 +19,10 @@ namespace QuizMate.Api.Controllers
         private readonly UserManager<AppUser> _userManager;
         private readonly ICloudinaryService _cloudinaryService;
         private readonly IQuizAiService _quizAiService;
-        
+
         public QuizController(
-            IUnitOfWork unitOfWork, 
-            UserManager<AppUser> userManager, 
+            IUnitOfWork unitOfWork,
+            UserManager<AppUser> userManager,
             ICloudinaryService cloudinaryService,
             IQuizAiService quizAiService)
         {
@@ -204,29 +204,56 @@ namespace QuizMate.Api.Controllers
         [Authorize]
         public async Task<IActionResult> DeleteQuiz([FromRoute] string id)
         {
-            var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
-            if (quiz == null)
+            try
             {
-                return NotFound();
-            }
+                var quiz = await _unitOfWork.QuizRepository.GetQuizByIdAsync(id);
+                if (quiz == null)
+                {
+                    return NotFound();
+                }
 
-            var userEmail = User.GetEmail();
-            var user = await _userManager.FindByEmailAsync(userEmail);
-            if (user == null)
+                var userEmail = User.GetEmail();
+                var user = await _userManager.FindByEmailAsync(userEmail);
+                if (user == null)
+                {
+                    return BadRequest("User not found");
+                }
+
+                // Check if the user is authorized to delete this quiz
+                if (quiz.AppUserId != user.Id && !User.IsInRole("Admin"))
+                {
+                    return Forbid("You don't have permission to delete this quiz");
+                }
+
+                if (!string.IsNullOrEmpty(quiz.Thumbnail))
+                {
+                    var publicId = quiz.Thumbnail.Split('/').Last().Split('.')[0];
+                    await _cloudinaryService.DestroyThumbnailAsync(publicId);
+                }
+
+                var result = await _unitOfWork.QuizRepository.DeleteQuizAsync(id);
+                if (!result)
+                {
+                    return BadRequest("Failed to delete quiz");
+                }
+
+                await _unitOfWork.SaveAsync();
+
+                return NoContent();
+            }
+            catch (Exception ex)
             {
-                return BadRequest("User not found");
+                // Log the exception details
+                Console.WriteLine($"Error deleting quiz: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+
+                if (ex.InnerException != null)
+                {
+                    Console.WriteLine($"Inner exception: {ex.InnerException.Message}");
+                }
+
+                return StatusCode(500, $"An error occurred while deleting the quiz: {ex.Message}");
             }
-
-            if (!string.IsNullOrEmpty(quiz.Thumbnail))
-            {
-                var publicId = quiz.Thumbnail.Split('/').Last().Split('.')[0];
-                await _cloudinaryService.DestroyThumbnailAsync(publicId);
-            }
-
-            await _unitOfWork.QuizRepository.DeleteQuizAsync(id);
-            await _unitOfWork.SaveAsync();
-
-            return NoContent();
         }
 
         [HttpPost("ai-generate")]
@@ -242,7 +269,7 @@ namespace QuizMate.Api.Controllers
             {
                 // Call the AI service without saving to database
                 var generatedQuiz = await _quizAiService.GenerateQuizAsync(request);
-                
+
                 // Return the generated quiz directly to the client
                 return Ok(generatedQuiz);
             }
