@@ -144,13 +144,16 @@ const PricingSection = () => {
                             </div>
 
                             <Button
+                                variant={plan.popular ? "default" : "outline"}
+                                size="lg"
                                 className={`
-                                    w-full mt-auto cursor-pointer border border-cyan-500 py-2 rounded-lg font-medium
+                                    w-full mt-auto font-medium tracking-wide
                                     ${
                                         plan.popular
-                                            ? "bg-cyan-600 text-white hover:bg-cyan-700"
-                                            : "bg-white text-cyan-500 hover:bg-cyan-50"
-                                    } transition
+                                            ? "bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 shadow-md hover:shadow-lg border-0"
+                                            : "border-cyan-500 text-cyan-600 hover:bg-cyan-50 hover:text-cyan-700"
+                                    }
+                                    transition-all duration-300 transform hover:-translate-y-1
                                 `}
                             >
                                 {plan.cta}

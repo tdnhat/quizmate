@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Facebook, Twitter, Instagram, Linkedin } from "lucide-react";
+import { Facebook, Twitter, Instagram, Linkedin, Github } from "lucide-react";
 
 const FooterSection = () => {
     const containerVariants = {
@@ -55,6 +55,17 @@ const FooterSection = () => {
                             Making quiz creation and management easier for educators and content creators worldwide.
                         </p>
                         <div className="flex space-x-4">
+                            <motion.a 
+                                href="https://github.com/tdnhat/quizmate" 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                                variants={socialVariants}
+                                whileHover="hover"
+                                className="hover:text-white"
+                                title="GitHub Repository"
+                            >
+                                <Github size={20} />
+                            </motion.a>
                             <motion.a 
                                 href="#" 
                                 variants={socialVariants}
