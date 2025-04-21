@@ -29,6 +29,8 @@ namespace QuizMate.Api.Repositories
             var quiz = await _context.Quizzes
                 .Include(q => q.Questions)
                     .ThenInclude(q => q.Answers)
+                .Include(q => q.Results)
+                    .ThenInclude(r => r.ResultAnswers)
                 .FirstOrDefaultAsync(q => q.Id == id);
 
             if (quiz == null)
@@ -36,7 +38,19 @@ namespace QuizMate.Api.Repositories
                 return false;
             }
 
-            // First, delete all QuizSessionAnswers that reference answers in this quiz
+            // First, delete all ResultAnswers that reference answers in this quiz
+            foreach (var result in quiz.Results)
+            {
+                _context.ResultAnswers.RemoveRange(result.ResultAnswers);
+            }
+            
+            // Then delete Results
+            if (quiz.Results != null && quiz.Results.Any())
+            {
+                _context.Results.RemoveRange(quiz.Results);
+            }
+
+            // Delete QuizSessionAnswers that reference answers in this quiz
             foreach (var question in quiz.Questions)
             {
                 foreach (var answer in question.Answers)
@@ -78,6 +92,11 @@ namespace QuizMate.Api.Repositories
                 _context.QuizSessionParticipants.RemoveRange(participants);
                 _context.QuizSessions.Remove(session);
             }
+
+            // Apply changes to handle cascading dependencies correctly
+            await _context.SaveChangesAsync();
+
+            // Now remove the quiz itself
             _context.Quizzes.Remove(quiz);
             await _context.SaveChangesAsync();
             return true;
