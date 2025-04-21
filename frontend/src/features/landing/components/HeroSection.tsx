@@ -4,6 +4,12 @@ import { MoveRight } from "lucide-react";
 import { motion } from "framer-motion";
 
 const HeroSection = () => {
+    const scrollToSection = (sectionId: string) => {
+        const element = document.getElementById(sectionId);
+        if (element) {
+            element.scrollIntoView({ behavior: "smooth" });
+        }
+    };
     const contentVariants = {
         hidden: {
             opacity: 0,
@@ -60,12 +66,19 @@ const HeroSection = () => {
                             your brainpower.
                         </p>
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-                            <Link to="/" className="w-full sm:w-[230px]">
+                            <Link
+                                to="/#features"
+                                className="w-full sm:w-[230px]"
+                                onClick={() => scrollToSection("features")}
+                            >
                                 <div className="w-full bg-white font-medium py-3 px-6 rounded-lg shadow hover:cursor-pointer hover:text-blue-500 hover:shadow-md transition">
                                     Learn More
                                 </div>
                             </Link>
-                            <Link to="/" className="w-full sm:w-[230px]">
+                            <Link
+                                to="/register"
+                                className="w-full sm:w-[230px]"
+                            >
                                 <div className="w-full bg-cyan-600 font-medium text-white py-3 px-6 rounded-lg shadow hover:cursor-pointer hover:bg-cyan-700 hover:shadow-md transition">
                                     <div className="flex items-center justify-center gap-2">
                                         <span>Get Started</span>

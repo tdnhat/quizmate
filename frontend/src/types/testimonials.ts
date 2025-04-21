@@ -15,7 +15,7 @@ export const testimonials: Testimonial[] = [
         role: "Teacher",
         company: "Lincoln High School",
         quote: "QuizMate has transformed how I assess my students. Creating engaging quizzes is now quick and easy, and my students love the interactive format!",
-        avatar: "/testimonials/avatar1.jpg", // Place images in public/testimonials folder
+        avatar: "https://api.dicebear.com/7.x/personas/svg?seed=Sarah&backgroundColor=b6e3f4",
     },
     {
         id: 2,
@@ -23,7 +23,7 @@ export const testimonials: Testimonial[] = [
         role: "Corporate Trainer",
         company: "TechGrowth Inc.",
         quote: "The analytics features help me identify knowledge gaps in my team. I can create targeted training materials based on quiz results, which has improved our overall performance.",
-        avatar: "/testimonials/avatar2.jpg",
+        avatar: "https://api.dicebear.com/7.x/personas/svg?seed=Michael&backgroundColor=d1d4f9",
     },
     {
         id: 3,
@@ -31,7 +31,7 @@ export const testimonials: Testimonial[] = [
         role: "Professor",
         company: "State University",
         quote: "As someone who teaches large lecture classes, QuizMate allows me to quickly gauge student understanding and adjust my teaching accordingly. The AI-generated questions save me hours of work.",
-        avatar: "/testimonials/avatar3.jpg",
+        avatar: "https://api.dicebear.com/7.x/personas/svg?seed=Rebecca&backgroundColor=c0aede",
     },
     {
         id: 4,
@@ -39,7 +39,7 @@ export const testimonials: Testimonial[] = [
         role: "eLearning Developer",
         company: "LearnFast Academy",
         quote: "We've integrated QuizMate into our online courses and have seen a 40% increase in student engagement. The platform is intuitive and the support team is incredibly helpful.",
-        avatar: "/testimonials/avatar4.jpg",
+        avatar: "https://api.dicebear.com/7.x/personas/svg?seed=David&backgroundColor=ffdfbf",
     },
     {
         id: 5,
@@ -47,6 +47,6 @@ export const testimonials: Testimonial[] = [
         role: "School Administrator",
         company: "Oakridge Elementary",
         quote: "QuizMate has helped our entire school standardize assessments while making them more engaging. The reports give our teachers valuable insights into student progress.",
-        avatar: "/testimonials/avatar5.jpg",
+        avatar: "https://api.dicebear.com/7.x/personas/svg?seed=Jasmine&backgroundColor=beebad",
     },
 ];
