@@ -50,9 +50,11 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAllOrigins", builder =>
     {
         builder
-            .AllowAnyOrigin()
+            .WithOrigins("https://thankful-glacier-086d82100.6.azurestaticapps.net", "http://localhost:3000")
+            .AllowAnyHeader()
             .AllowAnyMethod()
-            .AllowAnyHeader();
+            .AllowCredentials()
+            .WithExposedHeaders("Content-Disposition");
     });
 });
 
@@ -137,6 +139,25 @@ builder.Services.AddScoped<ISavedQuizRepository, SavedQuizRepository>();
 
 var app = builder.Build();
 
+// Custom middleware to handle OPTIONS requests
+app.Use(async (context, next) =>
+{
+    if (context.Request.Method == "OPTIONS")
+    {
+        context.Response.Headers.Add("Access-Control-Allow-Origin", "https://thankful-glacier-086d82100.6.azurestaticapps.net");
+        context.Response.Headers.Add("Access-Control-Allow-Headers", "Content-Type, Authorization, X-Requested-With");
+        context.Response.Headers.Add("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        context.Response.Headers.Add("Access-Control-Allow-Credentials", "true");
+        context.Response.Headers.Add("Access-Control-Expose-Headers", "Content-Disposition");
+        context.Response.StatusCode = 204;
+        await context.Response.CompleteAsync();
+    }
+    else
+    {
+        await next();
+    }
+});
+
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
@@ -166,7 +187,7 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
-// Configure CORS to be more permissive for debugging
+// Make sure CORS is applied before routing
 app.UseCors("AllowAllOrigins");
 
 app.UseRouting();
@@ -174,7 +195,6 @@ app.UseRouting();
 app.MapHub<QuizSessionHub>("/hubs/quiz-session");
 
 app.UseAuthentication();
-
 app.UseAuthorization();
 
 app.MapControllers();
