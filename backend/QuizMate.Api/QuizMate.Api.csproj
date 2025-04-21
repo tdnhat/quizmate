@@ -23,9 +23,9 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
-  <!-- <ItemGroup>
+  <ItemGroup>
     <None Include="web.config" CopyToOutputDirectory="PreserveNewest" />
     <None Include="web.Release.config" CopyToOutputDirectory="PreserveNewest" />
-  </ItemGroup> -->
+  </ItemGroup>
 
 </Project>
