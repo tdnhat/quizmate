@@ -45,6 +45,17 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder
+            .AllowAnyOrigin()
+            .AllowAnyMethod()
+            .AllowAnyHeader();
+    });
+});
+
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
 {
     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
@@ -155,16 +166,8 @@ app.Use(async (context, next) =>
 
 app.UseHttpsRedirection();
 
-app.UseCors(x => x
-    .AllowAnyHeader()
-    .AllowAnyMethod()
-    .AllowCredentials()
-    .WithOrigins(
-        "http://localhost:3000", // Keep for local development
-        "https://thankful-glacier-086d82100.6.azurestaticapps.net", // Your production frontend URL
-        "https://quizmate-web-api.azurewebsites.net" // Backend URL (for self-referencing)
-    )
-);
+// Configure CORS to be more permissive for debugging
+app.UseCors("AllowAllOrigins");
 
 app.UseRouting();
 
